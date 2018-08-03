@@ -7,9 +7,9 @@ class ADD_SP_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
 
     override fun execute(): Int {
 
-        val value = getImmediate()
+        val value = getImmediate().toByte().toInt()
 
-        super.add16SP(value)
+        super.add8SP(value)
 
         return 16
     }

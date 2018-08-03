@@ -7,20 +7,16 @@ import cpu.instructions.Instruction
 class LD_HL_SPn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
     override fun execute(): Int {
-
-        var value = getImmediate().toByte().toInt()
-
-        value += registers.SP
-
-        registers.setHL(value)
+        val value = getImmediate().toByte().toInt()
+        registers.setHL(registers.SP + value)
 
         registers.setZFlag(false)
         registers.setNFlag(false)
 
-        val cFlag = value > 0xFFFF
+        val cFlag = ((registers.SP and 0xFF) + (value and 0xFF)) > 0xFF
         registers.setCFlag(cFlag)
 
-        val hFlag = value > 0xF
+        val hFlag = (registers.SP and 0xF) + (value and 0xF) > 0xF
         registers.setHFlag(hFlag)
 
         return 12

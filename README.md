@@ -11,7 +11,7 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 ### Blargg's tests
 - [x] 01 - Special
 - [ ] 02 - Interrupts
-- [ ] 03 - op sp, hl
+- [x] 03 - op sp, hl
 - [x] 04 - op r, imm
 - [x] 05 - op rp
 - [x] 06 - ld r,r
@@ -20,3 +20,10 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 - [x] 09 - op r,r
 - [ ] 10 - bit ops
 - [ ] 11 - op a,(hl)
+
+## Roadmap
+- Pass all CPU tests
+- Implement GPU
+- Get Tetris running
+- Controls
+- Sound

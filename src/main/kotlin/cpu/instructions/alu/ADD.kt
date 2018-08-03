@@ -22,18 +22,17 @@ abstract class ADD(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
         registers.setHFlag(hFlag)
     }
 
-    protected fun add16SP(value: Int) {
+    protected fun add8SP(value: Int) {
         val oldSP = registers.SP
         registers.SP = oldSP + value
 
         registers.setZFlag(false)
-
         registers.setNFlag(false)
 
-        val cFlag = oldSP + value > 0xFFFF
+        val cFlag = ((oldSP and 0xFF) + (value and 0xFF)) > 0xFF
         registers.setCFlag(cFlag)
 
-        val hFlag = (oldSP and 0xFFF) + (value and 0xFFF) > 0xFFF
+        val hFlag = (oldSP and 0xF) + (value and 0xF) > 0xF
         registers.setHFlag(hFlag)
     }
 
