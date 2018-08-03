@@ -77,7 +77,7 @@ class Gpu(private val registers: Registers) {
 
     fun renderScan() {
         // LY
-        //val ly = mmu.readByte(0xFF44)
+       // val ly = mmu.readByte(0xFF44)
         val ly = line
         val scy = mmu.readByte(0xFF42)
 

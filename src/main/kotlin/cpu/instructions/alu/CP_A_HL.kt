@@ -7,7 +7,7 @@ class CP_A_HL(registers: Registers, mmu: Mmu) : CP(registers, mmu) {
 
     override fun execute(): Int {
 
-        val value = registers.getHL()
+        val value = mmu.readByte(registers.getHL())
 
         super.cp(value)
 

@@ -5,6 +5,7 @@ import Mmu
 import clearBit
 import cpu.instructions.Instruction
 import cpu.instructions.alu.*
+import cpu.instructions.bit.*
 import cpu.instructions.calls.CALL_cc_nn
 import cpu.instructions.calls.CALL_nn
 import cpu.instructions.jumps.*
@@ -698,6 +699,296 @@ class Cpu {
             // SRL (HL)
             0x3E -> SRL_HL(registers, mmu)
 
+            // BIT
+            // BIT 0, r
+            0x40 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 0)
+            0x41 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 0)
+            0x42 -> BIT_r(registers, mmu, RegisterID.D.ordinal, 0)
+            0x43 -> BIT_r(registers, mmu, RegisterID.E.ordinal, 0)
+            0x44 -> BIT_r(registers, mmu, RegisterID.H.ordinal, 0)
+            0x45 -> BIT_r(registers, mmu, RegisterID.L.ordinal, 0)
+            0x47 -> BIT_r(registers, mmu, RegisterID.A.ordinal, 0)
+
+            // BIT 0, (HL)
+            0x46 -> BIT_HL(registers, mmu, 0)
+
+            // BIT 1, r
+            0x48 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 1)
+            0x49 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 1)
+            0x4A -> BIT_r(registers, mmu, RegisterID.D.ordinal, 1)
+            0x4B -> BIT_r(registers, mmu, RegisterID.E.ordinal, 1)
+            0x4C -> BIT_r(registers, mmu, RegisterID.H.ordinal, 1)
+            0x4D -> BIT_r(registers, mmu, RegisterID.L.ordinal, 1)
+            0x4F -> BIT_r(registers, mmu, RegisterID.A.ordinal, 1)
+
+            // BIT 1, (HL)
+            0x4E -> BIT_HL(registers, mmu, 1)
+
+            // BIT 2, r
+            0x50 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 2)
+            0x51 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 2)
+            0x52 -> BIT_r(registers, mmu, RegisterID.D.ordinal, 2)
+            0x53 -> BIT_r(registers, mmu, RegisterID.E.ordinal, 2)
+            0x54 -> BIT_r(registers, mmu, RegisterID.H.ordinal, 2)
+            0x55 -> BIT_r(registers, mmu, RegisterID.L.ordinal, 2)
+            0x57 -> BIT_r(registers, mmu, RegisterID.A.ordinal, 2)
+
+            // BIT 2, (HL)
+            0x56 -> BIT_HL(registers, mmu, 2)
+
+            // BIT 3, r
+            0x58 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 3)
+            0x59 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 3)
+            0x5A -> BIT_r(registers, mmu, RegisterID.D.ordinal, 3)
+            0x5B -> BIT_r(registers, mmu, RegisterID.E.ordinal, 3)
+            0x5C -> BIT_r(registers, mmu, RegisterID.H.ordinal, 3)
+            0x5D -> BIT_r(registers, mmu, RegisterID.L.ordinal, 3)
+            0x5F -> BIT_r(registers, mmu, RegisterID.A.ordinal, 3)
+
+            // BIT 3, (HL)
+            0x5E -> BIT_HL(registers, mmu, 3)
+
+            // BIT 4, r
+            0x60 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 4)
+            0x61 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 4)
+            0x62 -> BIT_r(registers, mmu, RegisterID.D.ordinal, 4)
+            0x63 -> BIT_r(registers, mmu, RegisterID.E.ordinal, 4)
+            0x64 -> BIT_r(registers, mmu, RegisterID.H.ordinal, 4)
+            0x65 -> BIT_r(registers, mmu, RegisterID.L.ordinal, 4)
+            0x67 -> BIT_r(registers, mmu, RegisterID.A.ordinal, 4)
+
+            // BIT 4, (HL)
+            0x66 -> BIT_HL(registers, mmu, 4)
+
+            // BIT 5, r
+            0x68 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 5)
+            0x69 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 5)
+            0x6A -> BIT_r(registers, mmu, RegisterID.D.ordinal, 5)
+            0x6B -> BIT_r(registers, mmu, RegisterID.E.ordinal, 5)
+            0x6C -> BIT_r(registers, mmu, RegisterID.H.ordinal, 5)
+            0x6D -> BIT_r(registers, mmu, RegisterID.L.ordinal, 5)
+            0x6F -> BIT_r(registers, mmu, RegisterID.A.ordinal, 5)
+
+            // BIT 5, (HL)
+            0x6E -> BIT_HL(registers, mmu, 5)
+
+            // BIT 6, r
+            0x70 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 6)
+            0x71 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 6)
+            0x72 -> BIT_r(registers, mmu, RegisterID.D.ordinal, 6)
+            0x73 -> BIT_r(registers, mmu, RegisterID.E.ordinal, 6)
+            0x74 -> BIT_r(registers, mmu, RegisterID.H.ordinal, 6)
+            0x75 -> BIT_r(registers, mmu, RegisterID.L.ordinal, 6)
+            0x77 -> BIT_r(registers, mmu, RegisterID.A.ordinal, 6)
+
+            // BIT 6, (HL)
+            0x76 -> BIT_HL(registers, mmu, 6)
+
+            // BIT 7, r
+            0x78 -> BIT_r(registers, mmu, RegisterID.B.ordinal, 7)
+            0x79 -> BIT_r(registers, mmu, RegisterID.C.ordinal, 7)
+            0x7A -> BIT_r(registers, mmu, RegisterID.D.ordinal, 7)
+            0x7B -> BIT_r(registers, mmu, RegisterID.E.ordinal, 7)
+            0x7C -> BIT_r(registers, mmu, RegisterID.H.ordinal, 7)
+            0x7D -> BIT_r(registers, mmu, RegisterID.L.ordinal, 7)
+            0x7F -> BIT_r(registers, mmu, RegisterID.A.ordinal, 7)
+
+            // BIT 7, (HL)
+            0x7E -> BIT_HL(registers, mmu, 7)
+
+            // SET
+            // SET 0, r
+            0xC0 -> SET_r(registers, mmu, RegisterID.B.ordinal, 0)
+            0xC1 -> SET_r(registers, mmu, RegisterID.C.ordinal, 0)
+            0xC2 -> SET_r(registers, mmu, RegisterID.D.ordinal, 0)
+            0xC3 -> SET_r(registers, mmu, RegisterID.E.ordinal, 0)
+            0xC4 -> SET_r(registers, mmu, RegisterID.H.ordinal, 0)
+            0xC5 -> SET_r(registers, mmu, RegisterID.L.ordinal, 0)
+            0xC7 -> SET_r(registers, mmu, RegisterID.A.ordinal, 0)
+
+            // SET 0, (HL)
+            0xC6 -> SET_HL(registers, mmu, 0)
+
+            // SET 1, r
+            0xC8 -> SET_r(registers, mmu, RegisterID.B.ordinal, 1)
+            0xC9 -> SET_r(registers, mmu, RegisterID.C.ordinal, 1)
+            0xCA -> SET_r(registers, mmu, RegisterID.D.ordinal, 1)
+            0xCB -> SET_r(registers, mmu, RegisterID.E.ordinal, 1)
+            0xCC -> SET_r(registers, mmu, RegisterID.H.ordinal, 1)
+            0xCD -> SET_r(registers, mmu, RegisterID.L.ordinal, 1)
+            0xCF -> SET_r(registers, mmu, RegisterID.A.ordinal, 1)
+
+            // SET 1, (HL)
+            0xCE -> SET_HL(registers, mmu, 1)
+
+            // SET 2, r
+            0xD0 -> SET_r(registers, mmu, RegisterID.B.ordinal, 2)
+            0xD1 -> SET_r(registers, mmu, RegisterID.C.ordinal, 2)
+            0xD2 -> SET_r(registers, mmu, RegisterID.D.ordinal, 2)
+            0xD3 -> SET_r(registers, mmu, RegisterID.E.ordinal, 2)
+            0xD4 -> SET_r(registers, mmu, RegisterID.H.ordinal, 2)
+            0xD5 -> SET_r(registers, mmu, RegisterID.L.ordinal, 2)
+            0xD7 -> SET_r(registers, mmu, RegisterID.A.ordinal, 2)
+
+            // SET 2, (HL)
+            0xD6 -> SET_HL(registers, mmu, 2)
+
+            // SET 3, r
+            0xD8 -> SET_r(registers, mmu, RegisterID.B.ordinal, 3)
+            0xD9 -> SET_r(registers, mmu, RegisterID.C.ordinal, 3)
+            0xDA -> SET_r(registers, mmu, RegisterID.D.ordinal, 3)
+            0xDB -> SET_r(registers, mmu, RegisterID.E.ordinal, 3)
+            0xDC -> SET_r(registers, mmu, RegisterID.H.ordinal, 3)
+            0xDD -> SET_r(registers, mmu, RegisterID.L.ordinal, 3)
+            0xDF -> SET_r(registers, mmu, RegisterID.A.ordinal, 3)
+
+            // SET 3, (HL)
+            0xDE -> SET_HL(registers, mmu, 3)
+
+            // SET 4, r
+            0xE0 -> SET_r(registers, mmu, RegisterID.B.ordinal, 4)
+            0xE1 -> SET_r(registers, mmu, RegisterID.C.ordinal, 4)
+            0xE2 -> SET_r(registers, mmu, RegisterID.D.ordinal, 4)
+            0xE3 -> SET_r(registers, mmu, RegisterID.E.ordinal, 4)
+            0xE4 -> SET_r(registers, mmu, RegisterID.H.ordinal, 4)
+            0xE5 -> SET_r(registers, mmu, RegisterID.L.ordinal, 4)
+            0xE7 -> SET_r(registers, mmu, RegisterID.A.ordinal, 4)
+
+            // SET 4, (HL)
+            0xE6 -> SET_HL(registers, mmu, 4)
+
+            // SET 5, r
+            0xE8 -> SET_r(registers, mmu, RegisterID.B.ordinal, 5)
+            0xE9 -> SET_r(registers, mmu, RegisterID.C.ordinal, 5)
+            0xEA -> SET_r(registers, mmu, RegisterID.D.ordinal, 5)
+            0xEB -> SET_r(registers, mmu, RegisterID.E.ordinal, 5)
+            0xEC -> SET_r(registers, mmu, RegisterID.H.ordinal, 5)
+            0xED -> SET_r(registers, mmu, RegisterID.L.ordinal, 5)
+            0xEF -> SET_r(registers, mmu, RegisterID.A.ordinal, 5)
+
+            // SET 5, (HL)
+            0xEE -> SET_HL(registers, mmu, 5)
+
+            // SET 6, r
+            0xF0 -> SET_r(registers, mmu, RegisterID.B.ordinal, 6)
+            0xF1 -> SET_r(registers, mmu, RegisterID.C.ordinal, 6)
+            0xF2 -> SET_r(registers, mmu, RegisterID.D.ordinal, 6)
+            0xF3 -> SET_r(registers, mmu, RegisterID.E.ordinal, 6)
+            0xF4 -> SET_r(registers, mmu, RegisterID.H.ordinal, 6)
+            0xF5 -> SET_r(registers, mmu, RegisterID.L.ordinal, 6)
+            0xF7 -> SET_r(registers, mmu, RegisterID.A.ordinal, 6)
+
+            // SET 6, (HL)
+            0xF6 -> SET_HL(registers, mmu, 6)
+
+            // SET 7, r
+            0xF8 -> SET_r(registers, mmu, RegisterID.B.ordinal, 7)
+            0xF9 -> SET_r(registers, mmu, RegisterID.C.ordinal, 7)
+            0xFA -> SET_r(registers, mmu, RegisterID.D.ordinal, 7)
+            0xFB -> SET_r(registers, mmu, RegisterID.E.ordinal, 7)
+            0xFC -> SET_r(registers, mmu, RegisterID.H.ordinal, 7)
+            0xFD -> SET_r(registers, mmu, RegisterID.L.ordinal, 7)
+            0xFF -> SET_r(registers, mmu, RegisterID.A.ordinal, 7)
+
+            // SET 7, (HL)
+            0xFE -> SET_HL(registers, mmu, 7)
+
+            // RES
+            // RES 0, r
+            0x80 -> RES_r(registers, mmu, RegisterID.B.ordinal, 0)
+            0x81 -> RES_r(registers, mmu, RegisterID.C.ordinal, 0)
+            0x82 -> RES_r(registers, mmu, RegisterID.D.ordinal, 0)
+            0x83 -> RES_r(registers, mmu, RegisterID.E.ordinal, 0)
+            0x84 -> RES_r(registers, mmu, RegisterID.H.ordinal, 0)
+            0x85 -> RES_r(registers, mmu, RegisterID.L.ordinal, 0)
+            0x87 -> RES_r(registers, mmu, RegisterID.A.ordinal, 0)
+
+            // RES 0, (HL)
+            0x86 -> RES_HL(registers, mmu, 0)
+
+            // RES 1, r
+            0x88 -> RES_r(registers, mmu, RegisterID.B.ordinal, 1)
+            0x89 -> RES_r(registers, mmu, RegisterID.C.ordinal, 1)
+            0x8A -> RES_r(registers, mmu, RegisterID.D.ordinal, 1)
+            0x8B -> RES_r(registers, mmu, RegisterID.E.ordinal, 1)
+            0x8C -> RES_r(registers, mmu, RegisterID.H.ordinal, 1)
+            0x8D -> RES_r(registers, mmu, RegisterID.L.ordinal, 1)
+            0x8F -> RES_r(registers, mmu, RegisterID.A.ordinal, 1)
+
+            // RES 1, (HL)
+            0x8E -> RES_HL(registers, mmu, 1)
+
+            // RES 2, r
+            0x90 -> RES_r(registers, mmu, RegisterID.B.ordinal, 2)
+            0x91 -> RES_r(registers, mmu, RegisterID.C.ordinal, 2)
+            0x92 -> RES_r(registers, mmu, RegisterID.D.ordinal, 2)
+            0x93 -> RES_r(registers, mmu, RegisterID.E.ordinal, 2)
+            0x94 -> RES_r(registers, mmu, RegisterID.H.ordinal, 2)
+            0x95 -> RES_r(registers, mmu, RegisterID.L.ordinal, 2)
+            0x97 -> RES_r(registers, mmu, RegisterID.A.ordinal, 2)
+
+            // RES 2, (HL)
+            0x96 -> RES_HL(registers, mmu, 2)
+
+            // RES 3, r
+            0x98 -> RES_r(registers, mmu, RegisterID.B.ordinal, 3)
+            0x99 -> RES_r(registers, mmu, RegisterID.C.ordinal, 3)
+            0x9A -> RES_r(registers, mmu, RegisterID.D.ordinal, 3)
+            0x9B -> RES_r(registers, mmu, RegisterID.E.ordinal, 3)
+            0x9C -> RES_r(registers, mmu, RegisterID.H.ordinal, 3)
+            0x9D -> RES_r(registers, mmu, RegisterID.L.ordinal, 3)
+            0x9F -> RES_r(registers, mmu, RegisterID.A.ordinal, 3)
+
+            // RES 3, (HL)
+            0x9E -> RES_HL(registers, mmu, 3)
+
+            // RES 4, r
+            0xA0 -> RES_r(registers, mmu, RegisterID.B.ordinal, 4)
+            0xA1 -> RES_r(registers, mmu, RegisterID.C.ordinal, 4)
+            0xA2 -> RES_r(registers, mmu, RegisterID.D.ordinal, 4)
+            0xA3 -> RES_r(registers, mmu, RegisterID.E.ordinal, 4)
+            0xA4 -> RES_r(registers, mmu, RegisterID.H.ordinal, 4)
+            0xA5 -> RES_r(registers, mmu, RegisterID.L.ordinal, 4)
+            0xA7 -> RES_r(registers, mmu, RegisterID.A.ordinal, 4)
+
+            // RES 4, (HL)
+            0xA6 -> RES_HL(registers, mmu, 4)
+
+            // RES 5, r
+            0xA8 -> RES_r(registers, mmu, RegisterID.B.ordinal, 5)
+            0xA9 -> RES_r(registers, mmu, RegisterID.C.ordinal, 5)
+            0xAA -> RES_r(registers, mmu, RegisterID.D.ordinal, 5)
+            0xAB -> RES_r(registers, mmu, RegisterID.E.ordinal, 5)
+            0xAC -> RES_r(registers, mmu, RegisterID.H.ordinal, 5)
+            0xAD -> RES_r(registers, mmu, RegisterID.L.ordinal, 5)
+            0xAF -> RES_r(registers, mmu, RegisterID.A.ordinal, 5)
+
+            // RES 5, (HL)
+            0xAE -> RES_HL(registers, mmu, 5)
+
+            // RES 6, r
+            0xB0 -> RES_r(registers, mmu, RegisterID.B.ordinal, 6)
+            0xB1 -> RES_r(registers, mmu, RegisterID.C.ordinal, 6)
+            0xB2 -> RES_r(registers, mmu, RegisterID.D.ordinal, 6)
+            0xB3 -> RES_r(registers, mmu, RegisterID.E.ordinal, 6)
+            0xB4 -> RES_r(registers, mmu, RegisterID.H.ordinal, 6)
+            0xB5 -> RES_r(registers, mmu, RegisterID.L.ordinal, 6)
+            0xB7 -> RES_r(registers, mmu, RegisterID.A.ordinal, 6)
+
+            // RES 6, (HL)
+            0xB6 -> RES_HL(registers, mmu, 6)
+
+            // RES 7, r
+            0xB8 -> RES_r(registers, mmu, RegisterID.B.ordinal, 7)
+            0xB9 -> RES_r(registers, mmu, RegisterID.C.ordinal, 7)
+            0xBA -> RES_r(registers, mmu, RegisterID.D.ordinal, 7)
+            0xBB -> RES_r(registers, mmu, RegisterID.E.ordinal, 7)
+            0xBC -> RES_r(registers, mmu, RegisterID.H.ordinal, 7)
+            0xBD -> RES_r(registers, mmu, RegisterID.L.ordinal, 7)
+            0xBF -> RES_r(registers, mmu, RegisterID.A.ordinal, 7)
+
+            // RES 7, (HL)
+            0xBE -> RES_HL(registers, mmu, 7)
             else -> throw Exception("Instruction not implemented: " + Integer.toHexString(opcode))
         }
     }

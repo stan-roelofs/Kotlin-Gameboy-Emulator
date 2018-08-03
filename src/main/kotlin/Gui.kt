@@ -25,7 +25,7 @@ class GameBoyView: View() {
 
     private var instructions: TextArea by singleAssign()
 
-    private val gb = GameBoy(File("E:/Downloads/tetris/tetris.gb"))
+    private val gb = GameBoy(File("E:/Downloads/gb-test-roms-master/cpu_instrs/individual/01-special.gb"))
 
     override val root = gridpane {
         row {
@@ -97,13 +97,15 @@ class GameBoyView: View() {
             }
             button("Frame") {
                 action {
-                    while (!gb.gpu.frameDone) {
-                        gb.step()
+                    for (i in 1..100) {
+                        while (!gb.gpu.frameDone) {
+                            gb.step()
+                        }
+                        updateRegisters()
+                        updateInstructions()
+                        updateScreen()
+                        gb.gpu.frameDone = false
                     }
-                    updateRegisters()
-                    updateInstructions()
-                    updateScreen()
-                    gb.gpu.frameDone = false
                 }
             }
         }

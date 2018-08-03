@@ -9,6 +9,9 @@ class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {
         val address = registers.getHL()
         val value = mmu.readByte(address)
         val new = swap(value)
+
+        mmu.writeByte(address, new)
+
         val zFlag = new == 0
 
         registers.setZFlag(zFlag)
