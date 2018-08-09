@@ -20,6 +20,16 @@ class Timer : Memory {
     private var timerCycles = clock0Cycles
     private var timerCounter = 0
 
+    override fun reset() {
+        divCounter = 0
+        timerCounter = 0
+        timerCycles = clock0Cycles
+        DIV = 0
+        TIMA = 0
+        TMA = 0
+        TAC = 0
+    }
+
     fun tick(cycles: Int) {
         // update DIV
         divCounter += cycles
@@ -48,17 +58,6 @@ class Timer : Memory {
                 }
             }
         }
-    }
-
-
-    override fun reset() {
-        divCounter = 0
-        timerCounter = 0
-        timerCycles = clock0Cycles
-        DIV = 0
-        TIMA = 0
-        TMA = 0
-        TAC = 0
     }
 
     override fun readByte(address: Int): Int {
