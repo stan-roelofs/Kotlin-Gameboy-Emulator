@@ -1,6 +1,6 @@
 package cpu.instructions
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 import getFirstByte
 import getSecondByte

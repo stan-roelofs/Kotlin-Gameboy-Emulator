@@ -1,6 +1,6 @@
 package cpu.instructions.alu
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class CP_A_n(registers: Registers, mmu: Mmu) : CP(registers, mmu) {

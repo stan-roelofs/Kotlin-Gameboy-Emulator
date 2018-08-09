@@ -1,6 +1,6 @@
 package cpu.instructions.alu
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class INC_HL(registers: Registers, mmu: Mmu) : INC(registers, mmu) {

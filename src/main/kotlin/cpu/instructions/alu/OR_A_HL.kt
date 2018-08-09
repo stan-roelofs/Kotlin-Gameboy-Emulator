@@ -1,6 +1,6 @@
 package cpu.instructions.alu
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class OR_A_HL(registers: Registers, mmu: Mmu) : OR(registers, mmu) {

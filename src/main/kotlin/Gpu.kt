@@ -1,4 +1,5 @@
 import cpu.Registers
+import memory.Mmu
 
 class Gpu(private val registers: Registers) {
     private var mode = 0

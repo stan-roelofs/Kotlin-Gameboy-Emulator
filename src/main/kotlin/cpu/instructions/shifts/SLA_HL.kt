@@ -1,6 +1,6 @@
 package cpu.instructions.shifts
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class SLA_HL(registers: Registers, mmu: Mmu) : SLA(registers, mmu) {

@@ -1,7 +1,7 @@
 package cpu
 
 import Gpu
-import Mmu
+import memory.Mmu
 import clearBit
 import cpu.instructions.Instruction
 import cpu.instructions.alu.*
@@ -21,7 +21,7 @@ import getBit
 import getFirstByte
 import getSecondByte
 import java.util.logging.Logger
-import Timer
+import memory.Timer
 
 class Cpu {
     companion object {
@@ -31,7 +31,6 @@ class Cpu {
     val registers = Registers()
     val gpu = Gpu(registers)
     private val mmu = Mmu.instance
-    private val timer = Timer(mmu)
 
     var lastInstruction: Int = 0
 
@@ -128,7 +127,7 @@ class Cpu {
             val cycles = instruction.execute()
             registers.clock += cycles
 
-            timer.tick(cycles)
+            mmu.tick(cycles)
             gpu.step()
 
             // EI or DI executed, enable/disable interrupts not now but after next instruction
@@ -146,28 +145,9 @@ class Cpu {
             }
         } else {
             registers.clock += 1
-            timer.tick(1)
+            mmu.tick(1)
             //gpu.step()
         }
-    }
-
-    private fun updateTimer(clock: Long) {
-        /*
-        val div = mmu.readByte(0xFF04)
-        mmu.writeByte()
-
-        if (mmu.readByte(0xFF07).getBit(2)) {
-            val timer = when(mmu.readByte(0xFF07) and 0b11) {
-                0b00 -> 1024
-                0b01 -> 16
-                0b10 -> 64
-                0b11 -> 256
-                else -> throw Exception()
-            }
-
-            val tima = mmu.readByte(0xFF05)
-
-        }*/
     }
 
     private fun getInstruction(opcode: Int): Instruction {

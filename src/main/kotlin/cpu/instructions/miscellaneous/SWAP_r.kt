@@ -1,6 +1,6 @@
 package cpu.instructions.miscellaneous
 
-import Mmu
+import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
 

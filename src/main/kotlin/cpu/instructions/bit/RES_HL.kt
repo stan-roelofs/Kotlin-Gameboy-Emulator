@@ -1,6 +1,6 @@
 package cpu.instructions.bit
 
-import Mmu
+import memory.Mmu
 import clearBit
 import cpu.Registers
 import cpu.instructions.Instruction

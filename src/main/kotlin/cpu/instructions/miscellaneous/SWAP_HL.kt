@@ -1,6 +1,6 @@
 package cpu.instructions.miscellaneous
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {

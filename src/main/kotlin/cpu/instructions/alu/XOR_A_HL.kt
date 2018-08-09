@@ -1,6 +1,6 @@
 package cpu.instructions.alu
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class XOR_A_HL(registers: Registers, mmu: Mmu) : XOR(registers, mmu) {

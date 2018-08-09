@@ -1,6 +1,6 @@
 package cpu.instructions.rotates
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class RR_HL(registers: Registers, mmu: Mmu) : RR(registers, mmu) {

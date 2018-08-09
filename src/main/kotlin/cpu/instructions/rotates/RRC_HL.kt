@@ -1,5 +1,5 @@
 package cpu.instructions.rotates
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class RRC_HL(registers: Registers, mmu: Mmu) : RRC(registers, mmu) {

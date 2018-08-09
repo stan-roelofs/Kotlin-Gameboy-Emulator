@@ -8,24 +8,31 @@ repositories {
     mavenCentral()
 }
 
+// remove later
 ext {
     gdxVersion = '1.9.3'
     visuiVersion = '1.1.1'
 }
 
+// remove later
 task wrapper(type: Wrapper) {
     gradleVersion = '3.1'
 }
 
 dependencies {
+    // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib"
+
+    // TornadoFX for GUI
     compile 'no.tornado:tornadofx:1.7.16'
 
+    // Can remove this later
     compile "com.badlogicgames.gdx:gdx:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     compile "com.kotcrab.vis:vis-ui:$visuiVersion"
 
+    // junit for testing
     testCompile 'junit:junit:4.11'
 }
 

@@ -1,4 +1,5 @@
 import cpu.Cpu
+import memory.Mmu
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -136,6 +137,55 @@ internal class InstructionsTest {
         cpu.step()
 
         assertEquals(0x800F, cpu.registers.PC)
+
+    }
+
+    @Test
+    fun testTimer() {
+        val cpu = Cpu()
+        val mmu = Mmu.instance
+
+        mmu.writeByte(0xFF07, 0x05)
+        mmu.writeByte(0xFF05, 0x00)
+        mmu.writeByte(0xFF0F, 0x00)
+
+        // every 16 cycles tima should increase
+        // a nop takes 4 cycles
+
+        for (i in 0..3) {
+            cpu.registers.PC = 0x8000
+            mmu.writeByte(0x8000, 0x00) // NOP
+            cpu.step()
+        }
+
+        assertEquals(1, mmu.readByte(0xFF05))
+    }
+
+    @Test
+    fun testHalt() {
+        val cpu = Cpu()
+        val mmu = Mmu.instance
+
+        mmu.writeByte(0xFFFF, 0x04)
+        mmu.writeByte(0xFF07, 0x05)
+        mmu.writeByte(0xFF05, 0x00)
+        mmu.writeByte(0xFF0F, 0x00)
+
+        // overflow timer, should set IF of timer interrupt
+        for (j in 0..255) {
+            for (i in 0..3) {
+                cpu.registers.PC = 0x8000
+                mmu.writeByte(0x8000, 0x00) // NOP
+                cpu.step()
+            }
+        }
+        assertEquals(true, mmu.readByte(0xFF0F).getBit(2)) //IF of timer set
+        assertEquals(true, mmu.readByte(0xFFFF).getBit(2)) //IE of timer set
+
+        // should jump to 0x48 to handle timer interrupt
+        cpu.step()
+
+        assertEquals(0x50, cpu.registers.PC)
 
     }
 }

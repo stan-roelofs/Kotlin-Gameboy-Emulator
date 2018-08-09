@@ -1,6 +1,6 @@
 package cpu.instructions.rotates
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
 import getBit

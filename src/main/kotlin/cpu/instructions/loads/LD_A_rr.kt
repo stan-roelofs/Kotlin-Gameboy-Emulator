@@ -1,6 +1,6 @@
 package cpu.instructions.loads
 
-import Mmu
+import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction

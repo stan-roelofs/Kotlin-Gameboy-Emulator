@@ -1,6 +1,6 @@
 package cpu.instructions.jumps
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
 

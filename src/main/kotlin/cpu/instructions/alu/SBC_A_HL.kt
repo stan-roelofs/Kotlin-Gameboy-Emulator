@@ -1,6 +1,6 @@
 package cpu.instructions.alu
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class SBC_A_HL(registers: Registers, mmu: Mmu) : SBC(registers, mmu) {

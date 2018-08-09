@@ -1,6 +1,6 @@
 package cpu.instructions.shifts
 
-import Mmu
+import memory.Mmu
 import cpu.Registers
 
 class SRL_HL(registers: Registers, mmu: Mmu) : SRL(registers, mmu) {

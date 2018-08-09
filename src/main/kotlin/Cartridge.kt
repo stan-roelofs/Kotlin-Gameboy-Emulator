@@ -5,7 +5,7 @@ import java.util.logging.Logger
 
 class Cartridge(file: File) {
     companion object {
-        val logger = Logger.getLogger("Cartridge")!!
+        val logger = Logger.getLogger("Cartridge")!! // TODO: create logger class
     }
 
     private lateinit var rom: IntArray
