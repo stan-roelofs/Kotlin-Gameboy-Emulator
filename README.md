@@ -2,15 +2,10 @@
 
 Gameboy emulator written in Kotlin using TornadoFX for rendering. 
 
-## Currently implemented
-* Cpu (except for interrupts) and most of the instructions, but should still be tested
-* Mmu 
-* Cartridge: reading the header and loading the rom, so far only ROM ONLY cartridges are supported
-
 ## Tests status
 ### Blargg's tests
 - [x] 01 - Special
-- [ ] 02 - Interrupts
+- [x] 02 - Interrupts
 - [x] 03 - op sp, hl
 - [x] 04 - op r, imm
 - [x] 05 - op rp
@@ -22,8 +17,12 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 - [x] 11 - op a,(hl)
 
 ## Roadmap
-- Pass all CPU tests
-- Implement GPU
-- Get Tetris running
-- Controls
-- Sound
+- [x] Pass all CPU tests
+- [ ] Implement GPU
+- [ ] Get Tetris running
+- [ ] Controls
+- [ ] Sound
+
+## Status
+Currently working on cleaning up some of the code, mainly related to the timer and interrupts.
+Next step is to properly implement the GPU.

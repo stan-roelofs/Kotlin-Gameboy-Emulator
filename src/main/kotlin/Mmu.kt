@@ -14,7 +14,7 @@
         reset()
     }
 
-     private val io: IntArray = IntArray(0x80)
+     val io: IntArray = IntArray(0x80)
      private val vram: IntArray = IntArray(0x2000)
      private val wram: IntArray = IntArray(0x2000)
      private val oam: IntArray = IntArray(0xA0)
@@ -27,7 +27,7 @@
 
      fun reset() {
         io.fill(0)
-        io[0x04] = 0xAB
+        //io[0x04] = 0xAB
         io[0x05] = 0x00
         io[0x06] = 0x00
         io[0x07] = 0x00
@@ -129,6 +129,10 @@
                 // ignore write
             }
             in 0xFF00..0xFF7F -> {
+                if (address == 0xFF04) {//todo
+                    io[address - 0xFF00] = 0
+                    return
+                }
                 io[address - 0xFF00] = value and 0xFF
             }
             in 0xFF80..0xFFFE -> {

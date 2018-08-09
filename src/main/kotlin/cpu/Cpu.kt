@@ -21,15 +21,17 @@ import getBit
 import getFirstByte
 import getSecondByte
 import java.util.logging.Logger
+import Timer
 
 class Cpu {
     companion object {
-        val logger = Logger.getLogger("Cpu")
+        val logger = Logger.getLogger("Cpu")!!
     }
 
     val registers = Registers()
     val gpu = Gpu(registers)
     private val mmu = Mmu.instance
+    private val timer = Timer(mmu)
 
     var lastInstruction: Int = 0
 
@@ -126,6 +128,7 @@ class Cpu {
             val cycles = instruction.execute()
             registers.clock += cycles
 
+            timer.tick(cycles)
             gpu.step()
 
             // EI or DI executed, enable/disable interrupts not now but after next instruction
@@ -141,6 +144,10 @@ class Cpu {
                 diExecuted = false
                 registers.IME = false
             }
+        } else {
+            registers.clock += 1
+            timer.tick(1)
+            //gpu.step()
         }
     }
 

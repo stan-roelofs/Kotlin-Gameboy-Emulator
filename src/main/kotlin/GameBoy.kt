@@ -10,7 +10,7 @@ class GameBoy(cart: File) {
 
     val cpu = Cpu()
     val gpu = Gpu(cpu.registers)
-    val cart = Cartridge(cart)
+    private val cart = Cartridge(cart)
     val mmu = Mmu.instance
 
     init {
