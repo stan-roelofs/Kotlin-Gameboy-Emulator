@@ -47,15 +47,16 @@ class Mmu private constructor() : Memory {
     private val oam = Oam()
     private val internalRam = InternalRam()
     private val gpu = Gpu()
-    var io = IO()
+    val io = IO()
 
     var testOutput = false
 
     override fun reset() {
-        io.reset()
-        gpu.reset()
-        internalRam.reset()
+        hram.reset()
         oam.reset()
+        internalRam.reset()
+        gpu.reset()
+        io.reset()
     }
 
     fun tick(cycles: Int) {

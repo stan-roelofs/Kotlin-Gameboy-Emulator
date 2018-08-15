@@ -5,8 +5,10 @@ import javafx.event.EventHandler
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
 import javafx.scene.image.WritableImage
+import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
 import javafx.util.Duration
+import memory.Joypad
 import memory.Mmu
 import tornadofx.*
 import utils.getBit
@@ -35,6 +37,12 @@ class GameBoyView: View() {
     //private val gb = GameBoy(File("E:/Downloads/mooneye-gb_hwtests/acceptance/timer/tim11.gb"))
     private val gb = GameBoy(File("E:/Downloads/Tetris/Tetris.gb"))
     //private val gb = GameBoy(File("E:/Downloads/gb-test-roms-master/cpu_instrs/cpu_instrs.gb"))
+
+    val color0 = Color(224f / 255.0, 248f / 255.0, 208f / 255.0, 1.0)
+    val color1 = Color(136f / 255.0, 192f / 255.0, 112f / 255.0, 1.0)
+    val color2 = Color(52f / 255.0, 104f / 255.0, 86f / 255.0, 1.0)
+    val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
+    val colors = arrayOf(color0, color1, color2, color3)
 
     val tl = Timeline()
     val play = KeyFrame(Duration.millis(17.0),
@@ -146,15 +154,42 @@ class GameBoyView: View() {
 
     init {
         updateRegisters()
+        registerKeyboard()
+    }
+
+    private fun registerKeyboard() {
+        root.setOnKeyPressed { e ->
+            when (e.code) {
+                KeyCode.ENTER -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
+                KeyCode.LEFT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.LEFT)
+                KeyCode.RIGHT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.RIGHT)
+                KeyCode.UP -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.UP)
+                KeyCode.DOWN -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.DOWN)
+                KeyCode.Z -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.A)
+                KeyCode.X -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.B)
+                else -> {}
+            }
+
+            e.consume()
+        }
+
+        root.setOnKeyReleased { e ->
+            when (e.code) {
+                KeyCode.ENTER -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
+                KeyCode.LEFT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.LEFT)
+                KeyCode.RIGHT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.RIGHT)
+                KeyCode.UP -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.UP)
+                KeyCode.DOWN -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.DOWN)
+                KeyCode.Z -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.A)
+                KeyCode.X -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.B)
+                else -> {}
+            }
+
+            e.consume()
+        }
     }
 
     private fun updateVram() {
-        val color0 = Color(224f / 255.0, 248f / 255.0, 208f / 255.0, 1.0)
-        val color1 = Color(136f / 255.0, 192f / 255.0, 112f / 255.0, 1.0)
-        val color2 = Color(52f / 255.0, 104f / 255.0, 86f / 255.0, 1.0)
-        val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
-        val colors = arrayOf(color0, color1, color2, color3)
-
         val pixelWriter = vram.pixelWriter
         for (tiley in 0 until 24) {
             for (tilex in 0 until 16) {
@@ -197,7 +232,7 @@ class GameBoyView: View() {
 
         for (y in 0 until 256) {
             for (x in 0 until 256) {
-                pixelWriter.setColor(x, y, gb.mmu.io.lcd.screen[x][y])
+                pixelWriter.setColor(x, y, colors[gb.mmu.io.lcd.screen[x][y]])
             }
         }
     }

@@ -17,7 +17,10 @@ class Cartridge(file: File) : Memory {
     }
 
     override fun reset() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        rom.fill(0)
+        ram.fill(0)
+        isSgb = false
+        isGbc = false
     }
 
     private fun loadRom(file: File) {
@@ -27,7 +30,6 @@ class Cartridge(file: File) : Memory {
             val data = Files.readAllBytes(file.toPath())
             loadHeader(data)
 
-            this.rom = IntArray(data.size)
             for (i in 0 until data.size) {
                 rom[i] = (data[i].toInt()) and 0xFF
             }

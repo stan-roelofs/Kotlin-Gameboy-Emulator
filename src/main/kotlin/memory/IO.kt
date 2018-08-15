@@ -1,10 +1,15 @@
 package memory
 
+import utils.setSecondByte
+
 class IO : Memory {
 
+    // These are public such that GUI can read the LCD data to render,
+    // and can send key presses/releases to the Joypad
     val lcd = Lcd()
-    private val timer = Timer()
+    val joypad = Joypad()
 
+    private val timer = Timer()
     private val io = IntArray(0xFF)
 
     override fun reset() {
@@ -12,6 +17,7 @@ class IO : Memory {
 
         timer.reset()
         lcd.reset()
+        joypad.reset()
 
         io[0x10] = 0x80
         io[0x11] = 0xBF
@@ -42,7 +48,7 @@ class IO : Memory {
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            0xFF00 -> return 0xF // TODO: actually implement joypad
+            Mmu.P1 -> joypad.readByte(address)
             Mmu.DIV, Mmu.TIMA, Mmu.TMA, Mmu.TAC -> timer.readByte(address)
             Mmu.LCDC, Mmu.LY, Mmu.LYC, Mmu.STAT, Mmu.SCY, Mmu.SCX, Mmu.WY, Mmu.WX, Mmu.BGP, Mmu.OBP0, Mmu.OBP1 -> lcd.readByte(address)
             else -> io[address - 0xFF00]
@@ -53,10 +59,22 @@ class IO : Memory {
         val newVal = value and 0xFF
 
         when(address) {
+            0xFF46 -> DmaTransfer(newVal)
+            Mmu.P1 -> joypad.writeByte(address, newVal)
             Mmu.DIV, Mmu.TIMA, Mmu.TMA, Mmu.TAC -> timer.writeByte(address, newVal)
             Mmu.LCDC, Mmu.LY, Mmu.LYC, Mmu.STAT, Mmu.SCY, Mmu.SCX, Mmu.WY, Mmu.WX, Mmu.BGP, Mmu.OBP0, Mmu.OBP1 -> lcd.writeByte(address, newVal)
             else -> io[address - 0xFF00] = newVal
         }
     }
 
+    // TODO: implement this properly
+    private fun DmaTransfer(start: Int) {
+        val mmu = Mmu.instance
+        var source = 0
+        source = setSecondByte(source, start)
+
+        for (i in 0 until 160) {
+            mmu.writeByte(0xFE00 + i, mmu.readByte(source + i))
+        }
+    }
 }

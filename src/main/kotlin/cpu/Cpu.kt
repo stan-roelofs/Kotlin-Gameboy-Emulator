@@ -142,6 +142,11 @@ class Cpu {
         }
     }
 
+    /**
+     * Returns the instruction corresponding to [opcode]
+     * @param opcode The opcode
+     * @return an instruction that implements the opcode
+     */
     private fun getInstruction(opcode: Int): Instruction {
         return when(opcode) {
             // 8 bit loads
@@ -577,6 +582,11 @@ class Cpu {
         }
     }
 
+    /**
+     * Returns the instruction corresponding to CB followed by [opcode]
+     * @param opcode The opcode
+     * @return an instruction that implements the opcode
+     */
     private fun getExtendedInstruction(): Instruction {
         val opcode = mmu.readByte(registers.PC)
         registers.incPC()
