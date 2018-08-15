@@ -19,12 +19,12 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 ## Roadmap
 - [x] Pass all CPU tests
 - [ ] Implement GPU
-- [ ] Get Tetris running
-- [ ] Controls
+- [x] Get Tetris running
+- [x] Controls
 - [ ] Sound
 - [ ] Fix timings
 
 ## Status
-Tetris now boots to the menu. Next step is to implement sprites. 
+Tetris is playable
 
 ![alt text](https://media.giphy.com/media/3KZjq4AlYSIkL0hWIP/giphy.gif)
