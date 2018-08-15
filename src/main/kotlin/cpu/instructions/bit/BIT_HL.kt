@@ -1,8 +1,8 @@
 package cpu.instructions.bit
 
-import memory.Mmu
 import cpu.Registers
-import getBit
+import memory.Mmu
+import utils.getBit
 
 class BIT_HL(registers: Registers, mmu: Mmu, private val index: Int) : BIT(registers, mmu) {
 

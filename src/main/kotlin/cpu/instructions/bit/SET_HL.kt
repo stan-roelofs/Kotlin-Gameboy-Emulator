@@ -1,9 +1,9 @@
 package cpu.instructions.bit
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
-import setBit
+import memory.Mmu
+import utils.setBit
 
 class SET_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instruction(registers, mmu) {
 

@@ -1,6 +1,7 @@
 package memory
 
-import setSecondByte
+import utils.setBit
+import utils.setSecondByte
 
 interface Memory {
 
@@ -42,5 +43,11 @@ interface Memory {
     fun writeWord(address: Int, value: Int) {
         writeByte(address, value and 0xFF)
         writeByte(address + 1, value shr 8)
+    }
+
+    fun requestInterrupt(pos: Int) {
+        var IF = Mmu.instance.readByte(Mmu.IF)
+        IF = setBit(IF, pos)
+        Mmu.instance.writeByte(Mmu.IF, IF)
     }
 }

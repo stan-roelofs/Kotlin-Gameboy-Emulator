@@ -1,10 +1,10 @@
 package cpu.instructions.bit
 
-import memory.Mmu
-import clearBit
 import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.clearBit
 
 class RES_r(registers: Registers, mmu: Mmu, private val register: Int, private val index: Int) : Instruction(registers, mmu) {
 

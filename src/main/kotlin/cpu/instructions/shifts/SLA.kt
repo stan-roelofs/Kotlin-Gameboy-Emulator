@@ -1,9 +1,9 @@
 package cpu.instructions.shifts
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
-import getBit
+import memory.Mmu
+import utils.getBit
 
 abstract class SLA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     protected fun sla(value: Int): Int {

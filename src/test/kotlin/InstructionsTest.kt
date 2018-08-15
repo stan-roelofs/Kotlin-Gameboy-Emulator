@@ -2,6 +2,7 @@ import cpu.Cpu
 import memory.Mmu
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import utils.getBit
 
 internal class InstructionsTest {
 

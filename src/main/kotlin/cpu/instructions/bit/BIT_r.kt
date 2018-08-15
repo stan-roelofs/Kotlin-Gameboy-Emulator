@@ -1,9 +1,9 @@
 package cpu.instructions.bit
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
-import getBit
+import memory.Mmu
+import utils.getBit
 
 class BIT_r(registers: Registers, mmu: Mmu, private val register: Int, private val index: Int) : BIT(registers, mmu) {
 

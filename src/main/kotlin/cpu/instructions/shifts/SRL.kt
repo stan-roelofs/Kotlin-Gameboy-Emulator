@@ -1,9 +1,9 @@
 package cpu.instructions.shifts
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
-import getBit
+import memory.Mmu
+import utils.getBit
 
 abstract class SRL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     protected fun srl(value: Int): Int {

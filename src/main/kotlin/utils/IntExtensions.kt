@@ -1,3 +1,5 @@
+package utils
+
 fun Int.getFirstByte(): Int {
     return (this and 0xff)
 }

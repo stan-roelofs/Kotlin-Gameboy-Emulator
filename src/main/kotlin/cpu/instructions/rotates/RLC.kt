@@ -1,9 +1,9 @@
 package cpu.instructions.rotates
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
-import getBit
+import memory.Mmu
+import utils.getBit
 
 abstract class RLC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     protected fun rlc(value: Int): Int {

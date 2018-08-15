@@ -1,10 +1,6 @@
 package memory
 
-import Cartridge
-import setSecondByte
-
 class Mmu private constructor() : Memory {
-
 
     private object Holder {
         val INSTANCE = Mmu()
@@ -47,71 +43,37 @@ class Mmu private constructor() : Memory {
         reset()
     }
 
-    val io: IntArray = IntArray(0x80)
-    private val vram: IntArray = IntArray(0x2000)
-    private val wram: IntArray = IntArray(0x2000)
-    private val oam: IntArray = IntArray(0xA0)
-    private val hram: IntArray = IntArray(0x7F)
-    //private val wramx: IntArray
-
-    private var IE: Int = 0x00
-
-    private val timer = Timer()
-    private val lcd = Lcd()
+    private val hram = HRam()
+    private val oam = Oam()
+    private val internalRam = InternalRam()
+    private val gpu = Gpu()
+    var io = IO()
 
     var testOutput = false
 
     override fun reset() {
-        io.fill(0)
-        //io[0x04] = 0xAB
-        timer.reset()
-        lcd.reset()
-
-        io[0x10] = 0x80
-        io[0x11] = 0xBF
-        io[0x12] = 0xF3
-        io[0x14] = 0xBF
-        io[0x16] = 0x3F
-        io[0x17] = 0x00
-        io[0x19] = 0xBF
-        io[0x1A] = 0x7F
-        io[0x1B] = 0xFF
-        io[0x1C] = 0x9F
-        io[0x1E] = 0xBF
-        io[0x20] = 0xFF
-        io[0x21] = 0x00
-        io[0x22] = 0x00
-        io[0x23] = 0xBF
-        io[0x24] = 0x77
-        io[0x25] = 0xF3
-        io[0x26] = if (cartridge!!.isSgb) 0xF0 else 0xF1
-
-        IE = 0x00
+        io.reset()
+        gpu.reset()
+        internalRam.reset()
+        oam.reset()
     }
 
     fun tick(cycles: Int) {
-        timer.tick(cycles)
+        io.tick(cycles)
     }
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            in 0x0000 until 0x8000 -> return cartridge!!.readRom(address)
-            in 0x8000 until 0xA000 -> vram[address - 0x8000]
-            in 0xA000 until 0xC000 -> cartridge!!.readRam(address)
-            in 0xC000 until 0xE000 -> wram[address - 0xC000]
-            in 0xE000 until 0xFE00 -> wram[address - 0xE000]
-            in 0xFE00 until 0xFEA0 -> oam[address - 0xFE00]
-            in 0xFEA0 until 0xFF00 -> return 0
-            in 0xFF00 until 0xFF4C -> {
-                when(address) {
-                    DIV, TIMA, TMA, TAC -> timer.readByte(address)
-                    LCDC, LY, LYC, STAT, SCY, SCX, WY, WX, BGP, OBP0, OBP1 -> lcd.readByte(address)
-                    else -> io[address - 0xFF00]
-                }
-            }
-            in 0xFF4C until 0xFF80 -> return 0
-            in 0xFF80 until 0xFFFF -> hram[address - 0xFF80]
-            0xFFFF -> IE
+            in 0x0000 until 0x8000 -> cartridge!!.readByte(address)
+            in 0x8000 until 0xA000 -> gpu.readByte(address)
+            in 0xA000 until 0xC000 -> cartridge!!.readByte(address)
+            in 0xC000 until 0xE000 -> internalRam.readByte(address)
+            in 0xE000 until 0xFE00 -> internalRam.readByte(address)
+            in 0xFE00 until 0xFEA0 -> oam.readByte(address)
+            in 0xFEA0 until 0xFF00 -> return 0xFF
+            in 0xFF00 until 0xFF4C -> io.readByte(address)
+            in 0xFF4C until 0xFF80 -> return 0xFF
+            in 0xFF80   ..  0xFFFF -> hram.readByte(address)
             else -> throw Exception("Error reading byte at address: ${Integer.toHexString(address)}")
         }
     }
@@ -123,23 +85,16 @@ class Mmu private constructor() : Memory {
 
         val newVal = value and 0xFF
         when (address) {
-            in 0x0000 until 0x8000 -> return //TODO write cartridge
-            in 0x8000 until 0xA000 -> vram[address - 0x8000] = newVal
-            in 0xA000 until 0xC000 -> cartridge!!.writeRam(address, newVal)
-            in 0xC000 until 0xE000 -> wram[address - 0xC000] = newVal
-            in 0xE000 until 0xFE00 -> wram[address - 0xE000] = newVal
-            in 0xFE00 until 0xFEA0 -> oam[address - 0xFE00] = newVal
+            in 0x0000 until 0x8000 -> cartridge!!.writeByte(address, newVal)
+            in 0x8000 until 0xA000 -> gpu.writeByte(address, newVal)
+            in 0xA000 until 0xC000 -> cartridge!!.writeByte(address, newVal)
+            in 0xC000 until 0xE000 -> internalRam.writeByte(address, newVal)
+            in 0xE000 until 0xFE00 -> internalRam.writeByte(address, newVal)
+            in 0xFE00 until 0xFEA0 -> oam.writeByte(address, newVal)
             in 0xFEA0 until 0xFF00 -> return
-            in 0xFF00 until 0xFF4C -> {
-                when(address) {
-                    DIV, TIMA, TMA, TAC -> timer.writeByte(address, newVal)
-                    LCDC, LY, LYC, STAT, SCY, SCX, WY, WX, BGP, OBP0, OBP1 -> lcd.writeByte(address, newVal)
-                    else -> io[address - 0xFF00] = newVal
-                }
-            }
+            in 0xFF00 until 0xFF4C -> io.writeByte(address, newVal)
             in 0xFF4C until 0xFF80 -> return
-            in 0xFF80 until 0xFFFF -> hram[address - 0xFF80] = newVal
-            0xFFFF -> IE = newVal
+            in 0xFF80   ..  0xFFFF -> hram.writeByte(address, newVal)
             else -> throw Exception("Error writing byte at address: ${Integer.toHexString(address)}")
         }
     }

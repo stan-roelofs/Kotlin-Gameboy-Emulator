@@ -1,9 +1,9 @@
 package cpu.instructions.bit
 
-import memory.Mmu
-import clearBit
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.clearBit
 
 class RES_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instruction(registers, mmu) {
 

@@ -1,10 +1,10 @@
 package cpu.instructions
 
-import memory.Mmu
 import cpu.Registers
-import getFirstByte
-import getSecondByte
-import setSecondByte
+import memory.Mmu
+import utils.getFirstByte
+import utils.getSecondByte
+import utils.setSecondByte
 
 abstract class Instruction(val registers: Registers, val mmu: Mmu) {
 

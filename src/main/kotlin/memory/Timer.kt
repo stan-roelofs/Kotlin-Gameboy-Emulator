@@ -1,7 +1,6 @@
 package memory
 
-import getBit
-import setBit
+import utils.getBit
 
 class Timer : Memory {
     private val divCycles = 256
@@ -52,9 +51,7 @@ class Timer : Memory {
 
                 if (TIMA > 0xFF) {
                     TIMA = TMA
-                    var IF = Mmu.instance.readByte(0xFF0F)
-                    IF = setBit(IF, 2)
-                    Mmu.instance.writeByte(0xFF0F, IF)
+                    requestInterrupt(2)
                 }
             }
         }
@@ -71,14 +68,16 @@ class Timer : Memory {
     }
 
     override fun writeByte(address: Int, value: Int) {
+        val newVal = value and 0xFF
+
         when(address) {
             Mmu.DIV -> this.DIV = 0
-            Mmu.TIMA -> return //TODO should this return or actually write ?
-            Mmu.TMA -> return
+            Mmu.TIMA -> this.TIMA = newVal
+            Mmu.TMA -> this.TMA = newVal
             Mmu.TAC -> {
-                this.TAC = value
+                this.TAC = newVal
 
-                val freq = value and 0b11
+                val freq = newVal and 0b11
                 when (freq) {
                     0b00 -> timerCycles = clock0Cycles
                     0b01 -> timerCycles = clock1Cycles

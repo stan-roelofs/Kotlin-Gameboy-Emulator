@@ -1,8 +1,5 @@
 package cpu
 
-import Gpu
-import memory.Mmu
-import clearBit
 import cpu.instructions.Instruction
 import cpu.instructions.alu.*
 import cpu.instructions.bit.*
@@ -17,11 +14,12 @@ import cpu.instructions.returns.RETI
 import cpu.instructions.returns.RET_cc
 import cpu.instructions.rotates.*
 import cpu.instructions.shifts.*
-import getBit
-import getFirstByte
-import getSecondByte
+import memory.Mmu
+import utils.clearBit
+import utils.getBit
+import utils.getFirstByte
+import utils.getSecondByte
 import java.util.logging.Logger
-import memory.Timer
 
 class Cpu {
     companion object {
@@ -29,7 +27,6 @@ class Cpu {
     }
 
     val registers = Registers()
-    val gpu = Gpu(registers)
     private val mmu = Mmu.instance
 
     var lastInstruction: Int = 0
@@ -38,29 +35,26 @@ class Cpu {
     var diExecuted = false
 
     fun reset() {
-        val a = if (mmu.cartridge!!.isGbc) 0x11 else 0x01
-        registers.A = a
-        registers.F = 0xB0
-        registers.setBC(0x0013)
-        registers.setDE(0x00D8)
-        registers.setHL(0x014D)
-        registers.SP = 0xFFFE
-        registers.PC = 0x100
-        registers.IME = true
-        registers.halt = false
-        registers.stop = false
-        registers.haltBug = false
-        registers.clock = 0
-        gpu.reset()
+        registers.reset()
     }
 
     fun step() {
         val c = registers.clock
 
         // Interrupt handling
-        var IF = mmu.readByte(0xFF0F)
-        val IE = mmu.readByte(0xFFFF)
+        var IF = mmu.readByte(Mmu.IF)
+        val IE = mmu.readByte(Mmu.IE)
 
+        var address = 0
+        for (i in 0..4) {
+            if (IE.getBit(i) && IF.getBit(i)) {
+                IF = clearBit(IF, i)
+                address = 0x40 + (i * 8)
+                break
+            }
+        }
+
+        /*
         var address = 0
         when {
             IF.getBit(0) && IE.getBit(0) -> {
@@ -83,7 +77,7 @@ class Cpu {
                 IF = clearBit(IF, 4)
                 address = 0x60
             }
-        }
+        }*/
 
         // Interrupt Service Routine
         if (address != 0) {
@@ -93,7 +87,7 @@ class Cpu {
             }
 
             if (registers.IME) {
-                mmu.writeByte(0xFF0F, IF)
+                mmu.writeByte(Mmu.IF, IF)
                 registers.IME = false
 
                 // Execute two nops
@@ -122,13 +116,12 @@ class Cpu {
             }
 
             val instruction = getInstruction(opcode)
-
             lastInstruction = opcode
+
             val cycles = instruction.execute()
             registers.clock += cycles
 
-            mmu.tick(cycles)
-            gpu.step()
+            mmu.tick(registers.clock - c)
 
             // EI or DI executed, enable/disable interrupts not now but after next instruction
             if (opcode == 0xF3 || opcode == 0xFB) {
@@ -144,9 +137,8 @@ class Cpu {
                 registers.IME = false
             }
         } else {
-            registers.clock += 1
-            mmu.tick(1)
-            //gpu.step()
+            registers.clock += 4
+            mmu.tick(4)
         }
     }
 

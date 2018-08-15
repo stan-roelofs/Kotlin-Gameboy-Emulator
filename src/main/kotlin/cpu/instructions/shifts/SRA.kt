@@ -1,10 +1,10 @@
 package cpu.instructions.shifts
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
-import getBit
-import setBit
+import memory.Mmu
+import utils.getBit
+import utils.setBit
 
 abstract class SRA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     protected fun sra(value: Int): Int {

@@ -1,10 +1,10 @@
 package cpu.instructions.rotates
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
-import getBit
-import setBit
+import memory.Mmu
+import utils.getBit
+import utils.setBit
 
 abstract class RR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     protected fun rr(value: Int): Int {

@@ -1,36 +1,30 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction
-import setSecondByte
+import memory.Mmu
 
 class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 
     override fun execute(): Int {
 
-        var value: Int
-
-        when (register) {
+        val value = when (register) {
             RegisterID.AF.ordinal -> {
-                value = registers.F
-                value = setSecondByte(value, registers.A)
+                registers.getAF()
             }
             RegisterID.BC.ordinal -> {
-                value = registers.C
-                value = setSecondByte(value, registers.B)
+                registers.getBC()
             }
             RegisterID.DE.ordinal -> {
-                value = registers.E
-                value = setSecondByte(value, registers.D)
+                registers.getDE()
             }
             RegisterID.HL.ordinal -> {
-                value = registers.L
-                value = setSecondByte(value, registers.H)
+                registers.getHL()
             }
-            else -> throw Exception("Invalid register: " + register)
+            else -> throw Exception("Invalid register: $register")
         }
+
         pushWordToStack(value)
 
         return 16

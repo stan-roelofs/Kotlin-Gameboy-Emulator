@@ -1,8 +1,15 @@
+import javafx.animation.Animation
+import javafx.animation.KeyFrame
+import javafx.animation.Timeline
+import javafx.event.EventHandler
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
 import javafx.scene.image.WritableImage
 import javafx.scene.paint.Color
+import javafx.util.Duration
+import memory.Mmu
 import tornadofx.*
+import utils.getBit
 import java.io.File
 
 class Gui : App(GameBoyView::class)
@@ -20,16 +27,40 @@ class GameBoyView: View() {
     private var regSP: Label by singleAssign()
     private var regPC: Label by singleAssign()
 
-    private var lcd = WritableImage(166, 144)
-    private val colors = arrayOf(Color.rgb(255, 255, 255), Color.rgb(170, 170, 170), Color.rgb(85, 85, 85), Color.rgb(0, 0, 0))
+    private var lcd = WritableImage(256, 256)
+    private var vram = WritableImage(128, 196)
 
     private var instructions: TextArea by singleAssign()
 
-    private val gb = GameBoy(File("E:/Downloads/gb-test-roms-master/cpu_instrs/individual/01-special.gb"))
+    //private val gb = GameBoy(File("E:/Downloads/mooneye-gb_hwtests/acceptance/timer/tim11.gb"))
+    private val gb = GameBoy(File("E:/Downloads/Tetris/Tetris.gb"))
+    //private val gb = GameBoy(File("E:/Downloads/gb-test-roms-master/cpu_instrs/cpu_instrs.gb"))
+
+    val tl = Timeline()
+    val play = KeyFrame(Duration.millis(17.0),
+            EventHandler {
+                while (!gb.mmu.io.lcd.frameDone) {
+                    gb.step()
+                }
+                updateRegisters()
+                updateInstructions()
+                updateScreen()
+                updateVram()
+
+                gb.mmu.io.lcd.frameDone = false
+            })
 
     override val root = gridpane {
         row {
             imageview(lcd) {
+                useMaxWidth = true
+                gridpaneConstraints {
+                    columnSpan = 4
+                }
+            }
+        }
+        row {
+            imageview(vram) {
                 useMaxWidth = true
                 gridpaneConstraints {
                     columnSpan = 4
@@ -68,43 +99,36 @@ class GameBoyView: View() {
             regPC = label()
         }
         row {
-            button("Next") {
+            button("Start") {
                 action {
-                    var i = 0
-                    val f = File("C:/Users/Stan/Desktop/lol.txt").bufferedWriter()
-                    //while (i < 250000) {
-/*
-                        var test = String.format("%04X", gb.cpu.registers.PC) + ":"
-                        test += "   A:" + String.format("%02x", gb.cpu.registers.A)
-                        test += "    B:" + String.format("%02x", gb.cpu.registers.B)
-                        test += "    C:" + String.format("%02x", gb.cpu.registers.C)
-                        test += "    D:" + String.format("%02x", gb.cpu.registers.D)
-                        test += "    E:" + String.format("%02x", gb.cpu.registers.E)
-                        test += "    F:" + String.format("%02x", gb.cpu.registers.F)
-                        test += "    H:" + String.format("%02x", gb.cpu.registers.H)
-                        test += "    L:" + String.format("%02x", gb.cpu.registers.L)
-                        test += "    SP:" + String.format("%02x", gb.cpu.registers.SP)
-
-                        f.write(test)
-                        f.newLine()
-*/
-                        gb.step()
-                        i++
-                    //}
-                    f.close()
-
+                    tl.keyFrames.remove(0, tl.keyFrames.size)
+                    tl.cycleCount = Animation.INDEFINITE
+                    tl.keyFrames.add(play)
+                    tl.play()
                 }
             }
-            button("Frame") {
+            button("Stop") {
                 action {
-                    for (i in 1..100) {
-                        while (!gb.gpu.frameDone) {
-                            gb.step()
-                        }
+                    tl.stop()
+                }
+            }
+            button("Step") {
+                action {
+                    gb.step()
+                    updateRegisters()
+                    updateInstructions()
+                    updateScreen()
+                    updateVram()
+                }
+            }
+            button("Step 10") {
+                action {
+                    for (i in 1..10) {
+                        gb.step()
                         updateRegisters()
                         updateInstructions()
                         updateScreen()
-                        gb.gpu.frameDone = false
+                        updateVram()
                     }
                 }
             }
@@ -122,6 +146,33 @@ class GameBoyView: View() {
 
     init {
         updateRegisters()
+    }
+
+    private fun updateVram() {
+        val color0 = Color(224f / 255.0, 248f / 255.0, 208f / 255.0, 1.0)
+        val color1 = Color(136f / 255.0, 192f / 255.0, 112f / 255.0, 1.0)
+        val color2 = Color(52f / 255.0, 104f / 255.0, 86f / 255.0, 1.0)
+        val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
+        val colors = arrayOf(color0, color1, color2, color3)
+
+        val pixelWriter = vram.pixelWriter
+        for (tiley in 0 until 24) {
+            for (tilex in 0 until 16) {
+                val addressStart = 0x8000 + tilex * 16 + tiley * 256
+
+                for (y in 0 until 8) {
+                    val byte1 = Mmu.instance.readByte(addressStart + y * 2)
+                    val byte2 = Mmu.instance.readByte(addressStart + y * 2 + 1)
+
+                    for (x in 0 until 8) {
+                        val LSB = if (byte1.getBit(x)) 1 else 0
+                        val MSB = if (byte2.getBit(x)) 2 else 0
+                        val color = LSB + MSB
+                        pixelWriter.setColor(tilex * 8 + (7 - x), tiley * 8 + y, colors[color])
+                    }
+                }
+            }
+        }
     }
 
     private fun updateRegisters() {
@@ -144,12 +195,9 @@ class GameBoyView: View() {
     private fun updateScreen() {
         val pixelWriter = lcd.pixelWriter
 
-        for (y in 0 until 140) {
-            for (x in 0 until 160) {
-                pixelWriter.setColor(x, y, colors[gb.gpu.screen[y][x]])
-                pixelWriter.setColor(x, y + 1, colors[gb.gpu.screen[y][x]])
-                pixelWriter.setColor(x + 1, y, colors[gb.gpu.screen[y][x]])
-                pixelWriter.setColor(x + 1, y + 1, colors[gb.gpu.screen[y][x]])
+        for (y in 0 until 256) {
+            for (x in 0 until 256) {
+                pixelWriter.setColor(x, y, gb.mmu.io.lcd.screen[x][y])
             }
         }
     }

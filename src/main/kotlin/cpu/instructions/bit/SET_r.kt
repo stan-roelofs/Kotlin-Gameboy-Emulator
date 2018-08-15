@@ -1,10 +1,10 @@
 package cpu.instructions.bit
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction
-import setBit
+import memory.Mmu
+import utils.setBit
 
 class SET_r(registers: Registers, mmu: Mmu, private val register: Int, private val index: Int) : Instruction(registers, mmu) {
 

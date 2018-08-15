@@ -1,5 +1,9 @@
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import utils.clearBit
+import utils.getBit
+import utils.getFirstByte
+import utils.getSecondByte
 
 internal class IntExtensionsTest {
 
@@ -30,9 +34,9 @@ internal class IntExtensionsTest {
     fun setBit() {
         var a = 0b0
         assertEquals(0, a)
-        a = setBit(a, 0, true)
+        a = utils.setBit(a, 0, true)
         assertEquals(1, a)
-        a = setBit(a, 2, true)
+        a = utils.setBit(a, 2, true)
         assertEquals(5, a)
         a = clearBit(a, 2)
         assertEquals(1, a)
