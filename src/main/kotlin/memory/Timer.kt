@@ -62,7 +62,7 @@ class Timer : Memory {
             Mmu.DIV -> this.DIV
             Mmu.TIMA -> this.TIMA
             Mmu.TMA -> this.TMA
-            Mmu.TAC -> this.TAC
+            Mmu.TAC -> this.TAC or 0b11111000
             else -> throw IllegalArgumentException("Address $address does not belong to Timer")
         }
     }

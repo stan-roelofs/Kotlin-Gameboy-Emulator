@@ -39,8 +39,6 @@ class Lcd : Memory {
         if (!LcdEnabled()) {
             cycleCounter = 0
             LY = 0
-            STAT = STAT and 0x252
-            STAT = setBit(STAT, 0)
             return
         }
 
@@ -58,14 +56,14 @@ class Lcd : Memory {
                         setMode(Mode.VBLANK)
 
                         if (STAT.getBit(4)) {
-                          //  requestInterrupt(1)
+                            requestInterrupt(1)
                         }
 
                     } else {
                         setMode(Mode.OAM_SEARCH)
 
                         if (STAT.getBit(5)) {
-                           // requestInterrupt(1)
+                            requestInterrupt(1)
                         }
                     }
                 }
@@ -84,7 +82,7 @@ class Lcd : Memory {
                         setMode(Mode.OAM_SEARCH)
 
                         if (STAT.getBit(5)) {
-                           // requestInterrupt(1)
+                            requestInterrupt(1)
                         }
                     }
                 }
@@ -101,7 +99,7 @@ class Lcd : Memory {
                     setMode(Mode.HBLANK)
 
                     if (STAT.getBit(3)) {
-                       // requestInterrupt(1)
+                        requestInterrupt(1)
                     }
 
                     renderScanline()
@@ -112,7 +110,7 @@ class Lcd : Memory {
         STAT = setBit(STAT, 2, LY == LYC)
 
         if (STAT.getBit(6) && STAT.getBit(2)) {
-            //requestInterrupt(1)
+            requestInterrupt(1)
         }
     }
 
@@ -133,7 +131,13 @@ class Lcd : Memory {
                 }
             }
             Mmu.LYC -> this.LYC
-            Mmu.STAT -> this.STAT
+            Mmu.STAT -> {
+                if (LCDC.getBit(7)) {
+                    this.STAT or 0b10000000 // Bit 7 is always 1
+                } else {
+                    this.STAT and 0b11111100
+                }
+            }
             Mmu.SCY -> this.SCY
             Mmu.SCX -> this.SCX
             Mmu.WY -> this.WY
@@ -164,10 +168,17 @@ class Lcd : Memory {
     }
 
     private fun renderScanline() {
-        // TODO: if screen on etc
-        renderBackground()
-        //renderWindow() //TODO
-        renderSprites()
+        if (LcdEnabled()) {
+            renderBackground()
+            //renderWindow() //TODO
+            renderSprites()
+        } else {
+            for (i in 0..255) {
+                for (j in 0..255) {
+                    screen[i][j] = 0
+                }
+            }
+        }
     }
 
     private fun renderBackground() {

@@ -25,6 +25,6 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 - [ ] Fix timings
 
 ## Status
-Tetris is playable
+GPU almost implemented, still have to implement window and finish sprites. Tetris is playable.
 
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
