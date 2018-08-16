@@ -16,7 +16,7 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 - [x] 10 - bit ops
 - [x] 11 - op a,(hl)
 
-## Roadmap
+## Todo
 - [x] Pass all CPU tests
 - [ ] Implement GPU
 - [x] Get Tetris running
