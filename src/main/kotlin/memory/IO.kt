@@ -4,7 +4,7 @@ import utils.setSecondByte
 
 class IO : Memory {
 
-    // These are public such that GUI can read the LCD data to render,
+    // These are public such that gui can read the LCD data to render,
     // and can send key presses/releases to the Joypad
     val lcd = Lcd()
     val joypad = Joypad()
