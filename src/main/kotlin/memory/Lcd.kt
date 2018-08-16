@@ -6,7 +6,6 @@ import utils.setBit
 class Lcd : Memory {
 
     var screen = Array(256) {IntArray(256)}
-    var frameDone = false
 
     private var LCDC = 0
     private var LY = 0
@@ -56,8 +55,6 @@ class Lcd : Memory {
                     LY++
 
                     if (LY == 144) {
-                        frameDone = true
-
                         setMode(Mode.VBLANK)
 
                         if (STAT.getBit(4)) {
@@ -188,14 +185,13 @@ class Lcd : Memory {
 
         // One line has 32 tiles
         for (i in lineAddress until lineAddress + 32) {
-            // If tiles overlap with sprites, indexes are unsigned, otherwise signed
-            val tileId = mmu.readByte(i)
-            var tileStart = tilesAddress + (tileId * 16)
-
-            // If tilesAddress equals 0x8800, tileIds are signed. Therefore subtract 128 to obtain the signed value.
-            if (tilesAddress == 0x8800) {
-                tileStart -= 128 * 16
+            val tileId = if (tilesAddress == 0x8800) {
+                mmu.readByte(i).toByte().toInt() + 128
+            } else {
+                mmu.readByte(i)
             }
+
+            val tileStart = tilesAddress + (tileId * 16)
 
             val lineOffset = (currentLine % 8) * 2
 
