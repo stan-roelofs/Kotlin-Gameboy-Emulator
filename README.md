@@ -27,4 +27,4 @@ Gameboy emulator written in Kotlin using TornadoFX for rendering.
 ## Status
 Tetris is playable
 
-![alt text](https://media.giphy.com/media/3KZjq4AlYSIkL0hWIP/giphy.gif)
+![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
