@@ -23,7 +23,7 @@ dependencies {
     // Kotlin
     compile "org.jetbrains.kotlin:kotlin-stdlib"
 
-    // TornadoFX for GUI
+    // TornadoFX for gui
     compile 'no.tornado:tornadofx:1.7.16'
 
     // Can remove this later
