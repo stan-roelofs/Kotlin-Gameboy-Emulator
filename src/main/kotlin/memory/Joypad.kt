@@ -2,28 +2,29 @@ package memory
 
 import utils.clearBit
 import utils.getBit
+import utils.toHexString
 import java.util.*
 
 class Joypad : Memory {
 
-    private var P1 = 0
+    private var P1 = 0b11001111
     private val pressedKeys = EnumSet.noneOf(JoypadKey::class.java)!!
 
     override fun reset() {
-        P1 = 0
+        P1 = 0b11001111
         pressedKeys.clear()
     }
 
     override fun readByte(address: Int): Int {
         if (address != Mmu.P1) {
-            throw IllegalArgumentException("Address $address does not belong to Joypad")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Joypad")
         }
         return this.P1
     }
 
     override fun writeByte(address: Int, value: Int) {
         if (address != Mmu.P1) {
-            throw IllegalArgumentException("Address $address does not belong to Joypad")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Joypad")
         }
         this.P1 = value and 0xFF
         updateData()

@@ -2,6 +2,7 @@ package memory
 
 import utils.getBit
 import utils.setBit
+import utils.toHexString
 
 class Lcd : Memory {
 
@@ -145,7 +146,7 @@ class Lcd : Memory {
             Mmu.BGP -> this.BGP
             Mmu.OBP0 -> this.OBP0
             Mmu.OBP1 -> this.OBP1
-            else -> throw IllegalArgumentException("Address $address does not belong to Lcd")
+            else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Lcd")
         }
     }
 
@@ -163,14 +164,14 @@ class Lcd : Memory {
             Mmu.BGP -> this.BGP = newVal
             Mmu.OBP0 -> this.OBP0 = newVal
             Mmu.OBP1 -> this.OBP1 = newVal
-            else -> throw IllegalArgumentException("Address $address does not belong to Lcd")
+            else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Lcd")
         }
     }
 
     private fun renderScanline() {
         if (LcdEnabled()) {
             renderBackground()
-            //renderWindow() //TODO
+           // renderWindow()
             renderSprites()
         } else {
             for (i in 0..255) {
@@ -184,37 +185,68 @@ class Lcd : Memory {
     private fun renderBackground() {
         val mmu = Mmu.instance
 
-        // Read location of tile map from LCDC
-        val backgroundMap = if (mmu.readByte(Mmu.LCDC).getBit(3)) 0x9C00 else 0x9800
+        val bgWindowDisplay = mmu.readByte(Mmu.LCDC).getBit(0)
+        if (bgWindowDisplay) {
+            // Read location of tile map from LCDC
+            val backgroundMap = if (mmu.readByte(Mmu.LCDC).getBit(3)) 0x9C00 else 0x9800
 
-        // Read location of tiles from LCDC
-        val tilesAddress = if (mmu.readByte(Mmu.LCDC).getBit(4)) 0x8000 else 0x8800
+            // Read location of tiles from LCDC
+            val tilesAddress = if (mmu.readByte(Mmu.LCDC).getBit(4)) 0x8000 else 0x8800
 
-        // Calculate address start which contains the tiles of the current line
-        val currentLine = mmu.readByte(Mmu.LY)
-        val lineAddress = backgroundMap + (currentLine / 8) * 32
+            // Calculate address start which contains the tiles of the current line
+            val currentLine = mmu.readByte(Mmu.LY)
+            val lineAddress = backgroundMap + (currentLine / 8) * 32
 
-        // One line has 32 tiles
-        for (i in lineAddress until lineAddress + 32) {
-            val tileId = if (tilesAddress == 0x8800) {
-                mmu.readByte(i).toByte().toInt() + 128
-            } else {
-                mmu.readByte(i)
-            }
+            // One line has 32 tiles
+            for (i in lineAddress until lineAddress + 32) {
+                val tileId = if (tilesAddress == 0x8800) {
+                    mmu.readByte(i).toByte().toInt() + 128
+                } else {
+                    mmu.readByte(i)
+                }
 
-            val tileStart = tilesAddress + (tileId * 16)
+                // Calculate the starting address of the tile, each tile is stored as 16 bytes
+                val tileStart = tilesAddress + (tileId * 16)
 
-            val lineOffset = (currentLine % 8) * 2
+                // Calculate the offset from the start of the tile to the current line, each line is stored as 2 bytes
+                val lineOffset = (currentLine % 8) * 2
 
-            val byte = mmu.readByte(tileStart + lineOffset)
-            val byte2 = mmu.readByte(tileStart + lineOffset + 1)
+                // Read the 2 bytes that represent the current line in the tile
+                val byte = mmu.readByte(tileStart + lineOffset)
+                val byte2 = mmu.readByte(tileStart + lineOffset + 1)
 
-            for (x in 0..7) {
-                val LSB = if (byte.getBit(x)) 1 else 0
-                val MSB = if (byte2.getBit(x)) 2 else 0
-                val color = LSB + MSB
+                for (x in 0..7) {
+                    // Read color indicator
+                    val LSB = if (byte.getBit(x)) 1 else 0
+                    val MSB = if (byte2.getBit(x)) 2 else 0
+                    val color = LSB + MSB
 
-                screen[(i - lineAddress) * 8 + (7 - x)][currentLine] = color
+                    // Read background palette
+                    val bgPalette = mmu.readByte(Mmu.BGP)
+
+                    // Get color corresponding to color indicator using palette
+                    var newColor = 0
+                    when (color) {
+                        0b00 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(0))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(1))
+                        }
+                        0b01 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(2))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(3))
+                        }
+                        0b10 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(4))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(5))
+                        }
+                        0b11 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(6))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(7))
+                        }
+                    }
+
+                    screen[(i - lineAddress) * 8 + (7 - x)][currentLine] = newColor
+                }
             }
         }
     }
@@ -222,42 +254,66 @@ class Lcd : Memory {
     private fun renderSprites() {
         val mmu = Mmu.instance
 
-        // For each sprite in OAM (each sprite consists of 4 bytes)
-        for (i in 0xFE00 until 0xFEA0 step 4) {
-            val spriteY = mmu.readByte(i) - 16
+        val lcdc = mmu.readByte(Mmu.LCDC)
+        val spritesDisplay = lcdc.getBit(1)
 
-            // If sprite overlaps with current line
-            if (LY in spriteY until spriteY + 8) {
-                val spriteX = mmu.readByte(i + 1) - 8
-                val spriteId = mmu.readByte(i + 2)
-                val spriteFlags = mmu.readByte(i + 3)
+        if (spritesDisplay) {
+            // For each sprite in OAM (each sprite consists of 4 bytes)
+            for (i in 0xFE00 until 0xFEA0 step 4) {
+                val spriteY = mmu.readByte(i) - 16
 
-                val priority = spriteFlags.getBit(7)
-                val yFlip = spriteFlags.getBit(6)
-                val xFlip = spriteFlags.getBit(5)
-                val palleteNumber = spriteFlags.getBit(4) // TODO
+                // If sprite overlaps with current line
+                if (LY in spriteY until spriteY + 8) {
+                    val spriteX = mmu.readByte(i + 1) - 8
+                    val spriteId = mmu.readByte(i + 2)
+                    val spriteFlags = mmu.readByte(i + 3)
 
-                var lineOffset = (LY % 8) * 2
-                // Offset of current line
-                if (yFlip) {
-                    lineOffset = (8 - (LY % 8)) * 2
-                }
 
-                // Read the two bytes that together describe the current line
-                val byte = mmu.readByte(0x8000 + lineOffset + spriteId * 16)
-                val byte2 = mmu.readByte(0x8000 + lineOffset + spriteId * 16 + 1)
+                    val priority = spriteFlags.getBit(7)
+                    val yFlip = spriteFlags.getBit(6)
+                    val xFlip = spriteFlags.getBit(5)
+                    val palette = spriteFlags.getBit(4)
 
-                for (x in 0..7) {
-                    var actualX = x
-                    if (xFlip) {
-                        actualX = 7 - x
+                    var lineOffset = (LY % 8) * 2
+                    // Offset of current line
+                    if (yFlip) {
+                        //lineOffset = (8 - (LY % 8)) * 2
                     }
-                    val LSB = if (byte.getBit(actualX)) 1 else 0
-                    val MSB = if (byte2.getBit(actualX)) 2 else 0
-                    val color = LSB + MSB
 
-                    if (!priority || screen[spriteX + (7 - actualX)][LY] == 0) {
-                        screen[spriteX + (7 - actualX)][LY] = color
+                    // Read the two bytes that together describe the current line
+                    val byte = mmu.readByte(0x8000 + lineOffset + spriteId * 16)
+                    val byte2 = mmu.readByte(0x8000 + lineOffset + spriteId * 16 + 1)
+
+                    for (x in 0..7) {
+                        var actualX = x
+                        if (xFlip) {
+                            actualX = 7 - x
+                        }
+                        val LSB = if (byte.getBit(actualX)) 1 else 0
+                        val MSB = if (byte2.getBit(actualX)) 2 else 0
+                        val color = LSB + MSB
+
+                        val objPalette = if (palette) mmu.readByte(Mmu.OBP1) else mmu.readByte(Mmu.OBP0)
+
+                        var newColor = 0
+                        when (color) {
+                            0b01 -> {
+                                newColor = setBit(newColor, 0, objPalette.getBit(2))
+                                newColor = setBit(newColor, 1, objPalette.getBit(3))
+                            }
+                            0b10 -> {
+                                newColor = setBit(newColor, 0, objPalette.getBit(4))
+                                newColor = setBit(newColor, 1, objPalette.getBit(5))
+                            }
+                            0b11 -> {
+                                newColor = setBit(newColor, 0, objPalette.getBit(6))
+                                newColor = setBit(newColor, 1, objPalette.getBit(7))
+                            }
+                        }
+
+                        if ((!priority || screen[spriteX + (7 - actualX)][LY] == 0) && color != 0) {
+                            screen[spriteX + (7 - actualX)][LY] = newColor
+                        }
                     }
                 }
             }

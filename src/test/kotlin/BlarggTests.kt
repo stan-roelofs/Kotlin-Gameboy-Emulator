@@ -12,10 +12,10 @@ internal class BlarggTests {
         var output = ""
         for (i in 0..10000000) {
             gb.step()
-            if (gb.mmu.testOutput) {
+            if (gb.mmu.io.serial.testOutput) {
                 val char = gb.mmu.readByte(0xFF01).toChar()
                 output += char
-                gb.mmu.testOutput = false
+                gb.mmu.io.serial.testOutput = false
             }
         }
         println(output)

@@ -1,6 +1,7 @@
 package memory
 
 import utils.Log
+import utils.toHexString
 import java.io.File
 import java.nio.file.Files
 import java.util.*
@@ -179,7 +180,7 @@ class Cartridge(file: File) : Memory {
             return readRam(address - 0xA000)
         }
 
-        throw IllegalArgumentException("Address $address does not belong to Cartridge")
+        throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Cartridge")
     }
 
     override fun writeByte(address: Int, value: Int) {
@@ -191,6 +192,6 @@ class Cartridge(file: File) : Memory {
             return writeRam(address - 0xA000, value)
         }
 
-        throw IllegalArgumentException("Address $address does not belong to Cartridge")
+        throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Cartridge")
     }
 }

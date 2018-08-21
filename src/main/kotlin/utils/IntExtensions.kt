@@ -35,3 +35,7 @@ fun setBit(num: Int, pos: Int): Int {
 fun clearBit(num: Int, pos: Int): Int {
     return num and ((1 shl pos).inv() and 0xff)
 }
+
+fun Int.toHexString(): String {
+    return String.format("0x%04X", this)
+}

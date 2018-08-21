@@ -1,5 +1,7 @@
 package memory
 
+import utils.toHexString
+
 class Gpu : Memory {
 
     private val vram: IntArray = IntArray(0x2000)
@@ -10,7 +12,7 @@ class Gpu : Memory {
 
     override fun readByte(address: Int): Int {
         if (address < 0x8000 || address >= 0xA000) {
-            throw IllegalArgumentException("Address $address does not belong to Gpu")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Gpu")
         }
 
         return vram[address - 0x8000]
@@ -18,7 +20,7 @@ class Gpu : Memory {
 
     override fun writeByte(address: Int, value: Int) {
         if (address < 0x8000 || address >= 0xA000) {
-            throw IllegalArgumentException("Address $address does not belong to Gpu")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Gpu")
         }
 
         vram[address - 0x8000] = value and 0xFF

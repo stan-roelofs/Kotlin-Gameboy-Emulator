@@ -1,5 +1,7 @@
 package memory
 
+import utils.toHexString
+
 class HRam : Memory {
 
     private val hram: IntArray = IntArray(0x80)
@@ -10,7 +12,7 @@ class HRam : Memory {
 
     override fun readByte(address: Int): Int {
         if (address < 0xFF80 || address > 0xFFFF) {
-            throw IllegalArgumentException("Address $address does not belong to HRAM")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to HRAM")
         }
 
         return hram[address - 0xFF80]
@@ -18,7 +20,7 @@ class HRam : Memory {
 
     override fun writeByte(address: Int, value: Int) {
         if (address < 0xFF80 || address > 0xFFFF) {
-            throw IllegalArgumentException("Address $address does not belong to HRAM")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to HRAM")
         }
 
         hram[address - 0xFF80] = value and 0xFF

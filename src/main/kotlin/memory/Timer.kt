@@ -1,6 +1,7 @@
 package memory
 
 import utils.getBit
+import utils.toHexString
 
 class Timer : Memory {
     private val divCycles = 256
@@ -63,7 +64,7 @@ class Timer : Memory {
             Mmu.TIMA -> this.TIMA
             Mmu.TMA -> this.TMA
             Mmu.TAC -> this.TAC or 0b11111000
-            else -> throw IllegalArgumentException("Address $address does not belong to Timer")
+            else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Timer")
         }
     }
 
@@ -85,7 +86,7 @@ class Timer : Memory {
                     0b11 -> timerCycles = clock3Cycles
                 }
             }
-            else -> throw IllegalArgumentException("Address $address does not belong to Timer")
+            else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Timer")
         }
     }
 }

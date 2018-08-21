@@ -1,5 +1,7 @@
 package memory
 
+import utils.toHexString
+
 class InternalRam : Memory {
 
     private val ram: IntArray = IntArray(0x2000)
@@ -10,7 +12,7 @@ class InternalRam : Memory {
 
     override fun readByte(address: Int): Int {
         if (address < 0xC000 || address >= 0xFE00) {
-            throw IllegalArgumentException("Address $address does not belong to InternalRam")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to InternalRam")
         }
 
         val addr = if (address >= 0xE000) address - 0xE000 else address - 0xC000
@@ -19,7 +21,7 @@ class InternalRam : Memory {
 
     override fun writeByte(address: Int, value: Int) {
         if (address < 0xC000 || address >= 0xFE00) {
-            throw IllegalArgumentException("Address $address does not belong to InternalRam")
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to InternalRam")
         }
 
         val addr = if (address >= 0xE000) address - 0xE000 else address - 0xC000

@@ -1,6 +1,7 @@
 package memory
 
 import utils.setSecondByte
+import utils.toHexString
 
 class Dma : Memory {
 
@@ -49,10 +50,17 @@ class Dma : Memory {
     }
 
     override fun readByte(address: Int): Int {
+        if (address != Mmu.DMA) {
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Dma")
+        }
         return DMA
     }
 
     override fun writeByte(address: Int, value: Int) {
+        if (address != Mmu.DMA) {
+            throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Dma")
+        }
+
         DMA = value and 0xFF
         startTransfer()
     }
