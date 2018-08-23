@@ -49,11 +49,11 @@ class Lcd : Memory {
         when (mode) {
             Mode.HBLANK.mode -> {
                 if (cycleCounter >= Mode.HBLANK.cycles) {
-                    cycleCounter -= Mode.HBLANK.cycles
+                    cycleCounter = 0
 
                     LY++
 
-                    if (LY == 144) {
+                    if (LY >= 144) {
                         setMode(Mode.VBLANK)
 
                         if (STAT.getBit(4)) {
@@ -71,7 +71,7 @@ class Lcd : Memory {
             }
             Mode.VBLANK.mode -> {
                 if (cycleCounter >= Mode.VBLANK.cycles) {
-                    cycleCounter -= Mode.VBLANK.cycles
+                    cycleCounter = 0
 
                     if (LY == 144) {
                         requestInterrupt(0)
@@ -90,13 +90,13 @@ class Lcd : Memory {
             }
             Mode.OAM_SEARCH.mode -> {
                 if (cycleCounter >= Mode.OAM_SEARCH.cycles) {
-                    cycleCounter -= Mode.OAM_SEARCH.cycles
+                    cycleCounter = 0
                     setMode(Mode.LCD_TRANSFER)
                 }
             }
             Mode.LCD_TRANSFER.mode -> {
                 if (cycleCounter >= Mode.LCD_TRANSFER.cycles) {
-                    cycleCounter -= Mode.LCD_TRANSFER.cycles
+                    cycleCounter = 0
                     setMode(Mode.HBLANK)
 
                     if (STAT.getBit(3)) {
@@ -125,7 +125,7 @@ class Lcd : Memory {
         return when(address) {
             Mmu.LCDC -> this.LCDC
             Mmu.LY -> {
-                if (LCDC.getBit(7)) {
+                if (LcdEnabled()) {
                     this.LY
                 } else {
                     0
@@ -133,10 +133,10 @@ class Lcd : Memory {
             }
             Mmu.LYC -> this.LYC
             Mmu.STAT -> {
-                if (LCDC.getBit(7)) {
+                if (LcdEnabled()) {
                     this.STAT or 0b10000000 // Bit 7 is always 1
                 } else {
-                    this.STAT and 0b11111100
+                    (this.STAT or 0b10000000) and 0b11111000 // Bits 0-2 return 0 when LCD is off
                 }
             }
             Mmu.SCY -> this.SCY
@@ -161,7 +161,7 @@ class Lcd : Memory {
             }
             Mmu.LY -> this.LY = 0
             Mmu.LYC -> this.LYC = newVal
-            Mmu.STAT -> this.STAT = newVal
+            Mmu.STAT -> this.STAT = (newVal and 0b11111000) // Last three bits are read-only
             Mmu.SCY -> this.SCY = newVal
             Mmu.SCX -> this.SCX = newVal
             Mmu.WY -> this.WY = newVal
