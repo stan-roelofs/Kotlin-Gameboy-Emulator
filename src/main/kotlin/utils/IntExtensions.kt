@@ -37,5 +37,9 @@ fun clearBit(num: Int, pos: Int): Int {
 }
 
 fun Int.toHexString(): String {
-    return String.format("0x%04X", this)
+    return this.toHexString(4)
+}
+
+fun Int.toHexString(num: Int): String {
+    return String.format("0x%0${num}X", this)
 }
