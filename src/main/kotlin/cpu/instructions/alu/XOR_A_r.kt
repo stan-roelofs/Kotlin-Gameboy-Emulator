@@ -1,8 +1,8 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
+import memory.Mmu
 
 class XOR_A_r(registers: Registers, mmu: Mmu, private val register: Int) : XOR(registers, mmu) {
 
@@ -16,7 +16,7 @@ class XOR_A_r(registers: Registers, mmu: Mmu, private val register: Int) : XOR(r
             RegisterID.E.ordinal -> registers.E
             RegisterID.H.ordinal -> registers.H
             RegisterID.L.ordinal -> registers.L
-            else -> throw Exception("Invalid register: " + register)
+            else -> throw Exception("Invalid register: $register")
         }
 
         super.xor(value)

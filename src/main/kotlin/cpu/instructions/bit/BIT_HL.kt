@@ -13,6 +13,6 @@ class BIT_HL(registers: Registers, mmu: Mmu, private val index: Int) : BIT(regis
 
         super.bit(state)
 
-        return 16
+        return 12
     }
 }

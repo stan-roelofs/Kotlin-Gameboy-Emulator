@@ -1,9 +1,9 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 class LD_r_n(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 
@@ -19,7 +19,7 @@ class LD_r_n(registers: Registers, mmu: Mmu, private val register: Int) : Instru
             RegisterID.E.ordinal -> registers.E = value
             RegisterID.H.ordinal -> registers.H = value
             RegisterID.L.ordinal -> registers.L = value
-            else -> throw Exception("Invalid register: " + register)
+            else -> throw Exception("Invalid register: $register")
         }
 
         return 8

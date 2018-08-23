@@ -1,8 +1,8 @@
 package cpu.instructions.rotates
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
+import memory.Mmu
 
 class RL_r(registers: Registers, mmu: Mmu, private val register: Int) : RL(registers, mmu) {
 
@@ -37,7 +37,7 @@ class RL_r(registers: Registers, mmu: Mmu, private val register: Int) : RL(regis
                 value = registers.L
                 registers.L = rl(value)
             }
-            else -> throw Exception("Invalid register: " + register)
+            else -> throw Exception("Invalid register: $register")
         }
 
         return 8
