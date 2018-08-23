@@ -1,13 +1,12 @@
 package memory
 
-import utils.setSecondByte
 import utils.toHexString
 
 class Dma : Memory {
 
     private var counter = 0
     private var transfer = false
-    private val cyclesMax = 160 * 4 + 4
+    private val cyclesMax = 648
     private var source = 0
 
     private var DMA = 0
@@ -38,10 +37,10 @@ class Dma : Memory {
 
             counter += cycles
             if (counter >= cyclesMax) {
-                val mmu = Mmu.instance
                 counter = 0
                 transfer = false
 
+                val mmu = Mmu.instance
                 for (i in 0 until 160) {
                     mmu.writeByte(0xFE00 + i, mmu.readByte(source + i))
                 }
@@ -53,7 +52,7 @@ class Dma : Memory {
         if (address != Mmu.DMA) {
             throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Dma")
         }
-        return DMA
+        return this.DMA
     }
 
     override fun writeByte(address: Int, value: Int) {
@@ -61,13 +60,13 @@ class Dma : Memory {
             throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Dma")
         }
 
-        DMA = value and 0xFF
-        startTransfer()
+        this.DMA = value and 0xFF
+        startTransfer(value)
     }
 
-    private fun startTransfer() {
+    private fun startTransfer(value: Int) {
         counter = 0
         transfer = true
-        source = setSecondByte(source, DMA)
+        source = (value and 0xFF) * 0x100
     }
 }

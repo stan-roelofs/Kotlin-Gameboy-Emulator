@@ -72,7 +72,10 @@ class Timer : Memory {
         val newVal = value and 0xFF
 
         when(address) {
-            Mmu.DIV -> this.DIV = 0
+            Mmu.DIV -> {
+                this.DIV = 0
+                divCounter = 0
+            }
             Mmu.TIMA -> this.TIMA = newVal
             Mmu.TMA -> this.TMA = newVal
             Mmu.TAC -> {

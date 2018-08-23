@@ -1,6 +1,7 @@
 import cpu.Cpu
 import memory.Cartridge
 import memory.Mmu
+import utils.Log
 import java.io.File
 
 class GameBoy(cart: File) {
@@ -20,8 +21,13 @@ class GameBoy(cart: File) {
 
     fun frame() {
         val start = cpu.registers.clock
-        while (cpu.registers.clock - start < 70224) {
-            cpu.step()
+        try {
+            while (cpu.registers.clock - start < 70224) {
+                step()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("Exception occured")
         }
     }
 

@@ -1,5 +1,6 @@
 package memory
 
+import utils.Log
 import utils.getBit
 import utils.setBit
 import utils.toHexString
@@ -34,12 +35,11 @@ class Lcd : Memory {
         BGP = 0xFC
         OBP0 = 0xFF
         OBP1 = 0xFF
+        cycleCounter = 0
     }
 
     fun tick(cyclesElapsed: Int) {
         if (!LcdEnabled()) {
-            cycleCounter = 0
-            LY = 0
             return
         }
 
@@ -153,7 +153,12 @@ class Lcd : Memory {
     override fun writeByte(address: Int, value: Int) {
         val newVal = value and 0xFF
         when(address) {
-            Mmu.LCDC -> this.LCDC = newVal
+            Mmu.LCDC -> {
+                this.LCDC = newVal
+                if (!LcdEnabled()) {
+                    cycleCounter = 0
+                }
+            }
             Mmu.LY -> this.LY = 0
             Mmu.LYC -> this.LYC = newVal
             Mmu.STAT -> this.STAT = newVal
@@ -171,7 +176,7 @@ class Lcd : Memory {
     private fun renderScanline() {
         if (LcdEnabled()) {
             renderBackground()
-           // renderWindow()
+            renderWindow()
             renderSprites()
         } else {
             for (i in 0..255) {
@@ -182,19 +187,85 @@ class Lcd : Memory {
         }
     }
 
-    private fun renderBackground() {
-        val mmu = Mmu.instance
-
-        val bgWindowDisplay = mmu.readByte(Mmu.LCDC).getBit(0)
-        if (bgWindowDisplay) {
+    private fun renderWindow() {
+        val windowEnabled = LCDC.getBit(5)
+        if (windowEnabled) {
+            val mmu = Mmu.instance
             // Read location of tile map from LCDC
-            val backgroundMap = if (mmu.readByte(Mmu.LCDC).getBit(3)) 0x9C00 else 0x9800
+            val windowMap = if (LCDC.getBit(6)) 0x9C00 else 0x9800
 
             // Read location of tiles from LCDC
-            val tilesAddress = if (mmu.readByte(Mmu.LCDC).getBit(4)) 0x8000 else 0x8800
+            val tilesAddress = if (LCDC.getBit(4)) 0x8000 else 0x8800
 
             // Calculate address start which contains the tiles of the current line
-            val currentLine = mmu.readByte(Mmu.LY)
+            val currentLine = LY
+            val lineAddress = windowMap + (currentLine / 8) * 32
+
+            // One line has 32 tiles
+            for (i in lineAddress until lineAddress + 32) {
+                val tileId = if (tilesAddress == 0x8800) {
+                    mmu.readByte(i).toByte().toInt() + 128
+                } else {
+                    mmu.readByte(i)
+                }
+
+                // Calculate the starting address of the tile, each tile is stored as 16 bytes
+                val tileStart = tilesAddress + (tileId * 16)
+
+                // Calculate the offset from the start of the tile to the current line, each line is stored as 2 bytes
+                val lineOffset = (currentLine % 8) * 2
+
+                // Read the 2 bytes that represent the current line in the tile
+                val byte = mmu.readByte(tileStart + lineOffset)
+                val byte2 = mmu.readByte(tileStart + lineOffset + 1)
+
+                for (x in 0..7) {
+                    // Read color indicator
+                    val LSB = if (byte.getBit(x)) 1 else 0
+                    val MSB = if (byte2.getBit(x)) 2 else 0
+                    val color = LSB + MSB
+
+                    // Read background palette
+                    val bgPalette = BGP
+
+                    // Get color corresponding to color indicator using palette
+                    var newColor = 0
+                    when (color) {
+                        0b00 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(0))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(1))
+                        }
+                        0b01 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(2))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(3))
+                        }
+                        0b10 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(4))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(5))
+                        }
+                        0b11 -> {
+                            newColor = setBit(newColor, 0, bgPalette.getBit(6))
+                            newColor = setBit(newColor, 1, bgPalette.getBit(7))
+                        }
+                    }
+                    screen[WX - 7 + (i - lineAddress) * 8 + (7 - x)][currentLine + WY] = newColor
+                }
+            }
+        }
+    }
+
+    private fun renderBackground() {
+        val bgEnabled = LCDC.getBit(0)
+        if (bgEnabled) {
+            val mmu = Mmu.instance
+            // Read location of tile map from LCDC
+            val backgroundMap = if (LCDC.getBit(3)) 0x9C00 else 0x9800
+
+            // Read location of tiles from LCDC
+            val tilesAddress = if (LCDC.getBit(4)) 0x8000 else 0x8800
+
+            // Calculate address start which contains the tiles of the current line
+            val currentLine = LY
             val lineAddress = backgroundMap + (currentLine / 8) * 32
 
             // One line has 32 tiles
@@ -222,7 +293,7 @@ class Lcd : Memory {
                     val color = LSB + MSB
 
                     // Read background palette
-                    val bgPalette = mmu.readByte(Mmu.BGP)
+                    val bgPalette = BGP
 
                     // Get color corresponding to color indicator using palette
                     var newColor = 0
@@ -245,7 +316,14 @@ class Lcd : Memory {
                         }
                     }
 
-                    screen[(i - lineAddress) * 8 + (7 - x)][currentLine] = newColor
+                    try {
+                        screen[(i - lineAddress) * 8 + (7 - x)][currentLine] = newColor
+                    } catch (e: Exception) {
+                        Log.e("$i $lineAddress $currentLine $backgroundMap")
+                        Log.e("${(i - lineAddress) * 8 + (7 - x)}")
+                        Log.e("$i $x")
+                        throw e
+                    }
                 }
             }
         }
@@ -254,8 +332,7 @@ class Lcd : Memory {
     private fun renderSprites() {
         val mmu = Mmu.instance
 
-        val lcdc = mmu.readByte(Mmu.LCDC)
-        val spritesDisplay = lcdc.getBit(1)
+        val spritesDisplay = LCDC.getBit(1)
 
         if (spritesDisplay) {
             // For each sprite in OAM (each sprite consists of 4 bytes)
@@ -267,7 +344,6 @@ class Lcd : Memory {
                     val spriteX = mmu.readByte(i + 1) - 8
                     val spriteId = mmu.readByte(i + 2)
                     val spriteFlags = mmu.readByte(i + 3)
-
 
                     val priority = spriteFlags.getBit(7)
                     val yFlip = spriteFlags.getBit(6)
@@ -293,7 +369,7 @@ class Lcd : Memory {
                         val MSB = if (byte2.getBit(actualX)) 2 else 0
                         val color = LSB + MSB
 
-                        val objPalette = if (palette) mmu.readByte(Mmu.OBP1) else mmu.readByte(Mmu.OBP0)
+                        val objPalette = if (palette) OBP1 else OBP0
 
                         var newColor = 0
                         when (color) {

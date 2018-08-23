@@ -30,7 +30,7 @@ class Sound : Memory {
     private var NR51 = 0
     private var NR52 = 0
 
-    private val patternRam = IntArray(0xF)
+    private val patternRam = IntArray(0x10)
 
     override fun reset() {
         NR10 = 0x80
