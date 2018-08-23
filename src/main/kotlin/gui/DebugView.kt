@@ -3,7 +3,10 @@ package gui
 import GameBoy
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
+import javafx.scene.control.TextField
 import tornadofx.*
+import utils.Log
+import utils.toHexString
 
 class DebugView(private val gb: GameBoy): View() {
 
@@ -19,6 +22,8 @@ class DebugView(private val gb: GameBoy): View() {
     private var regPC: Label by singleAssign()
 
     private var instructions: TextArea by singleAssign()
+
+    private var memText: TextField by singleAssign()
 
     override val root = gridpane {
         row {
@@ -67,6 +72,14 @@ class DebugView(private val gb: GameBoy): View() {
                         updateRegisters()
                         updateInstructions()
                     }
+                }
+            }
+        }
+        row {
+            memText = textfield()
+            button("Get memory value") {
+                action {
+                    Log.d(gb.mmu.readByte(Integer.decode(memText.text)).toHexString())
                 }
             }
         }
