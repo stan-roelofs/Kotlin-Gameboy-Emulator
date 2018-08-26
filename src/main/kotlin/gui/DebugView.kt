@@ -84,6 +84,19 @@ class DebugView(private val gb: GameBoy): View() {
             }
         }
         row {
+            button("Get screen hash") {
+                action {
+                    var s = ""
+                    for (i in gb.mmu.io.lcd.screen) {
+                        for (j in i) {
+                            s += j.toString()
+                        }
+                    }
+                    println(s.hashCode())
+                }
+            }
+        }
+        row {
             instructions = textarea {
                 useMaxWidth = true
                 gridpaneConstraints {

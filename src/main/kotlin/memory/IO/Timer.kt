@@ -1,5 +1,7 @@
-package memory
+package memory.IO
 
+import memory.Memory
+import memory.Mmu
 import utils.getBit
 import utils.toHexString
 
@@ -75,6 +77,7 @@ class Timer : Memory {
             Mmu.DIV -> {
                 this.DIV = 0
                 divCounter = 0
+                timerCounter = 0
             }
             Mmu.TIMA -> this.TIMA = newVal
             Mmu.TMA -> this.TMA = newVal

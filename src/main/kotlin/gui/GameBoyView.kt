@@ -10,7 +10,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.util.Duration
-import memory.Joypad
+import memory.IO.Joypad
 import tornadofx.*
 import java.io.File
 

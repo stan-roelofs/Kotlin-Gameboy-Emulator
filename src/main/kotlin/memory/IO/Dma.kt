@@ -1,11 +1,13 @@
-package memory
+package memory.IO
 
+import memory.Memory
+import memory.Mmu
 import utils.toHexString
 
 class Dma : Memory {
 
     private var counter = 0
-    private var transfer = false
+    var inProgress = false
     private val cyclesMax = 648
     private var source = 0
 
@@ -13,12 +15,12 @@ class Dma : Memory {
 
     override fun reset() {
         counter = 0
-        transfer = false
+        inProgress = false
         DMA = 0
     }
 
     fun tick(cycles: Int) {
-        if (transfer) {
+        if (inProgress) {
             /*
             val mmu = Mmu.instance
 
@@ -38,7 +40,7 @@ class Dma : Memory {
             counter += cycles
             if (counter >= cyclesMax) {
                 counter = 0
-                transfer = false
+                inProgress = false
 
                 val mmu = Mmu.instance
                 for (i in 0 until 160) {
@@ -66,7 +68,9 @@ class Dma : Memory {
 
     private fun startTransfer(value: Int) {
         counter = 0
-        transfer = true
-        source = (value and 0xFF) * 0x100
+        inProgress = true
+
+        val newVal = if (value >= 0xf0) value - 0x20 else value
+        source = (newVal and 0xFF) * 0x100
     }
 }

@@ -12,7 +12,7 @@
 ### Oam_dma
 - [x] basic
 - [x] reg_read
-- [ ] sources-dmgABCmgbS - Crashes because it writes to cartridge RAM which is not yet supported
+- [x] sources-dmgABCmgbS
 
 ### Ppu
 - [ ] hblank_ly_scx_timing-GS - Crashes because somehow LY increases infinitely
@@ -27,3 +27,18 @@
 - [ ] stat_irq_blocking - Crashes because somehow LY increases infinitely
 - [ ] stat_lyc_onoff - Somehow tries to execute instruction 0xED which corresponds to nothing
 - [ ] vblank_stat_intr-GS - Crashes because somehow LY increases infinitely
+
+### Timer
+- [x] div_write
+- [ ] rapid_toggle - Unexpected timer increases not emulated
+- [x] tim00
+- [ ] tim00_div_trigger
+- [x] tim01
+- [ ] tim01_div_trigger
+- [x] tim10
+- [ ] tim10_div_trigger
+- [x] tim11
+- [ ] tim11_div_trigger
+- [ ] tima_reload
+- [ ] time_write_reloading
+- [ ] tma_write_reloading

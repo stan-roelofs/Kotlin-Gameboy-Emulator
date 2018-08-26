@@ -1,5 +1,7 @@
-package memory
+package memory.IO
 
+import memory.Memory
+import memory.Mmu
 import utils.toHexString
 
 class Serial : Memory {

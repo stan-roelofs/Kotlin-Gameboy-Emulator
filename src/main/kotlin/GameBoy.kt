@@ -1,6 +1,6 @@
 import cpu.Cpu
-import memory.Cartridge
 import memory.Mmu
+import memory.cartridge.Cartridge
 import utils.Log
 import java.io.File
 
