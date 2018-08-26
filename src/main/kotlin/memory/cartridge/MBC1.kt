@@ -1,0 +1,134 @@
+package memory.cartridge
+
+import memory.Memory
+import utils.getBit
+import utils.toHexString
+
+class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
+
+    override val ram: Array<IntArray>?
+    override val rom: Array<IntArray>
+
+    override var currentRomBank = 1
+    override var currentRamBank = 0
+    override var ramEnabled = false
+
+    var mode = 0
+
+    init {
+        if (romBanks !in 0..128) {
+            throw IllegalArgumentException("Illegal number of ROM banks: $romBanks")
+        }
+        rom = Array(romBanks) {IntArray(0x4000)}
+
+        ram = when (ramSize) {
+            0       -> null
+            0x800   -> Array(1) {IntArray(0x800)}
+            0x2000  -> Array(1) {IntArray(0x2000)}
+            0x8000  -> Array(4) {IntArray(0x2000)}
+            0x20000 -> Array(16) {IntArray(0x2000)}
+            else -> throw IllegalArgumentException("Illegal RAM size: $ramSize")
+        }
+    }
+
+    override fun reset() {
+        for (bank in rom) {
+            bank.fill(0)
+        }
+        if (ram != null) {
+            for (bank in ram) {
+                bank.fill(0)
+            }
+        }
+        currentRamBank = 0
+        currentRomBank = 0
+        mode = 0
+        ramEnabled = false
+    }
+
+    override fun loadRom(value: ByteArray) {
+        for (i in 0 until value.size) {
+            val bank: Int = i / 0x4000
+            val index: Int = i - (bank * 0x4000)
+
+            rom[bank][index] = (value[i].toInt()) and 0xFF
+        }
+    }
+
+    override fun readRom(address: Int): Int {
+        return when(address) {
+            in 0x0000 until 0x4000 -> this.rom[0][address]
+            in 0x4000 until 0x8000 -> {
+                val romBank = if (mode == 1) currentRomBank and 0b00011111 else currentRomBank
+                this.rom[romBank][address - 0x4000]
+            }
+            else -> throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
+        }
+    }
+
+    override fun writeRom(address: Int, value: Int) {
+        when(address) {
+            // RAM Enable
+            in 0x0000 until 0x2000 -> ramEnabled = value.getBit(1) && value.getBit(3)
+
+            // ROM Bank Number lower 5 bits
+            in 0x2000 until 0x4000 -> {
+                var newVal = value and 0b00011111
+                when(newVal) {
+                    0x00, 0x20, 0x40, 0x60 -> newVal++
+                }
+                currentRomBank = (currentRomBank and 0b11100000) or newVal
+            }
+
+            // RAM Bank Number or Upper Bits of ROM Bank Number
+            in 0x4000 until 0x6000 -> {
+                val newVal = value and 0b00000011
+                if (mode == 0) {
+                    currentRomBank = currentRomBank or (newVal shl 5)
+                } else {
+                    currentRamBank = newVal
+                }
+            }
+
+            // ROM/RAM Mode Select
+            in 0x6000 until 0x8000 -> {
+                mode = value and 0b00000001
+            }
+        }
+    }
+
+    override fun readRam(address: Int): Int {
+        if (address !in 0xA000 until 0xC000) {
+            throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
+        }
+
+        if (ram == null) {
+            return 0xFF
+        }
+
+        val newAddress = address - 0xA000
+        return if (mode == 0) {
+            this.ram[0][newAddress]
+        } else {
+            this.ram[currentRamBank][newAddress]
+        }
+    }
+
+    override fun writeRam(address: Int, value: Int) {
+        if (address !in 0xA000 until 0xC000) {
+            throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
+        }
+
+        if (ram == null) {
+            return
+        }
+
+        val newAddress = address - 0xA000
+        val newVal = value and 0xFF
+        if (mode == 0) {
+            this.ram[0][newAddress] = newVal
+        } else {
+            this.ram[currentRamBank][newAddress] = newVal
+        }
+    }
+}

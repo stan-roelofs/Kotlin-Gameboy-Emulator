@@ -1,6 +1,6 @@
 import cpu.Registers
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
 internal class RegistersTest {
 
@@ -30,7 +30,7 @@ internal class RegistersTest {
 
         // Normal test
         r.setAF(0x1032)
-        assertEquals(0x1032, r.getAF())
+        assertEquals(0x1030, r.getAF()) // Expecting 1030 since last 4 BitsTests of F are always 0
         r.setBC(0x1032)
         assertEquals(0x1032, r.getBC())
         r.setDE(0x1032)
@@ -44,7 +44,7 @@ internal class RegistersTest {
 
         // Test 'incorrect' input is handled correctly
         r.setAF(0xFFFFF)
-        assertEquals(0xFFFF, r.getAF())
+        assertEquals(0xFFF0, r.getAF())
         r.setBC(0xFFFFF)
         assertEquals(0xFFFF, r.getBC())
         r.setDE(0xFFFFF)

@@ -1,15 +1,14 @@
-package memory
+package memory.cartridge
 
+import memory.Memory
 import utils.Log
-import utils.toHexString
 import java.io.File
 import java.nio.file.Files
 import java.util.*
 
 class Cartridge(file: File) : Memory {
 
-    private var rom: IntArray = IntArray(0x8000)
-    private var ram: IntArray = IntArray(1) //TODO
+    private lateinit var type: CartridgeType
     var isSgb = false
     var isGbc = false
 
@@ -18,8 +17,6 @@ class Cartridge(file: File) : Memory {
     }
 
     override fun reset() {
-        rom.fill(0)
-        ram.fill(0)
         isSgb = false
         isGbc = false
     }
@@ -31,9 +28,7 @@ class Cartridge(file: File) : Memory {
             val data = Files.readAllBytes(file.toPath())
             loadHeader(data)
 
-            for (i in 0 until data.size) {
-                rom[i] = (data[i].toInt()) and 0xFF
-            }
+            type.loadRom(data)
 
         } catch (e: Exception) {
             e.printStackTrace()
@@ -70,12 +65,51 @@ class Cartridge(file: File) : Memory {
         isSgb = romSGB
         Log.i("Supports SGB functions: $romSGB")
 
+        val romSize = data[0x148].toInt()
+        val romBanks = when(romSize) {
+            0x00 -> 2
+            0x01 -> 4
+            0x02 -> 8
+            0x03 -> 16
+            0x04 -> 32
+            0x05 -> 64
+            0x06 -> 128
+            0x52 -> 72
+            0x53 -> 80
+            0x54 -> 96
+            else -> throw Exception("Invalid ROM size identifier")
+        }
+        Log.i("Number of ROM banks: $romBanks")
+
+        val ramSizeByte = data[0x149].toInt()
+        val ramSize = when(ramSizeByte) {
+            0x00 -> 0
+            0x01 -> 2048
+            0x02 -> 8192
+            0x03 -> 32768
+            0x04 -> 131072
+            else -> throw Exception("Invalid RAM size identifier")
+        }
+        Log.i("RAM size: $ramSize bytes")
+
         val romType = data[0x147].toInt()
         when (romType) {
-            0x00 -> Log.i("ROM ONLY")
-            0x01 -> Log.i("ROM+MBC1")
-            0x02 -> Log.i("ROM+MBC1+RAM")
-            0x03 -> Log.i("ROM+MBC1+RAM+BATTERY")
+            0x00 -> {
+                Log.i("ROM ONLY")
+                type = ROMONLY()
+            }
+            0x01 -> {
+                Log.i("ROM+MBC1")
+                type = MBC1(romBanks, 0)
+            }
+            0x02 -> {
+                Log.i("ROM+MBC1+RAM")
+                type = MBC1(romBanks, ramSize)
+            }
+            0x03 -> {
+                Log.i("ROM+MBC1+RAM+BATTERY")
+                type = MBC1(romBanks, ramSize)
+            }
             0x05 -> Log.i("ROM+MBC2")
             0x06 -> Log.i("ROM+MBC2+BATTERY")
             0x08 -> Log.i("ROM+RAM")
@@ -99,32 +133,6 @@ class Cartridge(file: File) : Memory {
             0xFE -> Log.i("Hudson HuC-3")
             0xFF -> Log.i("Hudson HuC-1")
         }
-
-        val romSize = data[0x148].toInt()
-        val romBanks = when(romSize) {
-            0x00 -> 2
-            0x01 -> 4
-            0x02 -> 8
-            0x03 -> 16
-            0x04 -> 32
-            0x05 -> 64
-            0x06 -> 128
-            0x52 -> 72
-            0x53 -> 80
-            0x54 -> 96
-            else -> throw Exception("Invalid ROM size identifier")
-        }
-        Log.i("Number of ROM banks: $romBanks")
-
-        val ramSizeByte = data[0x149].toInt()
-        val ramSize = when(ramSizeByte) {
-            0x00 -> 0
-            0x01 -> 2048
-            0x02 -> 8192
-            0x03 -> 32768
-            else -> throw Exception("Invalid RAM size identifier")
-        }
-        Log.i("RAM size: $ramSize bytes")
 
         val romDestCode = data[0x14A].toInt()
         val romDest = if (romDestCode == 0x00) "Japanese" else "Non-Japanese"
@@ -155,43 +163,11 @@ class Cartridge(file: File) : Memory {
         //val romChecksum = Arrays.copyOfRange(data, 0x14E, 0x14F)
     }
 
-    private fun readRom(address: Int): Int {
-        return this.rom[address]
-    }
-
-    private fun readRam(address: Int): Int {
-        return 0
-    }
-
-    private fun writeRom(address: Int, value: Int) {
-        return //TODO
-    }
-
-    private fun writeRam(address: Int, value: Int) {
-        this.ram[address] = value and 0xFF
-    }
-
     override fun readByte(address: Int): Int {
-        if (address in 0x0000 until 0x8000) {
-            return readRom(address)
-        }
-
-        if (address in 0xA000 until 0xC000) {
-            return readRam(address - 0xA000)
-        }
-
-        throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Cartridge")
+        return type.readByte(address)
     }
 
     override fun writeByte(address: Int, value: Int) {
-        if (address in 0x0000 until 0x8000) {
-            return writeRom(address, value)
-        }
-
-        if (address in 0xA000 until 0xC000) {
-            return writeRam(address - 0xA000, value)
-        }
-
-        throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Cartridge")
+        return type.writeByte(address, value and 0xFF)
     }
 }
