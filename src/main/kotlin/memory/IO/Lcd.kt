@@ -342,7 +342,7 @@ class Lcd : Memory {
                 val spriteY = mmu.readByte(i) - 16
 
                 // If sprite overlaps with current line
-                if (LY in spriteY until spriteY + 8) {
+                if (LY in spriteY..spriteY + 7) {
                     val spriteX = mmu.readByte(i + 1) - 8
                     val spriteId = mmu.readByte(i + 2)
                     val spriteFlags = mmu.readByte(i + 3)
@@ -352,14 +352,14 @@ class Lcd : Memory {
                     val xFlip = spriteFlags.getBit(5)
                     val palette = spriteFlags.getBit(4)
 
-                    var lineOffset = (LY % 8) * 2
+                    val lineOffset = (7 - (spriteY + 7 - LY)) * 2
                     // Offset of current line
                     if (yFlip) {
                         //lineOffset = (8 - (LY % 8)) * 2
                     }
 
                     // Read the two bytes that together describe the current line
-                    val byte = mmu.readByte(0x8000 + lineOffset + spriteId * 16)
+                    val byte = mmu.readByte(0x8000 + lineOffset + spriteId * 16) // Each tile occupies 16 bytes
                     val byte2 = mmu.readByte(0x8000 + lineOffset + spriteId * 16 + 1)
 
                     for (x in 0..7) {

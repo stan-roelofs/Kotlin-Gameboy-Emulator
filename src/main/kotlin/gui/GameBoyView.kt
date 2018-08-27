@@ -11,11 +11,12 @@ import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.util.Duration
 import memory.IO.Joypad
+import memory.Mmu
 import tornadofx.*
 import java.io.File
 
 class GameBoyView: View() {
-    private var lcd = WritableImage(512, 512)
+    private var lcd = WritableImage(320, 288)
     private var oldScreen = Array(256) {IntArray(256)}
 
     //private val gb = GameBoy(File("E:/Downloads/mooneye-gb_hwtests/acceptance/timer/tim11.gb"))
@@ -147,14 +148,16 @@ class GameBoyView: View() {
 
     private fun updateScreen() {
         val pixelWriter = lcd.pixelWriter
+        val SCX = Mmu.instance.readByte(0xFF43)
+        val SCY = Mmu.instance.readByte(0xFF42)
 
-        for (y in 0 until 256) {
-            for (x in 0 until 256) {
+        for (y in 0 until 144) {
+            for (x in 0 until 160) {
                 if (oldScreen[x][y] != gb.mmu.io.lcd.screen[x][y]) {
-                    pixelWriter.setColor(2 * x, 2 * y, colors[gb.mmu.io.lcd.screen[x][y]])
-                    pixelWriter.setColor(2 * x + 1, 2 * y, colors[gb.mmu.io.lcd.screen[x][y]])
-                    pixelWriter.setColor(2 * x, 2 * y + 1, colors[gb.mmu.io.lcd.screen[x][y]])
-                    pixelWriter.setColor(2 * x + 1, 2 * y + 1, colors[gb.mmu.io.lcd.screen[x][y]])
+                    pixelWriter.setColor(2 * x, 2 * y, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
+                    pixelWriter.setColor(2 * x + 1, 2 * y, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
+                    pixelWriter.setColor(2 * x, 2 * y + 1, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
+                    pixelWriter.setColor(2 * x + 1, 2 * y + 1, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
                     oldScreen[x][y] = gb.mmu.io.lcd.screen[x][y]
                 }
             }

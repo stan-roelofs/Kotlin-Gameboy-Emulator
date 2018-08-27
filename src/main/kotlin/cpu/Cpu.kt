@@ -96,7 +96,7 @@ class Cpu {
                 registers.clock += 4
                 mmu.tick(4)
 
-                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stick
+                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
                 if (mmu.readByte(Mmu.IE).getBit(interruptBit)) {
                     registers.decSP()
                     mmu.writeByte(registers.SP, registers.PC.getFirstByte())
