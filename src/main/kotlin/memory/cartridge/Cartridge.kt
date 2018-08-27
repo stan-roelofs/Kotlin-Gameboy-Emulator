@@ -19,6 +19,7 @@ class Cartridge(file: File) : Memory {
     override fun reset() {
         isSgb = false
         isGbc = false
+        type.reset()
     }
 
     private fun loadRom(file: File) {

@@ -20,7 +20,6 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
             throw IllegalArgumentException("Illegal number of ROM banks: $romBanks")
         }
         rom = Array(romBanks) {IntArray(0x4000)}
-
         ram = when (ramSize) {
             0       -> null
             0x800   -> Array(1) {IntArray(0x800)}
@@ -56,10 +55,19 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
     }
 
     override fun readRom(address: Int): Int {
+        var romBank = if (mode == 1) currentRomBank and 0b00011111 else currentRomBank or (currentRamBank shl 5)
         return when(address) {
-            in 0x0000 until 0x4000 -> this.rom[0][address]
+            in 0x0000 until 0x4000 -> {
+                /*
+                if (rom.size > 0b11111 && mode == 1) {
+                    if (romBank in 32 until 64 || romBank in 96 until 128) {
+                        this.rom[32][address]
+                    }
+                }*/
+                this.rom[0][address]
+            }
             in 0x4000 until 0x8000 -> {
-                val romBank = if (mode == 1) currentRomBank and 0b00011111 else currentRomBank
+                romBank %= rom.size
                 this.rom[romBank][address - 0x4000]
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
@@ -73,21 +81,31 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
 
             // ROM Bank Number lower 5 bits
             in 0x2000 until 0x4000 -> {
-                var newVal = value and 0b00011111
-                when(newVal) {
-                    0x00, 0x20, 0x40, 0x60 -> newVal++
+                val newVal = value and 0b00011111
+                var newRomBank = (currentRomBank and 0b11100000) or newVal
+
+                if (newRomBank == 0) {
+                    newRomBank++
                 }
-                currentRomBank = (currentRomBank and 0b11100000) or newVal
+
+                currentRomBank = newRomBank % rom.size
             }
 
             // RAM Bank Number or Upper Bits of ROM Bank Number
             in 0x4000 until 0x6000 -> {
                 val newVal = value and 0b00000011
+                /*
                 if (mode == 0) {
-                    currentRomBank = currentRomBank or (newVal shl 5)
+                    val newRomBank = currentRomBank or (newVal shl 5)
+                    currentRomBank = newRomBank % rom.size
+
                 } else {
-                    currentRamBank = newVal
-                }
+                    // Check whether we actually have RAM and whether the selected bank actually exists
+                    if (ram != null && newVal < ram.size) {
+                        currentRamBank = newVal
+                    }
+                }*/
+                currentRamBank = newVal
             }
 
             // ROM/RAM Mode Select
@@ -102,7 +120,7 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
             throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
         }
 
-        if (ram == null) {
+        if (ram == null || !ramEnabled) {
             return 0xFF
         }
 
@@ -110,7 +128,11 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
         return if (mode == 0) {
             this.ram[0][newAddress]
         } else {
-            this.ram[currentRamBank][newAddress]
+            if (currentRamBank >= ram.size) {
+                this.ram[0][newAddress]
+            } else {
+                this.ram[currentRamBank][newAddress]
+            }
         }
     }
 
@@ -119,7 +141,7 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
             throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
         }
 
-        if (ram == null) {
+        if (ram == null || !ramEnabled) {
             return
         }
 
@@ -128,7 +150,11 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
         if (mode == 0) {
             this.ram[0][newAddress] = newVal
         } else {
-            this.ram[currentRamBank][newAddress] = newVal
+            if (currentRamBank >= ram.size) {
+                this.ram[0][newAddress] = newVal
+            } else {
+                this.ram[currentRamBank][newAddress] = newVal
+            }
         }
     }
 }

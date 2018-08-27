@@ -42,3 +42,16 @@
 - [ ] tima_reload
 - [ ] time_write_reloading
 - [ ] tma_write_reloading
+
+## Emulator only
+### MBC1
+- [ ] multicart_rom_8Mb
+- [x] rom_512Kb
+- [x] rom_1Mb
+- [x] rom_2Mb
+- [x] rom_4Mb
+- [ ] rom_8Mb
+- [ ] rom_16Mb
+- [x] ram_256Kb
+- [x] ram_64Kb
+- [ ] bits_ram_en

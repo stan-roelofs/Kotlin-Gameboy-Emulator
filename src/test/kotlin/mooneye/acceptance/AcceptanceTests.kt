@@ -10,8 +10,8 @@ class AcceptanceTests : MooneyeTest() {
     override val path = pathToTests + "acceptance/"
 
     @Test
-    fun test1() {
-        val gb = GameBoy(File(path))
+    fun add_sp_e_timing() {
+        val gb = GameBoy(File("${path}add_sp_e_timing.gb"))
         runMooneyeTest(gb, 0)
     }
 }

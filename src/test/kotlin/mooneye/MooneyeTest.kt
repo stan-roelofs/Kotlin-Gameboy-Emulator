@@ -20,7 +20,7 @@ abstract class MooneyeTest {
         }
         val hash = getScreenHash(gb.mmu.io.lcd.screen)
         Log.i("Hash: $hash")
-        Assert.assertEquals(hash, hashCode)
+        Assert.assertEquals(hashCode, hash)
     }
 
     private fun getScreenHash(screen: Array<IntArray>): Int {
