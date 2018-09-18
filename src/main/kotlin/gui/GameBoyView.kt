@@ -20,7 +20,7 @@ class GameBoyView: View() {
     private var oldScreen = Array(256) {IntArray(256)}
 
     //private val gb = GameBoy(File("E:/Downloads/mooneye-gb_hwtests/acceptance/timer/tim11.gb"))
-    private val gb = GameBoy(File("E:/Downloads/mario/drmario.gb"))
+    private val gb = GameBoy(null)
     //private val gb = GameBoy(File("E:/Downloads/gb-test-roms-master/cpu_instrs/cpu_instrs.gb"))
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
@@ -51,6 +51,12 @@ class GameBoyView: View() {
                         val files = chooseFile("rom", arrayOf(FileChooser.ExtensionFilter("Roms", "*.gb")), FileChooserMode.Single)
                         if (files.isNotEmpty()) {
                             gb.loadCartridge(files[0])
+
+
+                            tl.keyFrames.remove(0, tl.keyFrames.size)
+                            tl.keyFrames.add(play)
+                            tl.cycleCount = Animation.INDEFINITE
+                            tl.play()
                         }
                     }
                 }
@@ -99,11 +105,6 @@ class GameBoyView: View() {
             }
         }
         registerKeyboard()
-
-        tl.keyFrames.remove(0, tl.keyFrames.size)
-        tl.keyFrames.add(play)
-        tl.cycleCount = Animation.INDEFINITE
-        tl.play()
     }
 
     private fun registerKeyboard() {

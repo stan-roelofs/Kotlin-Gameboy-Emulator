@@ -4,13 +4,16 @@ import memory.cartridge.Cartridge
 import utils.Log
 import java.io.File
 
-class GameBoy(cart: File) {
+class GameBoy(cart: File?) {
     val cpu = Cpu()
-    private var cartridge = Cartridge(cart)
+    private lateinit var cartridge: Cartridge
     val mmu = Mmu.instance
 
     init {
-        reset()
+        if (cart != null) {
+            reset()
+            cartridge = Cartridge(cart)
+        }
     }
 
     fun reset() {
