@@ -11,9 +11,9 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md)
 - [x] Get Tetris running
 - [x] Controls
 - [ ] Sound
-- [x] Fix timings
+- [ ] Fix timings
 
 ## Status
-GPU almost implemented, still have to implement window and finish sprites. Tetris is playable.
+Some games are playable but there is an issue where sprites are missing in some games.
 
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
