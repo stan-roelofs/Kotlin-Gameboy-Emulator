@@ -14,6 +14,6 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md)
 - [ ] Fix timings
 
 ## Status
-Some games are playable but there is an issue where sprites are missing in some games.
+Some games are playable but there is an issue where sprites are missing in some games, I suspect because of read/write timing issues.
 
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
