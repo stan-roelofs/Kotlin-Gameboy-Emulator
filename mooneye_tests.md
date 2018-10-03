@@ -1,6 +1,39 @@
 # Mooneye tests
 
 ## Acceptance
+
+- [x] boot_regs_dmgABC
+- [ ] call_cc_timing2
+- [x] ei_timing
+- [x] div_timing
+- [ ] rapid_di_ei
+- [ ] di_timing_GS
+- [ ] ret_timing
+- [x] halt_ime0_ei
+- [x] halt_ime1_timing
+- [x] reti_intr_timing
+- [ ] rst_timing
+- [ ] reti_timing
+- [ ] jp_cc_timing
+- [ ] ld_hl_sp_e_timing
+- [x] if_ie_registers
+- [ ] call_timing
+- [ ] push_timing
+- [ ] pop_timing
+- [x] halt_ime0_nointr_timing
+- [ ] oam_dma_restart
+- [ ] oam_dma_timing
+- [ ] oam_dma_start
+- [ ] call_timing2
+- [ ] halt_ime1_timing2_GS
+- [ ] jp_timing
+- [ ] ei_sequence
+- [ ] ret_cc_timing
+- [ ] call_cc_timing
+- [ ] boot_hwio_dmgABC
+- [ ] add_sp_e_timing
+
+
 ### Bits
 - [x] mem_oam
 - [x] reg_f

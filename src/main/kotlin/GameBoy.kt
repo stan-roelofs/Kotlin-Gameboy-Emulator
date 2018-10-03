@@ -11,13 +11,11 @@ class GameBoy(cart: File?) {
 
     init {
         if (cart != null) {
-            reset()
-            cartridge = Cartridge(cart)
+            loadCartridge(cart)
         }
     }
 
     fun reset() {
-        mmu.cartridge = cartridge
         mmu.reset()
         cpu.reset()
     }
@@ -41,6 +39,7 @@ class GameBoy(cart: File?) {
     fun loadCartridge(cart: File) {
         val temp = Cartridge(cart)
         cartridge = temp
+        mmu.cartridge = cartridge
         reset()
     }
 }

@@ -79,11 +79,6 @@ class Mmu private constructor() : Memory {
     }
 
     var cartridge: Cartridge? = null
-    set(value) {
-        field = value
-        reset()
-    }
-
     private val hram = HRam()
     private val oam = Oam()
     private val internalRam = InternalRam()
@@ -96,6 +91,7 @@ class Mmu private constructor() : Memory {
         internalRam.reset()
         gpu.reset()
         io.reset()
+        cartridge?.reset()
     }
 
     fun tick(cycles: Int) {

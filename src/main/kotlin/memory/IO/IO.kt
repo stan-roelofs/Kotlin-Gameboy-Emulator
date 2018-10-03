@@ -15,7 +15,7 @@ class IO : Memory {
     private val dma = Dma()
     private val timer = Timer()
 
-    private var IF = 0
+    private var IF = 0x1
 
     override fun reset() {
         timer.reset()
@@ -25,7 +25,7 @@ class IO : Memory {
         serial.reset()
         sound.reset()
 
-        IF = 0
+        IF = 0x1
     }
 
     fun tick(cycles: Int) {
