@@ -31,16 +31,9 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
     }
 
     override fun reset() {
-        for (bank in rom) {
-            bank.fill(0)
-        }
-        if (ram != null) {
-            for (bank in ram) {
-                bank.fill(0)
-            }
-        }
+        super.reset()
         currentRamBank = 0
-        currentRomBank = 0
+        currentRomBank = 1
         mode = 0
         ramEnabled = false
     }

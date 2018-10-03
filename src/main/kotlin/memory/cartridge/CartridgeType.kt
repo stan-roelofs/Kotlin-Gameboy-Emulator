@@ -11,6 +11,14 @@ interface CartridgeType : Memory {
     /** An array of ROM banks */
     val rom: Array<IntArray>
 
+    override fun reset() {
+        if (ram != null) {
+            for (bank in ram!!) {
+                bank.fill(0)
+            }
+        }
+    }
+
     /** Loads cartridge ROM into this.rom */
     fun loadRom(value: ByteArray)
 

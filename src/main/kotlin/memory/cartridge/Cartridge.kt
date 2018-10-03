@@ -30,7 +30,6 @@ class Cartridge(file: File) : Memory {
             loadHeader(data)
 
             type.loadRom(data)
-
         } catch (e: Exception) {
             e.printStackTrace()
         }

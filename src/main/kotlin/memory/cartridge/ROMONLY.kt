@@ -8,10 +8,6 @@ class ROMONLY : Memory, CartridgeType {
     override val ram: Array<IntArray>? = arrayOf(intArrayOf(0))
     override val rom: Array<IntArray> = arrayOf(IntArray(0x8000))
 
-    override fun reset() {
-        rom[0].fill(0)
-    }
-
     override fun loadRom(value: ByteArray) {
         for (i in 0 until value.size) {
             rom[0][i] = (value[i].toInt()) and 0xFF
