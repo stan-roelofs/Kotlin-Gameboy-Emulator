@@ -13,7 +13,6 @@ import javafx.util.Duration
 import memory.IO.Joypad
 import memory.Mmu
 import tornadofx.*
-import java.io.File
 
 class GameBoyView: View() {
     private var lcd = WritableImage(320, 288)
@@ -52,7 +51,7 @@ class GameBoyView: View() {
                         if (files.isNotEmpty()) {
                             gb.loadCartridge(files[0])
 
-
+                            tl.stop()
                             tl.keyFrames.remove(0, tl.keyFrames.size)
                             tl.keyFrames.add(play)
                             tl.cycleCount = Animation.INDEFINITE

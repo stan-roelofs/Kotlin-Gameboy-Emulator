@@ -13,6 +13,7 @@ abstract class MooneyeTest {
     // Test passes when a hash of the screen matches a provided hash
     // Provided hash is a hash of the screen after a test passed
     fun runMooneyeTest(gb: GameBoy, hashCode: Int) {
+        Log.i("")
         Log.i("Running Mooneye Test")
         Log.i("Provided hash $hashCode")
         for (i in 0..10000000) {
