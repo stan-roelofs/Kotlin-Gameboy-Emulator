@@ -132,6 +132,7 @@ class Cpu {
             registers.clock += cycles
             mmu.tick(cycles)
 
+            // If EI was executed, return such that interrupts are only enabled after the next instruction
             if (opcode == 0xFB) {
                 return
             }
@@ -499,6 +500,7 @@ class Cpu {
             // DI
             0xF3 -> {
                 registers.IME = false
+                eiExecuted = false // Clear this flag in case EI was executed last cycle
                 return DI(registers, mmu)
             }
 

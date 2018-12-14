@@ -16,6 +16,8 @@ abstract class MooneyeTest {
         Log.i("")
         Log.i("Running Mooneye Test")
         Log.i("Provided hash $hashCode")
+
+        // TODO: theres probably a better way to do this...
         for (i in 0..10000000) {
             gb.step()
         }

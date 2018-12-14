@@ -156,7 +156,7 @@ class AcceptanceTests : MooneyeTest() {
     @Test
     fun rapid_di_ei() {
         val gb = GameBoy(File("${path}rapid_di_ei.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, -298452657)
     }
 
     @Test

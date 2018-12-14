@@ -61,7 +61,7 @@ class GameBoyView: View() {
                 }
 
                 menu("Window") {
-                    item("Video RAM window").action {
+                    item("Video RAM / OAM viewer").action {
                         vramView.openWindow()
                     }
                     item("Debug window").action {
@@ -97,7 +97,7 @@ class GameBoyView: View() {
 
     init {
         // set initial values to 100 such that the first frame all pixels are forced to redraw
-        // TODO might wanna change this implementation
+        // TODO: this is just a temporary hack, should be fixed later on
         for (i in 0..255) {
             for (j in 0..255) {
                 oldScreen[i][j] = 100
