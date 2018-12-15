@@ -1,4 +1,6 @@
 # Blargg's tests
+pathToTests in BlarggTest.kt should be the location of the unzipped blargg tests folder. 
+
 ## cpu_instrs
 - [x] 01 - Special
 - [x] 02 - Interrupts

@@ -1,7 +1,7 @@
 # Mooneye tests
+pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests folder. 
 
 ## Acceptance
-
 - [x] boot_regs_dmgABC
 - [ ] call_cc_timing2
 - [x] ei_timing
