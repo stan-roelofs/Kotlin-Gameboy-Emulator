@@ -67,4 +67,22 @@ class TimerTests : MooneyeTest() {
         val gb = GameBoy(File("${path}tim11_div_trigger.gb"))
         runMooneyeTest(gb, 0)
     }
+
+    @Test
+    fun tima_reload() {
+        val gb = GameBoy(File("${path}tima_reload.gb"))
+        runMooneyeTest(gb, 0)
+    }
+
+    @Test
+    fun tima_write_reloading() {
+        val gb = GameBoy(File("${path}tima_write_reloading.gb"))
+        runMooneyeTest(gb, 0)
+    }
+
+    @Test
+    fun tma_write_reloading() {
+        val gb = GameBoy(File("${path}tma_write_reloading.gb"))
+        runMooneyeTest(gb, 0)
+    }
 }

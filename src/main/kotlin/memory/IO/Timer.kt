@@ -8,7 +8,7 @@ import utils.toHexString
 class Timer : Memory {
     private val divCycles = 256
     private var divCounter = 0
-    private var DIV = 0x19
+    private var DIV = 0
 
     private var TIMA = 0
     private var TMA = 0
@@ -23,10 +23,10 @@ class Timer : Memory {
     private var timerCounter = 0
 
     override fun reset() {
-        divCounter = 0
+        divCounter = 0xCC
         timerCounter = 0
         timerCycles = clock0Cycles
-        DIV = 0x18
+        DIV = 0xAB
         TIMA = 0
         TMA = 0
         TAC = 0
