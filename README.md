@@ -19,4 +19,3 @@ ROM Only and MBC1 cartridges are supported.
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
 
 ## Notes
-- Possible solution of some graphical issues might be to save a whole frame in the Lcd class and update the whole frame at once after a vertical blank.
