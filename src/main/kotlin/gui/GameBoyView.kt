@@ -96,6 +96,11 @@ class GameBoyView: View() {
     }
 
     init {
+        reset()
+        registerKeyboard()
+    }
+
+    private fun reset() {
         // set initial values to 100 such that the first frame all pixels are forced to redraw
         // TODO: this is just a temporary hack, should be fixed later on
         for (i in 0..255) {
@@ -103,7 +108,6 @@ class GameBoyView: View() {
                 oldScreen[i][j] = 100
             }
         }
-        registerKeyboard()
     }
 
     private fun registerKeyboard() {

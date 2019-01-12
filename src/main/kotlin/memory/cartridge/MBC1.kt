@@ -1,7 +1,6 @@
 package memory.cartridge
 
 import memory.Memory
-import utils.getBit
 import utils.toHexString
 
 class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
@@ -70,7 +69,7 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
     override fun writeRom(address: Int, value: Int) {
         when(address) {
             // RAM Enable
-            in 0x0000 until 0x2000 -> ramEnabled = value.getBit(1) && value.getBit(3)
+            in 0x0000 until 0x2000 -> ramEnabled = (value and 0x0F) == 0x0A
 
             // ROM Bank Number lower 5 bits
             in 0x2000 until 0x4000 -> {

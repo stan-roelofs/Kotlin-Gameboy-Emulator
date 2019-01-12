@@ -47,7 +47,7 @@ class Lcd : Memory {
 
         cycleCounter += cyclesElapsed
 
-        val mode = STAT and 0b11
+        val mode = STAT and 0b11 // The last two bits of STAT indicate the mode
         when (mode) {
             Mode.HBLANK.mode -> {
                 if (cycleCounter >= Mode.HBLANK.cycles) {
@@ -130,7 +130,7 @@ class Lcd : Memory {
                 if (LcdEnabled()) {
                     this.LY
                 } else {
-                    0
+                    0 // If LCD is off this register is fixed at 0
                 }
             }
             Mmu.LYC -> this.LYC
@@ -156,9 +156,14 @@ class Lcd : Memory {
         val newVal = value and 0xFF
         when(address) {
             Mmu.LCDC -> {
+                val lcdBefore = LcdEnabled()
+
                 this.LCDC = newVal
-                if (!LcdEnabled()) {
+
+                if (lcdBefore && !LcdEnabled()) {
                     cycleCounter = 0
+                    setMode(Mode.HBLANK)
+                    this.LY = 0
                 }
             }
             Mmu.LY -> this.LY = 0
