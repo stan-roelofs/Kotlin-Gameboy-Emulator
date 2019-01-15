@@ -47,20 +47,19 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
     }
 
     override fun readRom(address: Int): Int {
-        var romBank = if (mode == 1) currentRomBank and 0b00011111 else currentRomBank or (currentRamBank shl 5)
-        return when(address) {
+        when(address) {
             in 0x0000 until 0x4000 -> {
-                /*
-                if (rom.size > 0b11111 && mode == 1) {
-                    if (romBank in 32 until 64 || romBank in 96 until 128) {
-                        this.rom[32][address]
-                    }
-                }*/
-                this.rom[0][address]
+                if (mode == 1) {
+                    val bank = (currentRamBank shl 5) % rom.size
+                    return this.rom[bank][address]
+                }
+
+                return this.rom[0][address]
             }
             in 0x4000 until 0x8000 -> {
+                var romBank = currentRomBank or (currentRamBank shl 5)
                 romBank %= rom.size
-                this.rom[romBank][address - 0x4000]
+                return this.rom[romBank][address - 0x4000]
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
         }
@@ -77,7 +76,7 @@ class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
                 var newRomBank = (currentRomBank and 0b11100000) or newVal
 
                 if (newRomBank == 0) {
-                    newRomBank++
+                    newRomBank = 1
                 }
 
                 currentRomBank = newRomBank % rom.size

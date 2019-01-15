@@ -17,7 +17,7 @@ class Mbc1Tests : MooneyeTest() {
     @Test
     fun multicart_rom_8mb() {
         val gb = GameBoy(File("${path}multicart_rom_8Mb.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 2123546873)
     }
 
     @Test
