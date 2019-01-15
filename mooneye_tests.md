@@ -87,4 +87,4 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [ ] rom_16Mb
 - [x] ram_256Kb
 - [x] ram_64Kb
-- [ ] bits_ram_en
+- [x] bits_ram_en
