@@ -12,9 +12,7 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md)
 - OAM debugger which can be used to view the sprites and their properties that are currently in the OAM.
 
 ## Status
-Some games are playable but there is an issue where sprites are missing in some games, I suspect because of read/write timing issues. 
-Audio is currently not implemented. Currently the focus is on passing the mooneye and blargg test roms to make the emulator more accurate.
-ROM Only and MBC1 cartridges are supported.
+Some games are playable but there is an issue where sprites are missing in some games. Audio is currently not implemented. Currently the focus is on passing the mooneye and blargg test roms to make the emulator more accurate. ROM Only and MBC1 cartridges are supported.
 
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
 
