@@ -11,7 +11,7 @@ class Mbc1Tests : MooneyeTest() {
     @Test
     fun bits_ram_en() {
         val gb = GameBoy(File("${path}bits_ram_en.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 2123546873)
     }
 
     @Test
