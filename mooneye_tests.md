@@ -40,7 +40,7 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [x] unused_hwio
 
 ### Interrupts
-- [ ] ie_push - R4: unwanted cancel
+- [x] ie_push - R4: unwanted cancel
 
 ### Oam_dma
 - [x] basic
