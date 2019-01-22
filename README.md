@@ -1,10 +1,10 @@
 # Kotlin-Gameboy-Emulator
-
-Gameboy emulator written in Kotlin using TornadoFX for rendering. This project started as a way for me to understand how emulators function. 
-It is written in Kotlin because it seemed like an interesting language that I wanted to try out.
+Gameboy emulator written in Kotlin. This project started as a way for me to 
+understand emulation. It is written in Kotlin because it seemed like an interesting 
+language that I wanted to try out.
 
 ## Tests status
-See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md)
+See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 
 ## Features
 - Runs on Windows, Linux and Mac.
@@ -17,3 +17,4 @@ Some games are playable but there is an issue where sprites are missing in some 
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
 
 ## Notes
+This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.
