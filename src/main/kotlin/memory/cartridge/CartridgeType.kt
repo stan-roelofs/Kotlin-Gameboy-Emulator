@@ -14,7 +14,7 @@ interface CartridgeType : Memory {
     override fun reset() {
         if (ram != null) {
             for (bank in ram!!) {
-                bank.fill(0)
+                bank.fill(0) // TODO; this should be random
             }
         }
     }

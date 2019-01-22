@@ -33,6 +33,38 @@ class Cpu {
     }
 
     fun step() {
+        processInterrupts()
+
+        if (!registers.halt) {
+            val opcode = mmu.readByte(registers.PC)
+
+            if (!registers.haltBug) {
+                registers.incPC()
+            } else {
+                registers.haltBug = false
+            }
+
+            val instruction = getInstruction(opcode)
+            lastInstruction = opcode
+
+            val cycles = instruction.execute()
+            increaseClock(cycles)
+
+            // If EI was executed, return such that interrupts are only enabled after the next instruction
+            if (opcode == 0xFB) {
+                return
+            }
+
+            if (eiExecuted) {
+                registers.IME = true
+                eiExecuted = false
+            }
+        } else {
+            increaseClock(4)
+        }
+    }
+
+    private fun processInterrupts() {
         // Interrupt handling
         var IF = mmu.readByte(Mmu.IF)
         val IE = mmu.readByte(Mmu.IE)
@@ -58,7 +90,7 @@ class Cpu {
                 increaseClock(4)
                 increaseClock(4)
 
-                // Push current PC onto stack
+                // Push high byte of current PC onto stack
                 registers.decSP()
                 mmu.writeByte(registers.SP, registers.PC.getSecondByte())
                 increaseClock(4)
@@ -95,34 +127,6 @@ class Cpu {
 
                 increaseClock(4)
             }
-        }
-
-        if (!registers.halt) {
-            val opcode = mmu.readByte(registers.PC)
-
-            if (!registers.haltBug) {
-                registers.incPC()
-            } else {
-                registers.haltBug = false
-            }
-
-            val instruction = getInstruction(opcode)
-            lastInstruction = opcode
-
-            val cycles = instruction.execute()
-            increaseClock(cycles)
-
-            // If EI was executed, return such that interrupts are only enabled after the next instruction
-            if (opcode == 0xFB) {
-                return
-            }
-
-            if (eiExecuted) {
-                registers.IME = true
-                eiExecuted = false
-            }
-        } else {
-            increaseClock(4)
         }
     }
 

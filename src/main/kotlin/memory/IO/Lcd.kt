@@ -23,6 +23,7 @@ class Lcd : Memory {
     private var OBP0 = 0
     private var OBP1 = 0
 
+    private var isAnyStat = false
     var cycleCounter = 0
 
     override fun reset() {
@@ -47,49 +48,8 @@ class Lcd : Memory {
 
         cycleCounter += cyclesElapsed
 
-        val mode = STAT and 0b11 // The last two bits of STAT indicate the mode
+        val mode = getMode()
         when (mode) {
-            Mode.HBLANK.mode -> {
-                if (cycleCounter >= Mode.HBLANK.cycles) {
-                    cycleCounter = 0
-
-                    LY++
-
-                    if (LY >= 144) {
-                        setMode(Mode.VBLANK)
-
-                        if (STAT.getBit(4)) {
-                            requestInterrupt(1)
-                        }
-
-                    } else {
-                        setMode(Mode.OAM_SEARCH)
-
-                        if (STAT.getBit(5)) {
-                            requestInterrupt(1)
-                        }
-                    }
-                }
-            }
-            Mode.VBLANK.mode -> {
-                if (cycleCounter >= Mode.VBLANK.cycles) {
-                    cycleCounter = 0
-
-                    if (LY == 144) {
-                        requestInterrupt(0)
-                    }
-
-                    LY++
-                    if (LY == 154) {
-                        LY = 0
-                        setMode(Mode.OAM_SEARCH)
-
-                        if (STAT.getBit(5)) {
-                            requestInterrupt(1)
-                        }
-                    }
-                }
-            }
             Mode.OAM_SEARCH.mode -> {
                 if (cycleCounter >= Mode.OAM_SEARCH.cycles) {
                     cycleCounter = 0
@@ -101,19 +61,59 @@ class Lcd : Memory {
                     cycleCounter = 0
                     setMode(Mode.HBLANK)
 
-                    if (STAT.getBit(3)) {
-                        requestInterrupt(1)
-                    }
-
                     renderScanline()
                 }
             }
+            Mode.HBLANK.mode -> {
+                if (cycleCounter >= Mode.HBLANK.cycles) {
+                    cycleCounter = 0
+                    LY++
+
+                    if (LY == 143) {
+                        setMode(Mode.VBLANK)
+
+                        requestInterrupt(0)
+
+                        // Screen should be rendered here
+
+                    } else {
+                        setMode(Mode.OAM_SEARCH)
+                    }
+                }
+            }
+            Mode.VBLANK.mode -> {
+                if (cycleCounter >= Mode.VBLANK.cycles) {
+                    cycleCounter = 0
+                    LY++
+
+                    if (LY > 153) {
+                        LY = 0
+                        setMode(Mode.OAM_SEARCH)
+                    }
+                }
+            }
+
         }
 
         STAT = setBit(STAT, 2, LY == LYC)
 
-        if (STAT.getBit(6) && STAT.getBit(2)) {
-            requestInterrupt(1)
+        checkStatInterrupts()
+    }
+
+    private fun checkStatInterrupts() {
+        val mode = getMode()
+
+        if (    (mode == Mode.HBLANK.mode && STAT.getBit(3)) ||
+                (mode == Mode.OAM_SEARCH.mode && STAT.getBit(5)) ||
+                (mode == Mode.VBLANK.mode && STAT.getBit(4)) || // or 5??
+                (STAT.getBit(6) && STAT.getBit(2))
+        ) {
+            if (!isAnyStat) {
+                isAnyStat = true
+                requestInterrupt(1)
+            }
+        } else {
+            isAnyStat = false
         }
     }
 
@@ -121,6 +121,10 @@ class Lcd : Memory {
         val nr = mode.mode
         STAT = setBit(STAT, 0, nr.getBit(0))
         STAT = setBit(STAT, 1, nr.getBit(1))
+    }
+
+    private fun getMode(): Int {
+        return STAT and 0b11
     }
 
     override fun readByte(address: Int): Int {

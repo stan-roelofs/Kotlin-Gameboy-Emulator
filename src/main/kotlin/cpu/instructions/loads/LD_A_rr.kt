@@ -1,9 +1,9 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 class LD_A_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 
@@ -12,7 +12,7 @@ class LD_A_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instr
             RegisterID.BC.ordinal -> registers.getBC()
             RegisterID.DE.ordinal -> registers.getDE()
             RegisterID.HL.ordinal -> registers.getHL()
-            else -> throw Exception("Invalid register: " + register)
+            else -> throw Exception("Invalid register: $register")
         }
 
         registers.A = mmu.readByte(address)

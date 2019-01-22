@@ -116,6 +116,7 @@ class Mmu private constructor() : Memory {
 
     override fun writeByte(address: Int, value: Int) {
         val newVal = value and 0xFF
+
         when (address) {
             in 0x0000 until 0x8000 -> cartridge!!.writeByte(address, newVal)
             in 0x8000 until 0xA000 -> gpu.writeByte(address, newVal)

@@ -45,6 +45,9 @@ interface Memory {
         writeByte(address + 1, value shr 8)
     }
 
+    /**
+     * Sets the bit at [pos] to true in the Interrupt Flags register
+     */
     fun requestInterrupt(pos: Int) {
         var IF = Mmu.instance.readByte(Mmu.IF)
         IF = setBit(IF, pos)

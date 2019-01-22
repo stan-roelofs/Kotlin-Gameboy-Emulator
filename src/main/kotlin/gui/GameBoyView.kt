@@ -103,8 +103,8 @@ class GameBoyView: View() {
     private fun reset() {
         // set initial values to 100 such that the first frame all pixels are forced to redraw
         // TODO: this is just a temporary hack, should be fixed later on
-        for (i in 0..255) {
-            for (j in 0..255) {
+        for (i in 0 until 255) {
+            for (j in 0 until 255) {
                 oldScreen[i][j] = 100
             }
         }
