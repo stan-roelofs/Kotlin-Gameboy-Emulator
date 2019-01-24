@@ -24,7 +24,7 @@ class AcceptanceTests : MooneyeTest() {
     @Test
     fun boot_hwio_dmgABC() {
         val gb = GameBoy(File("${path}boot_hwio-dmgABCmgb.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 2123546873)
     }
 
     @Test

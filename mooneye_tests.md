@@ -19,7 +19,7 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [ ] ld_hl_sp_e_timing
 - [x] if_ie_registers
 - [ ] call_timing
-- [ ] boot_div_dmg0
+- [ ] boot_div_dmgABC
 - [ ] push_timing
 - [ ] pop_timing
 - [x] halt_ime0_nointr_timing
@@ -31,7 +31,7 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [ ] jp_timing
 - [ ] ei_sequence
 - [ ] ret_cc_timing
-- [ ] boot_hwio_dmgABC
+- [x] boot_hwio_dmgABC
 - [ ] call_cc_timing
 - [ ] add_sp_e_timing
 

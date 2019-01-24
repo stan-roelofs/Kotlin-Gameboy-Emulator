@@ -11,16 +11,14 @@ import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.util.Duration
 import memory.IO.Joypad
-import memory.Mmu
 import tornadofx.*
+import java.util.*
 
-class GameBoyView: View() {
+class GameBoyView: View(), Observer {
     private var lcd = WritableImage(320, 288)
-    private var oldScreen = Array(256) {IntArray(256)}
+    private var oldScreen = Array(144) {IntArray(160)}
 
-    //private val gb = GameBoy(File("E:/Downloads/mooneye-gb_hwtests/acceptance/timer/tim11.gb"))
     private val gb = GameBoy(null)
-    //private val gb = GameBoy(File("E:/Downloads/gb-test-roms-master/cpu_instrs/cpu_instrs.gb"))
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
 
@@ -30,12 +28,18 @@ class GameBoyView: View() {
     val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
     val colors = arrayOf(color0, color1, color2, color3)
 
-    val tl = Timeline()
-    val play = KeyFrame(Duration.millis(17.0),
+    private var frameDone = false
+
+    private val tl = Timeline()
+    private val play = KeyFrame(Duration.millis(17.0),
             EventHandler {
-                gb.frame()
-                updateScreen()
+                // Keep executing until a frame is ready
+                while(!frameDone) {
+                    gb.step()
+                }
                 updateVram()
+                updateDebug()
+                frameDone = false
             })
 
     override val root = gridpane {
@@ -96,6 +100,7 @@ class GameBoyView: View() {
     }
 
     init {
+        gb.mmu.io.lcd.addObserver(this)
         reset()
         registerKeyboard()
     }
@@ -103,8 +108,8 @@ class GameBoyView: View() {
     private fun reset() {
         // set initial values to 100 such that the first frame all pixels are forced to redraw
         // TODO: this is just a temporary hack, should be fixed later on
-        for (i in 0 until 255) {
-            for (j in 0 until 255) {
+        for (i in 0 until 144) {
+            for (j in 0 until 160) {
                 oldScreen[i][j] = 100
             }
         }
@@ -150,19 +155,23 @@ class GameBoyView: View() {
         debugView.update()
     }
 
-    private fun updateScreen() {
-        val pixelWriter = lcd.pixelWriter
-        val SCX = Mmu.instance.readByte(0xFF43)
-        val SCY = Mmu.instance.readByte(0xFF42)
+    override fun update(o: Observable?, arg: Any?) {
+        frameDone = true
 
+        val pixelWriter = lcd.pixelWriter
+
+        @Suppress("UNCHECKED_CAST")
+        val screen = arg as Array<IntArray>
         for (y in 0 until 144) {
             for (x in 0 until 160) {
-                if (oldScreen[x][y] != gb.mmu.io.lcd.screen[x][y]) {
-                    pixelWriter.setColor(2 * x, 2 * y, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
-                    pixelWriter.setColor(2 * x + 1, 2 * y, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
-                    pixelWriter.setColor(2 * x, 2 * y + 1, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
-                    pixelWriter.setColor(2 * x + 1, 2 * y + 1, colors[gb.mmu.io.lcd.screen[x + SCX][y + SCY]])
-                    oldScreen[x][y] = gb.mmu.io.lcd.screen[x][y]
+                // If current pixel hasn't changed, skip drawing
+                if (oldScreen[y][x] != screen[y][x]) {
+                    val c = colors[screen[y][x]]
+                    pixelWriter.setColor(2 * x, 2 * y, c)
+                    pixelWriter.setColor(2 * x + 1, 2 * y, c)
+                    pixelWriter.setColor(2 * x, 2 * y + 1, c)
+                    pixelWriter.setColor(2 * x + 1, 2 * y + 1, c)
+                    oldScreen[y][x] = screen[y][x]
                 }
             }
         }

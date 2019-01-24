@@ -34,15 +34,11 @@ class Timer : Memory {
 
     // TODO this implementation is currently a mess
     fun tick(cycles: Int) {
-        // Get current value of the counter
-        val oldCounter = internalCounter
-
         // Set new value of the counter
         internalCounter += cycles
         internalCounter = internalCounter and 0xFFFF
 
         // update timer
-        // If timer enabled
         if (TAC.getBit(2)) {
             timerCounter += cycles
 
