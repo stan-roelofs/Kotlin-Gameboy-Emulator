@@ -14,7 +14,9 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 ## Status
 Some games are playable but there is an issue where sprites are missing in some games. Audio is currently not implemented. Currently the focus is on passing the mooneye and blargg test roms to make the emulator more accurate. ROM Only and MBC1 cartridges are supported.
 
-![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
-
 ## Notes
 This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.
+
+## Preview
+![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
+![alt text](https://media.giphy.com/media/1wo04vzJbUL7jnMmHp/giphy.gif)
