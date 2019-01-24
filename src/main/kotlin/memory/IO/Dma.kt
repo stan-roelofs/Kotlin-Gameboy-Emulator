@@ -8,7 +8,7 @@ class Dma : Memory {
 
     private var counter = 0
     var inProgress = false
-    private val cyclesMax = 648
+    private val cyclesMax = 644
     private var source = 0
 
     private var DMA = 0
@@ -21,31 +21,26 @@ class Dma : Memory {
 
     fun tick(cycles: Int) {
         if (inProgress) {
-            /*
             val mmu = Mmu.instance
 
             var bytes = cycles / 4
-            while (counter <= cyclesMax && bytes > 0) {
+            while (counter < cyclesMax && bytes > 0) {
                 if (counter == 0) {
                     counter += 4
-                    break
+
+                    if (bytes == 1) {
+                        break
+                    }
                 }
 
-                val offset = (counter / 4) - 4
-                mmu.writeByte(0xFF + offset, mmu.readByte(source + offset))
+                val offset = ((counter - 4) / 4)
+                mmu.writeByte(0xFE00 + offset, mmu.readByte(source + offset))
                 counter += 4
                 bytes--
-            }*/
+            }
 
-            counter += cycles
             if (counter >= cyclesMax) {
-                counter = 0
                 inProgress = false
-
-                val mmu = Mmu.instance
-                for (i in 0 until 160) {
-                    mmu.writeByte(0xFE00 + i, mmu.readByte(source + i))
-                }
             }
         }
     }
