@@ -19,3 +19,4 @@ This emulator is for the original Game Boy (DMG) and the versions A,B,C of the C
 
 ## Preview
 ![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
+![alt text](https://media.giphy.com/media/5t3Mqb7Ivzf5Kcsl15/giphy.gif)
