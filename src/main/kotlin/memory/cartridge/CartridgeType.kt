@@ -12,6 +12,10 @@ interface CartridgeType : Memory {
     val rom: Array<IntArray>
 
     override fun reset() {
+        for (bank in rom) {
+            bank.fill(0)
+        }
+
         if (ram != null) {
             for (bank in ram!!) {
                 bank.fill(0)

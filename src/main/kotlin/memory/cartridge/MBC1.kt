@@ -3,7 +3,7 @@ package memory.cartridge
 import memory.Memory
 import utils.toHexString
 
-class MBC1(romBanks: Int, ramSize: Int) : Memory, MBC {
+class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false) : Memory, MBC {
 
     override val ram: Array<IntArray>?
     override val rom: Array<IntArray>

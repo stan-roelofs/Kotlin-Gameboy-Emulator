@@ -9,8 +9,9 @@ import java.util.*
 class Cartridge(file: File) : Memory {
 
     private lateinit var type: CartridgeType
-    var isSgb = false
-    var isGbc = false
+    private var isSgb = false
+    private var isGbc = false
+    private lateinit var title: String
 
     init {
         loadRom(file)
@@ -55,8 +56,8 @@ class Cartridge(file: File) : Memory {
         isGbc = romColorGB
         Log.i("Is Color GB: $romColorGB")
 
-        val romTitle = String(Arrays.copyOfRange(data, 0x134, 0x143), Charsets.US_ASCII)
-        Log.i("Title: $romTitle")
+        title = String(Arrays.copyOfRange(data, 0x134, 0x143), Charsets.US_ASCII)
+        Log.i("Title: $title")
 
         val romLicensee = String(Arrays.copyOfRange(data, 0x144, 0x146), Charsets.US_ASCII)
         Log.i("New Licensee Code: $romLicensee")
@@ -108,7 +109,7 @@ class Cartridge(file: File) : Memory {
             }
             0x03 -> {
                 Log.i("ROM+MBC1+RAM+BATTERY")
-                type = MBC1(romBanks, ramSize)
+                type = MBC1(romBanks, ramSize, true)
             }
             0x05 -> Log.i("ROM+MBC2")
             0x06 -> Log.i("ROM+MBC2+BATTERY")
