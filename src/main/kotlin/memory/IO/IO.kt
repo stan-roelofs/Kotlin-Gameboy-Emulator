@@ -15,7 +15,7 @@ class IO : Memory {
     private val dma = Dma()
     private val timer = Timer()
 
-    private var IF = 0x1
+    private var IF = 0
 
     override fun reset() {
         timer.reset()
@@ -90,7 +90,8 @@ class IO : Memory {
             Mmu.WX,
             Mmu.BGP,
             Mmu.OBP0,
-            Mmu.OBP1 -> lcd.readByte(address)
+            Mmu.OBP1,
+            in 0x8000 until 0xA000 -> lcd.readByte(address)
             else -> 0xFF
         }
     }
@@ -153,7 +154,8 @@ class IO : Memory {
             Mmu.WX,
             Mmu.BGP,
             Mmu.OBP0,
-            Mmu.OBP1 -> lcd.writeByte(address, newVal)
+            Mmu.OBP1,
+            in 0x8000 until 0xA000 -> lcd.writeByte(address, newVal)
             else -> return
         }
     }

@@ -18,7 +18,7 @@ interface CartridgeType : Memory {
 
         if (ram != null) {
             for (bank in ram!!) {
-                bank.fill(0)
+                bank.fill(0) // TODO; this should be random
             }
         }
     }

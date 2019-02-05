@@ -33,88 +33,7 @@ class Cpu {
     }
 
     fun step() {
-        // Interrupt handling
-        var IF = mmu.readByte(Mmu.IF)
-        val IE = mmu.readByte(Mmu.IE)
-
-        var address = 0
-        var interruptBit = 0
-        for (i in 0..4) {
-            if (IE.getBit(i) && IF.getBit(i)) {
-                IF = clearBit(IF, i)
-                address = 0x40 + (i * 8)
-                interruptBit = i
-                break
-            }
-        }
-
-        /*
-        var address = 0
-        when {
-            IF.getBit(0) && IE.getBit(0) -> {
-                IF = clearBit(IF, 0)
-                address = 0x40
-            }
-            IF.getBit(1) && IE.getBit(1) -> {
-                IF = clearBit(IF, 1)
-                address = 0x48
-            }
-            IF.getBit(2) && IE.getBit(2) -> {
-                IF = clearBit(IF, 2)
-                address = 0x50
-            }
-            IF.getBit(3) && IE.getBit(3) -> {
-                IF = clearBit(IF, 3)
-                address = 0x58
-            }
-            IF.getBit(4) && IE.getBit(4) -> {
-                IF = clearBit(IF, 4)
-                address = 0x60
-            }
-        }*/
-
-        // Interrupt Service Routine
-        if (address != 0) {
-            if (registers.halt) {
-                registers.halt = false
-                registers.clock += 4
-                mmu.tick(4)
-            }
-
-            if (registers.IME) {
-                registers.IME = false
-
-                // Execute two nops
-                registers.clock += 4
-                mmu.tick(4)
-                registers.clock += 4
-                mmu.tick(4)
-
-                // Push current PC onto stack
-                registers.decSP()
-                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
-                registers.clock += 4
-                mmu.tick(4)
-
-                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
-                if (mmu.readByte(Mmu.IE).getBit(interruptBit)) {
-                    registers.decSP()
-                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
-                    registers.clock += 4
-                    mmu.tick(4)
-
-                    // Set PC to address of handler
-                    registers.PC = address
-                    mmu.writeByte(Mmu.IF, IF)
-                } else {
-                    // Cancellation apparently sets pc to 0x0000 according to mooneye gb tests
-                    registers.PC = 0x0000
-                }
-
-                registers.clock += 4
-                mmu.tick(4)
-            }
-        }
+        processInterrupts()
 
         if (!registers.halt) {
             val opcode = mmu.readByte(registers.PC)
@@ -129,8 +48,7 @@ class Cpu {
             lastInstruction = opcode
 
             val cycles = instruction.execute()
-            registers.clock += cycles
-            mmu.tick(cycles)
+            increaseClock(cycles)
 
             // If EI was executed, return such that interrupts are only enabled after the next instruction
             if (opcode == 0xFB) {
@@ -142,9 +60,82 @@ class Cpu {
                 eiExecuted = false
             }
         } else {
-            registers.clock += 4
-            mmu.tick(4)
+            increaseClock(4)
         }
+    }
+
+    private fun processInterrupts() {
+        // Interrupt handling
+        var IF = mmu.readByte(Mmu.IF)
+        val IE = mmu.readByte(Mmu.IE)
+
+        var interruptTriggered = false
+        for (i in 0..4) {
+            if (IE.getBit(i) && IF.getBit(i)) {
+                interruptTriggered = true
+            }
+        }
+
+        // Interrupt Service Routine
+        if (interruptTriggered) {
+            if (registers.halt) {
+                registers.halt = false
+                increaseClock(4)
+            }
+
+            if (registers.IME) {
+                registers.IME = false
+
+                // Execute two nops
+                increaseClock(4)
+                increaseClock(4)
+
+                // Push high byte of current PC onto stack
+                registers.decSP()
+                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
+                increaseClock(4)
+
+                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
+                val newIE = mmu.readByte(Mmu.IE)
+
+                var interruptBit = -1
+                for (i in 0..4) {
+                    if (newIE.getBit(i) && IF.getBit(i)) {
+                        interruptBit = i
+                        break
+                    }
+                }
+
+                if (interruptBit >= 0) {
+                    registers.decSP()
+                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
+                    increaseClock(4)
+
+                    // Clear interrupt flag
+                    IF = clearBit(IF, interruptBit)
+                    mmu.writeByte(Mmu.IF, IF)
+
+                    // Calculate interrupt handler address
+                    val address = 0x40 + (interruptBit * 8)
+
+                    // Set PC to address of handler
+                    registers.PC = address
+                } else {
+                    // Cancellation apparently sets pc to 0x0000 according to mooneye gb tests
+                    registers.PC = 0x0000
+                }
+
+                increaseClock(4)
+            }
+        }
+    }
+
+    private fun increaseClock(steps: Int) {
+        if (steps < 0) {
+            throw IllegalArgumentException("Cannot increase clock by negative value")
+        }
+        registers.clock += steps
+        mmu.tick(steps)
     }
 
     /**

@@ -16,9 +16,15 @@ class AcceptanceTests : MooneyeTest() {
     }
 
     @Test
-    fun boot_hwio_dmgABC() {
-        val gb = GameBoy(File("${path}boot_hwio-dmg0.gb"))
+    fun boot_div_dmgABC() {
+        val gb = GameBoy(File("${path}boot_div-dmgABCmgb.gb"))
         runMooneyeTest(gb, 0)
+    }
+
+    @Test
+    fun boot_hwio_dmgABC() {
+        val gb = GameBoy(File("${path}boot_hwio-dmgABCmgb.gb"))
+        runMooneyeTest(gb, 2123546873)
     }
 
     @Test
@@ -84,7 +90,7 @@ class AcceptanceTests : MooneyeTest() {
     @Test
     fun halt_ime0_nointr_timing() {
         val gb = GameBoy(File("${path}halt_ime0_nointr_timing.gb"))
-        runMooneyeTest(gb, -754041545)
+        runMooneyeTest(gb, 224216965)
     }
 
     @Test
@@ -103,6 +109,12 @@ class AcceptanceTests : MooneyeTest() {
     fun if_ie_registers() {
         val gb = GameBoy(File("${path}if_ie_registers.gb"))
         runMooneyeTest(gb, 2034423270)
+    }
+
+    @Test
+    fun intr_timing() {
+        val gb = GameBoy(File("${path}intr_timing.gb"))
+        runMooneyeTest(gb, 0)
     }
 
     @Test

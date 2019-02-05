@@ -22,7 +22,7 @@ class DmaTests : MooneyeTest() {
 
     @Test
     fun sources() {
-        val gb = GameBoy(File("${path}sources-dmgABCmbgS.gb"))
+        val gb = GameBoy(File("${path}sources-dmgABCmgbS.gb"))
         runMooneyeTest(gb, 2123546873)
     }
 }

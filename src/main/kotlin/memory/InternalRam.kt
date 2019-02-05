@@ -7,7 +7,7 @@ class InternalRam : Memory {
     private val ram: IntArray = IntArray(0x2000)
 
     override fun reset() {
-        ram.fill(0)
+        ram.fill(0) //TODO: this should actually be random
     }
 
     override fun readByte(address: Int): Int {
