@@ -19,13 +19,16 @@ internal class CartridgeTest {
         }
     }
 
-    @Test
-    fun ramSize800() {
-        val cart = MBC1(2, 0x800)
+    private fun testRam(size: Int, banks: Int) {
+        val totalSize = size * banks
+
+        val cart = MBC1(2, totalSize)
         cart.ramEnabled = true
 
-        for (i in 0 until 0x800) {
-            cart.ram!![0][i] = i
+        for (i in 0 until totalSize) {
+            val currentBank = i / size
+            val currentIndex = i % size
+            cart.ram!![currentBank][currentIndex] = currentIndex
         }
 
         val file = File("test")
@@ -41,10 +44,31 @@ internal class CartridgeTest {
         cart.loadRam(file)
 
         val bytes = Files.readAllBytes(file.toPath())
-        val match = true
 
-        for (i in 0 until 0x800) {
-            assertEquals(bytes[i], cart.ram!![0][i].toByte())
+        for (i in 0 until totalSize) {
+            val currentBank = i / size
+            val currentIndex = i % size
+            assertEquals(bytes[i], cart.ram!![currentBank][currentIndex].toByte())
         }
+    }
+
+    @Test
+    fun ramSize800() {
+        testRam(0x800, 1)
+    }
+
+    @Test
+    fun ramSize2000() {
+        testRam(0x2000, 1)
+    }
+
+    @Test
+    fun ramSize8000() {
+        testRam(0x2000, 4)
+    }
+
+    @Test
+    fun ramSize20000() {
+        testRam(0x2000, 16)
     }
 }
