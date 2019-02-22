@@ -3,6 +3,9 @@ Gameboy emulator written in Kotlin. This project started as a way for me to
 understand emulation. It is written in Kotlin because it seemed like an interesting 
 language that I wanted to try out.
 
+## Downloads
+See [releases](https://github.com/stan-roelofs/Kotlin-Gameboy-Emulator/releases)
+
 ## Tests status
 See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 
