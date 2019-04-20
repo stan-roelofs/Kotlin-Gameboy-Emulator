@@ -19,7 +19,7 @@ class Lcd : Memory, Observable() {
     private val sprites = Array(40) {Sprite()}
 
     // List of tiles in the video ram
-    private val tiles = Array(384) {Array(8) {IntArray(8)}}
+    private val tiles = Array(384) {Array(16) {IntArray(8)}}
 
     private var LCDC = 0
     private var LY = 0
@@ -242,74 +242,8 @@ class Lcd : Memory, Observable() {
         // TODO: if lcdenabled
         val row = IntArray(160)
         renderBackground(row)
+       // renderWindow(row)
         renderSprites(row)
-    }
-
-    private fun renderWindow() {
-        val windowEnabled = LCDC.getBit(5)
-        if (windowEnabled) {
-            val mmu = Mmu.instance
-            // Read location of tile map from LCDC
-            val windowMap = if (LCDC.getBit(6)) 0x9C00 else 0x9800
-
-            // Read location of tiles from LCDC
-            val tilesAddress = if (LCDC.getBit(4)) 0x8000 else 0x8800
-
-            // Calculate address start which contains the tiles of the current line
-            val currentLine = LY
-            val lineAddress = windowMap + (currentLine / 8) * 32
-
-            // One line has 32 tiles
-            for (i in lineAddress until lineAddress + 32) {
-                val tileId = if (tilesAddress == 0x8800) {
-                    mmu.readByte(i).toByte().toInt() + 128
-                } else {
-                    mmu.readByte(i)
-                }
-
-                // Calculate the starting address of the tile, each tile is stored as 16 bytes
-                val tileStart = tilesAddress + (tileId * 16)
-
-                // Calculate the offset from the start of the tile to the current line, each line is stored as 2 bytes
-                val lineOffset = (currentLine % 8) * 2
-
-                // Read the 2 bytes that represent the current line in the tile
-                val byte = mmu.readByte(tileStart + lineOffset)
-                val byte2 = mmu.readByte(tileStart + lineOffset + 1)
-
-                for (x in 0..7) {
-                    // Read color indicator
-                    val LSB = if (byte.getBit(x)) 1 else 0
-                    val MSB = if (byte2.getBit(x)) 2 else 0
-                    val color = LSB + MSB
-
-                    // Read background palette
-                    val bgPalette = BGP
-
-                    // Get color corresponding to color indicator using palette
-                    var newColor = 0
-                    when (color) {
-                        0b00 -> {
-                            newColor = setBit(newColor, 0, bgPalette.getBit(0))
-                            newColor = setBit(newColor, 1, bgPalette.getBit(1))
-                        }
-                        0b01 -> {
-                            newColor = setBit(newColor, 0, bgPalette.getBit(2))
-                            newColor = setBit(newColor, 1, bgPalette.getBit(3))
-                        }
-                        0b10 -> {
-                            newColor = setBit(newColor, 0, bgPalette.getBit(4))
-                            newColor = setBit(newColor, 1, bgPalette.getBit(5))
-                        }
-                        0b11 -> {
-                            newColor = setBit(newColor, 0, bgPalette.getBit(6))
-                            newColor = setBit(newColor, 1, bgPalette.getBit(7))
-                        }
-                    }
-                    screen[WX - 7 + (i - lineAddress) * 8 + (7 - x)][currentLine + WY] = newColor
-                }
-            }
-        }
     }
 
     private fun renderBackground(row: IntArray) {
@@ -388,10 +322,25 @@ class Lcd : Memory, Observable() {
             // Check if this sprite falls on this scanline
             if (obj.y <= LY && (obj.y + spriteSize) > LY) {
 
-                val tilerow: IntArray = if (obj.isYFlip) {
-                    tiles[obj.tileNumber][spriteSize - 1 - (LY - obj.y)]
+                val temp = if (spriteSize == 16) {
+                    if (LY - obj.y < 8) {
+                        obj.tileNumber and 0xFE
+                    } else {
+                        obj.tileNumber or 0x1
+                    }
                 } else {
-                    tiles[obj.tileNumber][LY - obj.y]
+                    obj.tileNumber
+                }
+
+                var spriteRow = LY - obj.y
+                if (spriteRow >= 8) {
+                    spriteRow -= 8
+                }
+
+                val tilerow: IntArray = if (obj.isYFlip) {
+                    tiles[temp][spriteSize - 1 - spriteRow]
+                } else {
+                    tiles[temp][spriteRow]
                 }
 
                 var color: Int
@@ -422,7 +371,6 @@ class Lcd : Memory, Observable() {
                                 newColor = setBit(newColor, 1, objPalette.getBit(7))
                             }
                         }
-
                         screen[LY][obj.x + x] = newColor
                     }
                 }
