@@ -11,61 +11,61 @@ class TimerTests : MooneyeTest() {
     @Test
     fun div_write() {
         val gb = GameBoy(File("${path}div_write.gb"))
-        runMooneyeTest(gb, 2123546873)
+        runMooneyeTest(gb, -1059871625)
     }
 
     @Test
     fun rapid_toggle() {
         val gb = GameBoy(File("${path}rapid_toggle.gb"))
-        runMooneyeTest(gb, -2035490116)
+        runMooneyeTest(gb, 488748970)
     }
 
     @Test
     fun tim00() {
         val gb = GameBoy(File("${path}tim00.gb"))
-        runMooneyeTest(gb, -1376469881)
+        runMooneyeTest(gb, 1674011845)
     }
 
     @Test
     fun tim00_div_trigger() {
         val gb = GameBoy(File("${path}tim00_div_trigger.gb"))
-        runMooneyeTest(gb, -1376469881)
+        runMooneyeTest(gb, 1674011845)
     }
 
     @Test
     fun tim01() {
         val gb = GameBoy(File("${path}tim01.gb"))
-        runMooneyeTest(gb, 44913228)
+        runMooneyeTest(gb, -352991524)
     }
 
     @Test
     fun tim01_div_trigger() {
         val gb = GameBoy(File("${path}tim01_div_trigger.gb"))
-        runMooneyeTest(gb, -786286988)
+        runMooneyeTest(gb, -245527860)
     }
 
     @Test
     fun tim10() {
         val gb = GameBoy(File("${path}tim10.gb"))
-        runMooneyeTest(gb, -1376469881)
+        runMooneyeTest(gb, 1674011845)
     }
 
     @Test
     fun tim10_div_trigger() {
         val gb = GameBoy(File("${path}tim10_div_trigger.gb"))
-        runMooneyeTest(gb, 299799021)
+        runMooneyeTest(gb, -774197449)
     }
 
     @Test
     fun tim11() {
         val gb = GameBoy(File("${path}tim11.gb"))
-        runMooneyeTest(gb, -1376469881)
+        runMooneyeTest(gb, 1674011845)
     }
 
     @Test
     fun tim11_div_trigger() {
         val gb = GameBoy(File("${path}tim11_div_trigger.gb"))
-        runMooneyeTest(gb, -1376469881)
+        runMooneyeTest(gb, 1674011845)
     }
 
     @Test

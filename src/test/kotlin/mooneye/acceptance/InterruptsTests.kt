@@ -11,6 +11,6 @@ class InterruptsTests : MooneyeTest() {
     @Test
     fun ie_push() {
         val gb = GameBoy(File("${path}ie_push.gb"))
-        runMooneyeTest(gb, 2123546873)
+        runMooneyeTest(gb, -1059871625)
     }
 }

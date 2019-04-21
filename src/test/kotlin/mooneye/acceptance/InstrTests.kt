@@ -11,6 +11,6 @@ class InstrTests : MooneyeTest() {
     @Test
     fun daa() {
         val gb = GameBoy(File("${path}daa.gb"))
-        runMooneyeTest(gb, 2123546873)
+        runMooneyeTest(gb, -1059871625)
     }
 }

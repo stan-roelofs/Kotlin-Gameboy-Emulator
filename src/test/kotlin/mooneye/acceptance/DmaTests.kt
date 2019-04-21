@@ -11,18 +11,18 @@ class DmaTests : MooneyeTest() {
     @Test
     fun basic() {
         val gb = GameBoy(File("${path}basic.gb"))
-        runMooneyeTest(gb, 2123546873)
+        runMooneyeTest(gb, -1059871625)
     }
 
     @Test
     fun reg_read() {
         val gb = GameBoy(File("${path}reg_read.gb"))
-        runMooneyeTest(gb, 2123546873)
+        runMooneyeTest(gb, -1059871625)
     }
 
     @Test
     fun sources() {
         val gb = GameBoy(File("${path}sources-dmgABCmgbS.gb"))
-        runMooneyeTest(gb, 2123546873)
+        runMooneyeTest(gb, -1059871625)
     }
 }

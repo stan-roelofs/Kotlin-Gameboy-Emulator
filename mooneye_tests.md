@@ -77,6 +77,11 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [ ] time_write_reloading
 - [ ] tma_write_reloading
 
+### Instructions
+- [x] daa
+
+### Serial
+
 ## Emulator only
 ### MBC1
 - [ ] multicart_rom_8Mb
