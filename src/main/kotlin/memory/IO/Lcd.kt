@@ -387,66 +387,69 @@ class Lcd : Memory, Observable() {
     }
 
     private fun renderSprites(row: IntArray) {
-        val spriteSize = if (LCDC.getBit(2)) 16 else 8
+        val spritesEnabled = LCDC.getBit(1)
+        if (spritesEnabled) {
+            val spriteSize = if (LCDC.getBit(2)) 16 else 8
 
-        for (i in 0 until 40) {
-            val obj = sprites[i]
+            for (i in 0 until 40) {
+                val obj = sprites[i]
 
-            // Check if this sprite falls on this scanline
-            if (obj.y <= LY && (obj.y + spriteSize) > LY) {
+                // Check if this sprite falls on this scanline
+                if (obj.y <= LY && (obj.y + spriteSize) > LY) {
 
-                val temp = if (spriteSize == 16) {
-                    if (LY - obj.y < 8) {
-                        obj.tileNumber and 0xFE
-                    } else {
-                        obj.tileNumber or 0x1
-                    }
-                } else {
-                    obj.tileNumber
-                }
-
-                var spriteRow = LY - obj.y
-                if (spriteRow >= 8) {
-                    spriteRow -= 8
-                }
-
-                val tilerow: IntArray = if (obj.isYFlip) {
-                    tiles[temp][spriteSize - 1 - spriteRow]
-                } else {
-                    tiles[temp][spriteRow]
-                }
-
-                var color: Int
-
-                for (x in 0..7) {
-                    // If this pixel is still on-screen, AND
-                    // if it's not colour 0 (transparent), AND
-                    // if this sprite has priority OR shows under the bg
-                    // then render the pixel
-                    color = tilerow[if (obj.isXFlip) 7 - x else x]
-
-                    if (obj.x + x in 0 until 160 && color != 0 && (!obj.priority || row[obj.x + x] == 0)) {
-                        // Palette to use for this sprite
-                        val objPalette = if (obj.isPalette1) OBP1 else OBP0
-
-                        var newColor = 0
-                        when (color) {
-                            0b01 -> {
-                                newColor = setBit(newColor, 0, objPalette.getBit(2))
-                                newColor = setBit(newColor, 1, objPalette.getBit(3))
-                            }
-                            0b10 -> {
-                                newColor = setBit(newColor, 0, objPalette.getBit(4))
-                                newColor = setBit(newColor, 1, objPalette.getBit(5))
-                            }
-                            0b11 -> {
-                                newColor = setBit(newColor, 0, objPalette.getBit(6))
-                                newColor = setBit(newColor, 1, objPalette.getBit(7))
-                            }
+                    val temp = if (spriteSize == 16) {
+                        if (LY - obj.y < 8) {
+                            obj.tileNumber and 0xFE
+                        } else {
+                            obj.tileNumber or 0x1
                         }
+                    } else {
+                        obj.tileNumber
+                    }
 
-                        spritesBuffer[LY][obj.x + x] = newColor
-                        screenBuffer[LY][obj.x + x] = newColor
+                    var spriteRow = LY - obj.y
+                    if (spriteRow >= 8) {
+                        spriteRow -= 8
+                    }
+
+                    val tilerow: IntArray = if (obj.isYFlip) {
+                        tiles[temp][spriteSize - 1 - spriteRow]
+                    } else {
+                        tiles[temp][spriteRow]
+                    }
+
+                    var color: Int
+
+                    for (x in 0..7) {
+                        // If this pixel is still on-screen, AND
+                        // if it's not colour 0 (transparent), AND
+                        // if this sprite has priority OR shows under the bg
+                        // then render the pixel
+                        color = tilerow[if (obj.isXFlip) 7 - x else x]
+
+                        if (obj.x + x in 0 until 160 && color != 0 && (!obj.priority || row[obj.x + x] == 0)) {
+                            // Palette to use for this sprite
+                            val objPalette = if (obj.isPalette1) OBP1 else OBP0
+
+                            var newColor = 0
+                            when (color) {
+                                0b01 -> {
+                                    newColor = setBit(newColor, 0, objPalette.getBit(2))
+                                    newColor = setBit(newColor, 1, objPalette.getBit(3))
+                                }
+                                0b10 -> {
+                                    newColor = setBit(newColor, 0, objPalette.getBit(4))
+                                    newColor = setBit(newColor, 1, objPalette.getBit(5))
+                                }
+                                0b11 -> {
+                                    newColor = setBit(newColor, 0, objPalette.getBit(6))
+                                    newColor = setBit(newColor, 1, objPalette.getBit(7))
+                                }
+                            }
+
+                            spritesBuffer[LY][obj.x + x] = newColor
+                            screenBuffer[LY][obj.x + x] = newColor
+                        }
                     }
                 }
             }
