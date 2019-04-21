@@ -85,10 +85,12 @@ class GameBoyView: View(), Observer {
         row {
             button("Start") {
                 action {
-                    tl.keyFrames.remove(0, tl.keyFrames.size)
-                    tl.keyFrames.add(play)
-                    tl.cycleCount = Animation.INDEFINITE
-                    tl.play()
+                    if (tl.status != Animation.Status.RUNNING) {
+                        tl.keyFrames.remove(0, tl.keyFrames.size)
+                        tl.keyFrames.add(play)
+                        tl.cycleCount = Animation.INDEFINITE
+                        tl.play()
+                    }
                 }
             }
             button("Stop") {
