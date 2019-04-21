@@ -10,7 +10,10 @@ import java.util.*
 class Lcd : Memory, Observable() {
 
     // Internal screen buffer
-    var screen = Array(144) {IntArray(160)}
+    val screenBuffer = Array(144) {IntArray(160)}
+    val backgroundBuffer = Array(144) {IntArray(160)}
+    val windowBuffer = Array(144) {IntArray(160)}
+    val spritesBuffer = Array(144) {IntArray(160)}
 
     // Video RAM memory
     private val vram = IntArray(0x2000)
@@ -100,7 +103,7 @@ class Lcd : Memory, Observable() {
                         requestInterrupt(0)
 
                         setChanged()
-                        notifyObservers(screen)
+                        notifyObservers(screenBuffer)
 
                     } else {
                         setMode(Mode.OAM_SEARCH)
@@ -298,7 +301,8 @@ class Lcd : Memory, Observable() {
                     }
                 }
 
-                screen[LY][i] = newColor
+                windowBuffer[LY][i] = newColor
+                screenBuffer[LY][i] = newColor
                 row[i] = color
 
                 x++
@@ -365,7 +369,8 @@ class Lcd : Memory, Observable() {
                     }
                 }
 
-                screen[LY][i] = newColor
+                backgroundBuffer[LY][i] = newColor
+                screenBuffer[LY][i] = newColor
                 row[i] = color
 
                 x++
@@ -439,7 +444,9 @@ class Lcd : Memory, Observable() {
                                 newColor = setBit(newColor, 1, objPalette.getBit(7))
                             }
                         }
-                        screen[LY][obj.x + x] = newColor
+
+                        spritesBuffer[LY][obj.x + x] = newColor
+                        screenBuffer[LY][obj.x + x] = newColor
                     }
                 }
             }

@@ -84,10 +84,10 @@ class DebugView(private val gb: GameBoy): View() {
             }
         }
         row {
-            button("Get screen hash") {
+            button("Get screenBuffer hash") {
                 action {
                     var s = ""
-                    for (i in gb.mmu.io.lcd.screen) {
+                    for (i in gb.mmu.io.lcd.screenBuffer) {
                         for (j in i) {
                             s += j.toString()
                         }

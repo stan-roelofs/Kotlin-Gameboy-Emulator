@@ -10,8 +10,8 @@ abstract class MooneyeTest {
     abstract val path: String
 
     // Runs one of the Mooneye GB test roms
-    // Test passes when a hash of the screen matches a provided hash
-    // Provided hash is a hash of the screen after a test passed
+    // Test passes when a hash of the screenBuffer matches a provided hash
+    // Provided hash is a hash of the screenBuffer after a test passed
     fun runMooneyeTest(gb: GameBoy, hashCode: Int) {
         Log.i("")
         Log.i("Running Mooneye Test")
@@ -21,7 +21,7 @@ abstract class MooneyeTest {
         for (i in 0..10000000) {
             gb.step()
         }
-        val hash = getScreenHash(gb.mmu.io.lcd.screen)
+        val hash = getScreenHash(gb.mmu.io.lcd.screenBuffer)
         Log.i("Hash: $hash")
         Assert.assertEquals(hashCode, hash)
     }

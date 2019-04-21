@@ -17,20 +17,29 @@ class VRamView(private val gb: GameBoy): View() {
     val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
     val colors = arrayOf(color0, color1, color2, color3)
 
-    private val vram = WritableImage(256, 392)
+    private val vramImage = WritableImage(256, 392)
+    private val windowImage = WritableImage(160, 144)
+    private val backgroundImage = WritableImage(160, 144)
+    private val spritesImage = WritableImage(160, 144)
     private val oamSprites = Array(40) { WritableImage(32, 32) }
     private val oamLabels = Array(40) { Array<Label?>(4) {null}}
     private val labelVerticalMargin = -2.0
 
     private var counterVram = 0
     private var counterOam = 0
+    private var counterBackground = 0
+    private var counterWindow = 0
+    private var counterSprites = 0
+    private val framesWaitBackground = 60
+    private val framesWaitWindow = 60
+    private val framesWaitSprites = 60
     private val framesWaitVram = 60
     private val framesWaitOam = 30
 
     override val root = tabpane {
         tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
         tab("Tiles") {
-            imageview(vram)
+            imageview(vramImage)
         }
         tab("OAM") {
             datagrid((0 until 40).toList()) {
@@ -81,6 +90,15 @@ class VRamView(private val gb: GameBoy): View() {
                 }
             }
         }
+        tab("Layers") {
+            vbox {
+                label("Background")
+                imageview(backgroundImage)
+                label("Window")
+                imageview(windowImage)
+                //imageview(spritesImage)
+            }
+        }
     }
 
     init {
@@ -119,9 +137,65 @@ class VRamView(private val gb: GameBoy): View() {
     fun update() {
         updateVram()
         updateOam()
+        updateBackground()
+        updateWindow()
+        //updateSprites()
     }
 
-    fun updateVram() {
+    private fun updateBackground() {
+        if (counterBackground < framesWaitBackground) {
+            counterBackground++
+            return
+        }
+        counterBackground = 0
+
+        //val pixels = gb.mmu.io.lcd.getBackgroundPixels()
+        val pixelWriter = backgroundImage.pixelWriter
+        val pixels = gb.mmu.io.lcd.backgroundBuffer
+
+        for (y in 0 until 144) {
+            for (x in 0 until 160) {
+               pixelWriter.setColor(x, y, colors[pixels[y][x]])
+            }
+        }
+    }
+
+    private fun updateWindow() {
+        if (counterWindow < framesWaitWindow) {
+            counterWindow++
+            return
+        }
+        counterWindow = 0
+
+        //val pixels = gb.mmu.io.lcd.getBackgroundPixels()
+        val pixelWriter = windowImage.pixelWriter
+        val pixels = gb.mmu.io.lcd.windowBuffer
+
+        for (y in 0 until 144) {
+            for (x in 0 until 160) {
+                pixelWriter.setColor(x, y, colors[pixels[y][x]])
+            }
+        }
+    }
+
+    private fun updateSprites() {
+        if (counterSprites < framesWaitSprites) {
+            counterSprites++
+            return
+        }
+        counterSprites = 0
+
+        val pixelWriter = spritesImage.pixelWriter
+        val pixels = gb.mmu.io.lcd.spritesBuffer
+
+        for (y in 0 until 144) {
+            for (x in 0 until 160) {
+                pixelWriter.setColor(x, y, colors[pixels[y][x]])
+            }
+        }
+    }
+
+    private fun updateVram() {
         // Only update every framesWait frames
         if (counterVram < framesWaitVram) {
             counterVram++
@@ -130,7 +204,7 @@ class VRamView(private val gb: GameBoy): View() {
         counterVram = 0
 
         // Get pixelWriter
-        val pixelWriter = vram.pixelWriter
+        val pixelWriter = vramImage.pixelWriter
 
         // Get mmu instance to read memory
         val mmu = gb.mmu
@@ -166,7 +240,7 @@ class VRamView(private val gb: GameBoy): View() {
         }
     }
 
-    fun updateOam() {
+    private fun updateOam() {
         // Only update every framesWait frames
         if (counterOam < framesWaitOam) {
             counterOam++
