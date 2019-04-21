@@ -94,7 +94,7 @@ class Lcd : Memory, Observable() {
                     cycleCounter = 0
                     LY++
 
-                    if (LY == 143) {
+                    if (LY == 144) {
                         setMode(Mode.VBLANK)
 
                         requestInterrupt(0)
@@ -242,8 +242,76 @@ class Lcd : Memory, Observable() {
         // TODO: if lcdenabled
         val row = IntArray(160)
         renderBackground(row)
-       // renderWindow(row)
+        renderWindow(row)
         renderSprites(row)
+    }
+
+    private fun renderWindow(row: IntArray) {
+        val windowEnabled = LCDC.getBit(5)
+
+        if (windowEnabled && LY >= WY) {
+            val windowMap = LCDC.getBit(6)
+            val windowTiles = !LCDC.getBit(4)
+
+            // Read location of tile map from LCDC
+            var mapOffset = if (windowMap) 0x1C00 else 0x1800
+
+            // Add the offset to the current line
+            mapOffset += (((LY - WY) and 0xFF) shr 3) shl 5
+
+            // Add the offset in the horizontal direction
+            var lineOffset = WX shr 3
+
+            val y = (LY - WY) and 7
+            var x = WX and 7
+
+            var color: Int
+            var tile = vram[mapOffset + lineOffset]
+
+            if (windowTiles && (tile < 128)) {
+                tile += 256
+            }
+
+            for (i in 0 until 160) {
+                color = tiles[tile][y][x]
+
+                val bgPalette = BGP
+
+                // Get color corresponding to color indicator using palette
+                var newColor = 0
+                when (color) {
+                    0b00 -> {
+                        newColor = setBit(newColor, 0, bgPalette.getBit(0))
+                        newColor = setBit(newColor, 1, bgPalette.getBit(1))
+                    }
+                    0b01 -> {
+                        newColor = setBit(newColor, 0, bgPalette.getBit(2))
+                        newColor = setBit(newColor, 1, bgPalette.getBit(3))
+                    }
+                    0b10 -> {
+                        newColor = setBit(newColor, 0, bgPalette.getBit(4))
+                        newColor = setBit(newColor, 1, bgPalette.getBit(5))
+                    }
+                    0b11 -> {
+                        newColor = setBit(newColor, 0, bgPalette.getBit(6))
+                        newColor = setBit(newColor, 1, bgPalette.getBit(7))
+                    }
+                }
+
+                screen[LY][i] = newColor
+                row[i] = color
+
+                x++
+                if (x == 8) {
+                    x = 0
+                    lineOffset = (lineOffset + 1) and 31
+                    tile = vram[mapOffset + lineOffset]
+                    if (windowTiles && tile < 128) {
+                        tile += 256
+                    }
+                }
+            }
+        }
     }
 
     private fun renderBackground(row: IntArray) {
@@ -261,7 +329,7 @@ class Lcd : Memory, Observable() {
             // Add the offset in the horizontal direction
             var lineOffset = SCX shr 3
 
-            val y = (LY + SCY) and 7
+            val y = LY and 7
             var x = SCX and 7
 
             var color: Int
