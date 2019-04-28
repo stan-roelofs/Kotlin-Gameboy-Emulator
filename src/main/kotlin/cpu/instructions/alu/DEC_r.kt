@@ -1,58 +1,64 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class DEC_r(registers: Registers, mmu: Mmu, private val register: Int) : DEC(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 4
 
-        val value: Int
-        val zFlag: Boolean
-        when(register) {
-            RegisterID.A.ordinal -> {
-                value = registers.A
-                registers.A -= 1
-                zFlag = registers.A == 0
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
+                val zFlag: Boolean
+                when(register) {
+                    RegisterID.A.ordinal -> {
+                        value = registers.A
+                        registers.A -= 1
+                        zFlag = registers.A == 0
+                    }
+                    RegisterID.B.ordinal -> {
+                        value = registers.B
+                        registers.B -= 1
+                        zFlag = registers.B == 0
+                    }
+                    RegisterID.C.ordinal -> {
+                        value = registers.C
+                        registers.C -= 1
+                        zFlag = registers.C == 0
+                    }
+                    RegisterID.D.ordinal -> {
+                        value = registers.D
+                        registers.D -= 1
+                        zFlag = registers.D == 0
+                    }
+                    RegisterID.E.ordinal -> {
+                        value = registers.E
+                        registers.E -= 1
+                        zFlag = registers.E == 0
+                    }
+                    RegisterID.H.ordinal -> {
+                        value = registers.H
+                        registers.H -= 1
+                        zFlag = registers.H == 0
+                    }
+                    RegisterID.L.ordinal -> {
+                        value = registers.L
+                        registers.L -= 1
+                        zFlag = registers.L == 0
+                    }
+                    else -> throw Exception("Invalid register: $register")
+                }
+
+                registers.setZFlag(zFlag)
+
+                super.dec(value)
             }
-            RegisterID.B.ordinal -> {
-                value = registers.B
-                registers.B -= 1
-                zFlag = registers.B == 0
-            }
-            RegisterID.C.ordinal -> {
-                value = registers.C
-                registers.C -= 1
-                zFlag = registers.C == 0
-            }
-            RegisterID.D.ordinal -> {
-                value = registers.D
-                registers.D -= 1
-                zFlag = registers.D == 0
-            }
-            RegisterID.E.ordinal -> {
-                value = registers.E
-                registers.E -= 1
-                zFlag = registers.E == 0
-            }
-            RegisterID.H.ordinal -> {
-                value = registers.H
-                registers.H -= 1
-                zFlag = registers.H == 0
-            }
-            RegisterID.L.ordinal -> {
-                value = registers.L
-                registers.L -= 1
-                zFlag = registers.L == 0
-            }
-            else -> throw Exception("Invalid register: $register")
+            else -> Log.e("Invalid state")
         }
 
-        registers.setZFlag(zFlag)
-
-        super.dec(value)
-
-        return 4
+        currentCycle += 4
     }
 }

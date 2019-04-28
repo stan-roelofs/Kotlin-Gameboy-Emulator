@@ -1,16 +1,25 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class SBC_A_HL(registers: Registers, mmu: Mmu) : SBC(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 8
 
-        val value = mmu.readByte(registers.getHL())
+    override fun tick() {
 
-        super.sbc(value)
+        when(currentCycle) {
+            0 -> {
+                value = mmu.readByte(registers.getHL())
+            }
+            4 -> {
+                sbc(value)
+            }
+            else -> Log.e("Invalid state")
+        }
 
-        return 8
+        currentCycle += 4
     }
 }

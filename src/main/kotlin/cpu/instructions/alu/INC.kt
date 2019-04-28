@@ -1,10 +1,12 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 abstract class INC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
 
     protected fun inc(value: Int) {
         registers.setNFlag(false)

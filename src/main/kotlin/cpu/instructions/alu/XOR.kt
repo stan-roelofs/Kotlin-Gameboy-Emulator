@@ -1,10 +1,12 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 abstract class XOR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
 
     protected fun xor(value: Int) {
         registers.A = registers.A xor value

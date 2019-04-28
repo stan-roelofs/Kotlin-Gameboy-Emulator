@@ -1,10 +1,12 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 abstract class SUB(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
 
     protected fun sub(value: Int) {
         val oldA = registers.A

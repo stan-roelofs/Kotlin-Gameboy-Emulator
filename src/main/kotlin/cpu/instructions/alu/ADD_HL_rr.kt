@@ -1,23 +1,31 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.RegisterID
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class ADD_HL_rr(registers: Registers, mmu: Mmu, private val register: Int) : ADD(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 8
 
-        val value = when(register) {
-            RegisterID.BC.ordinal -> registers.getBC()
-            RegisterID.DE.ordinal -> registers.getDE()
-            RegisterID.HL.ordinal -> registers.getHL()
-            RegisterID.SP.ordinal -> registers.SP
-            else -> throw Exception("Invalid register: " + register)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
+                value = when(register) {
+                    RegisterID.BC.ordinal -> registers.getBC()
+                    RegisterID.DE.ordinal -> registers.getDE()
+                    RegisterID.HL.ordinal -> registers.getHL()
+                    RegisterID.SP.ordinal -> registers.SP
+                    else -> throw Exception("Invalid register: $register")
+                }
+            }
+            4 -> {
+                super.add16HL(value)
+            }
+            else -> Log.e("Invalid state")
         }
 
-        super.add16HL(value)
-
-        return 8
+        currentCycle += 4
     }
 }

@@ -1,10 +1,12 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 abstract class OR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
 
     protected fun or(value: Int) {
         registers.A = registers.A or value

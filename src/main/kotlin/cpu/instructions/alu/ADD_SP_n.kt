@@ -1,16 +1,29 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class ADD_SP_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 16
 
-        val value = getImmediate().toByte().toInt()
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        super.add8SP(value)
+            }
+            4 -> {
+                value = getSignedImmediate()
+                add8SP(value)
+            }
+            8,
+            16 -> {
 
-        return 16
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

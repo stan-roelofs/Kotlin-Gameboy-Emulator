@@ -1,16 +1,24 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class OR_A_HL(registers: Registers, mmu: Mmu) : OR(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 8
 
-        val value = mmu.readByte(registers.getHL())
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
+                value = mmu.readByte(registers.getHL())
+            }
+            4 -> {
+                or(value)
+            }
+            else -> Log.e("Invalid state")
+        }
 
-        super.or(value)
-
-        return 8
+        currentCycle += 4
     }
 }

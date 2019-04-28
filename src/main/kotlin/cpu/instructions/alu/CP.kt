@@ -1,10 +1,12 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
 
 abstract class CP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
 
     protected fun cp(value: Int) {
         val zFlag = registers.A == value

@@ -1,15 +1,24 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class XOR_A_n(registers: Registers, mmu: Mmu) : XOR(registers, mmu) {
 
-    override fun execute(): Int {
-        val value = getImmediate()
+    override val totalCycles = 8
 
-        super.xor(value)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
+                value = getImmediate()
+            }
+            4 -> {
+                xor(value)
+            }
+            else -> Log.e("Invalid state")
+        }
 
-        return 8
+        currentCycle += 4
     }
 }

@@ -1,15 +1,24 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class ADD_A_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
 
-    override fun execute(): Int {
-        val value = getImmediate()
+    override val totalCycles = 8
 
-        super.add8(value)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
+                value = mmu.readByte(registers.getHL())
+            }
+            4 -> {
+                super.add8(value)
+            }
+            else -> Log.e("Invalid state")
+        }
 
-        return 8
+        currentCycle += 4
     }
 }

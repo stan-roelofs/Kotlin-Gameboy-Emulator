@@ -1,16 +1,25 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class CP_A_HL(registers: Registers, mmu: Mmu) : CP(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 8
 
-        val value = mmu.readByte(registers.getHL())
+    override fun tick() {
 
-        super.cp(value)
+        when(currentCycle) {
+            0 -> {
+                value = mmu.readByte(registers.getHL())
+            }
+            4 -> {
+                cp(value)
+            }
+            else -> Log.e("Invalid state")
+        }
 
-        return 8
+        currentCycle += 4
     }
 }

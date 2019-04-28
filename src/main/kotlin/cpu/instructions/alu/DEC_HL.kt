@@ -1,21 +1,35 @@
 package cpu.instructions.alu
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class DEC_HL(registers: Registers, mmu: Mmu) : DEC(registers, mmu) {
 
-    override fun execute(): Int {
-        val address = registers.getHL()
-        val value = mmu.readByte(address)
+    override val totalCycles = 12
 
-        mmu.writeByte(address, value - 1)
+    private var address = 0
 
-        val zFlag = mmu.readByte(address) == 0
-        registers.setZFlag(zFlag)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        super.dec(value)
+            }
+            4 -> {
+                address = registers.getHL()
+                value = mmu.readByte(address)
+            }
+            8 -> {
+                mmu.writeByte(address, value - 1)
 
-        return 12
+                val zFlag = mmu.readByte(address) == 0
+                registers.setZFlag(zFlag)
+
+                super.dec(value)
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }
