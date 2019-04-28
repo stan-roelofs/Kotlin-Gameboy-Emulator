@@ -6,7 +6,7 @@ import utils.Log
 
 abstract class MooneyeTest {
 
-    protected val pathToTests = "E:/Downloads/mooneye-gb_hwtests/"
+    protected val pathToTests = "E:/Downloads/Gameboy/mooneye-gb_hwtests/"
     abstract val path: String
 
     // Runs one of the Mooneye GB test roms

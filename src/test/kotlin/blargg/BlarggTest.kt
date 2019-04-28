@@ -5,7 +5,7 @@ import org.junit.Assert
 
 abstract class BlarggTest {
 
-    protected val pathToTests = "E:/Downloads/gb-test-roms-master/"
+    protected val pathToTests = "E:/Downloads/Gameboy/gb-test-roms-master/"
     abstract val path: String
 
     fun runBlarggTest(gb: GameBoy) {
