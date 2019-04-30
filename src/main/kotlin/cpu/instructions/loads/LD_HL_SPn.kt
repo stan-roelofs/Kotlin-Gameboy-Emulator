@@ -1,24 +1,38 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.Log
 
 class LD_HL_SPn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
-    override fun execute(): Int {
-        val value = getImmediate().toByte().toInt()
-        registers.setHL(registers.SP + value)
+    private var value = 0
+    override val totalCycles = 12
 
-        registers.setZFlag(false)
-        registers.setNFlag(false)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        val cFlag = ((registers.SP and 0xFF) + (value and 0xFF)) > 0xFF
-        registers.setCFlag(cFlag)
+            }
+            4 -> {
+                value = getSignedImmediate()
+            }
+            8 -> {
+                registers.setHL(registers.SP + value)
 
-        val hFlag = (registers.SP and 0xF) + (value and 0xF) > 0xF
-        registers.setHFlag(hFlag)
+                registers.setZFlag(false)
+                registers.setNFlag(false)
 
-        return 12
+                val cFlag = ((registers.SP and 0xFF) + (value and 0xFF)) > 0xFF
+                registers.setCFlag(cFlag)
+
+                val hFlag = (registers.SP and 0xF) + (value and 0xF) > 0xF
+                registers.setHFlag(hFlag)
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

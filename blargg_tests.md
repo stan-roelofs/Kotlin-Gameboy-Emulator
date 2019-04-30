@@ -16,3 +16,13 @@ pathToTests in BlarggTest.kt should be the location of the unzipped blargg tests
 
 ## instr_timing
 - [x] instr_timing
+
+## mem_timing
+- [x] 01-read_timing
+- [x] 02-write_timing
+- [x] 03-modify_timing
+
+## mem_timing-2
+- [x] 01-read_timing
+- [x] 02-write_timing
+- [x] 03-modify_timing

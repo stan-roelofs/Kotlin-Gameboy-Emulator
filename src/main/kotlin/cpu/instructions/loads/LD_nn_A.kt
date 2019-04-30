@@ -1,18 +1,35 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.Log
+import utils.setSecondByte
 
 class LD_nn_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
-    override fun execute(): Int {
-        val value = registers.A
+    private var address = 0
+    override val totalCycles = 16
 
-        val address = getWordImmediate()
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        mmu.writeByte(address, value)
+            }
+            4 -> {
+                address = getImmediate()
+            }
+            8 -> {
+                address = setSecondByte(address, getImmediate())
+                val value = registers.A
+                mmu.writeByte(address, value)
+            }
+            12 -> {
 
-        return 16
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

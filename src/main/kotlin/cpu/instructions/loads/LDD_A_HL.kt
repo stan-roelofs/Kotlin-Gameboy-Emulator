@@ -1,19 +1,30 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.Log
 
 class LDD_A_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 8
 
-        val HL = registers.getHL()
-        val value = mmu.readByte(HL)
-        registers.setHL(HL - 1)
+    override fun tick() {
 
-        registers.A = value
+        when(currentCycle) {
+            0 -> {
+                val HL = registers.getHL()
+                val value = mmu.readByte(HL)
+                registers.setHL(HL - 1)
 
-        return 8
+                registers.A = value
+            }
+            4 -> {
+
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

@@ -7,6 +7,9 @@ import utils.getBit
 import utils.setBit
 
 abstract class RRC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
+
     protected fun rrc(value: Int): Int {
         val carry = value.getBit(0)
         registers.setCFlag(carry)

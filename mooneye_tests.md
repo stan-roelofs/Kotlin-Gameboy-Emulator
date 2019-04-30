@@ -23,9 +23,9 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [ ] push_timing
 - [ ] pop_timing
 - [x] halt_ime0_nointr_timing
-- [ ] oam_dma_restart
-- [ ] oam_dma_timing
-- [ ] oam_dma_start
+- [x] oam_dma_restart
+- [x] oam_dma_timing
+- [x] oam_dma_start
 - [ ] call_timing2
 - [ ] halt_ime1_timing2_GS
 - [ ] jp_timing
@@ -81,6 +81,7 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [x] daa
 
 ### Serial
+- [ ] boot_sclk_align-dmgABCmgb.gb
 
 ## Emulator only
 ### MBC1

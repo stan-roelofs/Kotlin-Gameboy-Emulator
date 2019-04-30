@@ -10,7 +10,8 @@ abstract class BlarggTest {
 
     fun runBlarggTest(gb: GameBoy) {
         var output = ""
-        for (i in 0..10000000) {
+
+        for (i in 0..100000000) {
             gb.step()
             if (gb.mmu.io.serial.testOutput) {
                 val char = gb.mmu.readByte(0xFF01).toChar()

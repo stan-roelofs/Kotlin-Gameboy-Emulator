@@ -6,6 +6,9 @@ import memory.Mmu
 import utils.getBit
 
 abstract class RLC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
+
     protected fun rlc(value: Int): Int {
         val cFlag = value.getBit(7)
         registers.setCFlag(cFlag)

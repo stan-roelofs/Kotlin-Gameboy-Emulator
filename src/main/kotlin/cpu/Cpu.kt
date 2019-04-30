@@ -24,43 +24,51 @@ class Cpu {
     val registers = Registers()
     private val mmu = Mmu.instance
 
-    var lastInstruction: Int = 0
+    var currentInstruction: Instruction? = null
 
     var eiExecuted = false
 
     fun reset() {
         registers.reset()
+        currentInstruction = null
     }
 
     fun step() {
-        processInterrupts()
-
-        if (!registers.halt) {
-            val opcode = mmu.readByte(registers.PC)
-
-            if (!registers.haltBug) {
-                registers.incPC()
-            } else {
-                registers.haltBug = false
-            }
-
-            val instruction = getInstruction(opcode)
-            lastInstruction = opcode
-
-            val cycles = instruction.execute()
-            increaseClock(cycles)
-
-            // If EI was executed, return such that interrupts are only enabled after the next instruction
-            if (opcode == 0xFB) {
-                return
-            }
-
-            if (eiExecuted) {
-                registers.IME = true
-                eiExecuted = false
-            }
-        } else {
+        if (currentInstruction != null && currentInstruction!!.isExecuting()) {
+            currentInstruction!!.tick()
             increaseClock(4)
+        } else {
+            // Handle interrupts
+            processInterrupts()
+
+            // Read next instruction
+            if (!registers.halt) {
+                val opcode = mmu.readByte(registers.PC)
+
+                if (!registers.haltBug) {
+                    registers.incPC()
+                } else {
+                    registers.haltBug = false
+                }
+
+                currentInstruction = getInstruction(opcode)
+                currentInstruction!!.tick()
+                increaseClock(4)
+
+
+
+                // If EI was executed, return such that interrupts are only enabled after the next instruction
+                if (opcode == 0xFB) {
+                    return
+                }
+
+                if (eiExecuted) {
+                    registers.IME = true
+                    eiExecuted = false
+                }
+            } else {
+                increaseClock(4)
+            }
         }
     }
 

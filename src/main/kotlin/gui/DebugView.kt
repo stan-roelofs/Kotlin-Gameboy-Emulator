@@ -74,6 +74,22 @@ class DebugView(private val gb: GameBoy): View() {
                     }
                 }
             }
+            button("Step 100") {
+
+                action {
+                    //for (i in 1..100) {
+                    val lol = HashSet<String>()
+                    while(gb.cpu.registers.PC != 0xC24F) {
+                        gb.step()
+                        lol.add(gb.cpu.currentInstruction!!::class.simpleName!!)
+                        updateRegisters()
+                        updateInstructions()
+                    }
+                    for (poep in lol) {
+                        println(poep)
+                    }
+                }
+            }
         }
         row {
             memText = textfield()
@@ -117,7 +133,7 @@ class DebugView(private val gb: GameBoy): View() {
     }
 
     private fun updateInstructions() {
-        instructions.text = "${instructions.text} ${Integer.toHexString(gb.cpu.lastInstruction)}\n"
+        //instructions.text = "${instructions.text} ${Integer.toHexString(gb.cpu.currentInstruction)}\n"
     }
 
     private fun updateRegisters() {

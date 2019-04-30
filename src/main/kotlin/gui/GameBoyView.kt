@@ -12,6 +12,7 @@ import javafx.stage.FileChooser
 import javafx.util.Duration
 import memory.IO.Joypad
 import tornadofx.*
+import utils.Log
 import java.util.*
 
 class GameBoyView: View(), Observer {
@@ -35,7 +36,13 @@ class GameBoyView: View(), Observer {
             EventHandler {
                 // Keep executing until a frame is ready
                 while(!frameDone) {
-                    gb.step()
+                    try {
+                        gb.step()
+                    } catch (e: Exception) {
+                        Log.e(e.message!!)
+                        tl.stop()
+                        break
+                    }
                 }
                 updateVram()
                 updateDebug()
@@ -52,6 +59,7 @@ class GameBoyView: View(), Observer {
                 menu("File") {
                     item("Load").action {
                         val files = chooseFile("rom", arrayOf(FileChooser.ExtensionFilter("Roms", "*.gb")), FileChooserMode.Single)
+
                         if (files.isNotEmpty()) {
                             gb.loadCartridge(files[0])
 

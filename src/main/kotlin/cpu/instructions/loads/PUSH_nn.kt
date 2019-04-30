@@ -4,29 +4,47 @@ import cpu.RegisterID
 import cpu.Registers
 import cpu.instructions.Instruction
 import memory.Mmu
+import utils.Log
+import utils.getFirstByte
+import utils.getSecondByte
 
 class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 
-    override fun execute(): Int {
+    private var value = 0
+    override val totalCycles = 16
 
-        val value = when (register) {
-            RegisterID.AF.ordinal -> {
-                registers.getAF()
+    override fun tick() {
+
+        when(currentCycle) {
+            0 -> {
+
             }
-            RegisterID.BC.ordinal -> {
-                registers.getBC()
+            4 -> {
+                value = when (register) {
+                    RegisterID.AF.ordinal -> {
+                        registers.getAF()
+                    }
+                    RegisterID.BC.ordinal -> {
+                        registers.getBC()
+                    }
+                    RegisterID.DE.ordinal -> {
+                        registers.getDE()
+                    }
+                    RegisterID.HL.ordinal -> {
+                        registers.getHL()
+                    }
+                    else -> throw Exception("Invalid register: $register")
+                }
             }
-            RegisterID.DE.ordinal -> {
-                registers.getDE()
+            8 -> {
+                pushToStack(value.getSecondByte())
             }
-            RegisterID.HL.ordinal -> {
-                registers.getHL()
+            12 -> {
+                pushToStack(value.getFirstByte())
             }
-            else -> throw Exception("Invalid register: $register")
+            else -> Log.e("Invalid state")
         }
 
-        pushWordToStack(value)
-
-        return 16
+        currentCycle += 4
     }
 }

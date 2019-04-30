@@ -1,34 +1,54 @@
 package cpu.instructions.returns
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.Log
+import utils.setSecondByte
 
 class RET_cc(registers: Registers, mmu: Mmu, private val flag: Int, private val state: Boolean) : Instruction(registers, mmu) {
-    override fun execute(): Int {
-        when {
-            flag == registers.ZFlag && state && registers.getZFlag() -> {
-                val address = popWordFromStack()
-                registers.PC = address
-                return 20
+
+    private var value = 0
+    private var conditionHolds = true
+    override val totalCycles = 20
+
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
+
             }
-            flag == registers.ZFlag && !state && !registers.getZFlag() -> {
-                val address = popWordFromStack()
-                registers.PC = address
-                return 20
+            4 -> {
+                if (!(flag == registers.ZFlag && state && registers.getZFlag()) &&
+                        !(flag == registers.ZFlag && !state && !registers.getZFlag()) &&
+                        !(flag == registers.CFlag && state && registers.getCFlag()) &&
+                        !(flag == registers.CFlag && !state && !registers.getCFlag())) {
+                    conditionHolds = false
+                }
             }
-            flag == registers.CFlag && state && registers.getCFlag() -> {
-                val address = popWordFromStack()
-                registers.PC = address
-                return 20
+            8 -> {
+                if (conditionHolds) {
+                    value = popFromStack()
+                }
             }
-            flag == registers.CFlag && !state && !registers.getCFlag() -> {
-                val address = popWordFromStack()
-                registers.PC = address
-                return 20
+            12 -> {
+                if (conditionHolds) {
+                    value = setSecondByte(value, popFromStack())
+                    registers.PC = value
+                }
             }
+            16 -> {
+
+            }
+            else -> Log.e("Invalid state")
         }
 
-        return 8
+        currentCycle += 4
+    }
+
+    override fun isExecuting(): Boolean {
+        if ((!conditionHolds && currentCycle == 8) || (conditionHolds && currentCycle == totalCycles)) {
+            return false
+        }
+        return true
     }
 }

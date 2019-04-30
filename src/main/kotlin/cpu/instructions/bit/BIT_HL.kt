@@ -2,17 +2,29 @@ package cpu.instructions.bit
 
 import cpu.Registers
 import memory.Mmu
+import utils.Log
 import utils.getBit
 
 class BIT_HL(registers: Registers, mmu: Mmu, private val index: Int) : BIT(registers, mmu) {
 
-    override fun execute(): Int {
+    override val totalCycles = 12
 
-        val address = registers.getHL()
-        val state = mmu.readByte(address).getBit(index)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        super.bit(state)
+            }
+            4 -> {
+                val address = registers.getHL()
+                state = mmu.readByte(address).getBit(index)
+                super.bit(state)
+            }
+            8 -> {
 
-        return 12
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

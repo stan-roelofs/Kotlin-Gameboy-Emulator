@@ -15,10 +15,7 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
     abstract fun tick()
 
     protected fun getSignedImmediate(): Int {
-        val value = mmu.readByte(registers.PC)
-        registers.incPC()
-
-        return value.toByte().toInt()
+        return getImmediate().toByte().toInt()
     }
 
     protected fun getImmediate(): Int {
@@ -59,9 +56,9 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
 
     open fun isExecuting(): Boolean {
         if (currentCycle > totalCycles) {
-            Log.e("CurrentCycle > totalCycles") // TODO; remove this
+            Log.e("CurrentCycle > totalCycles : $currentCycle $totalCycles") // TODO; remove this
         }
 
-        return this.currentCycle == totalCycles
+        return this.currentCycle < totalCycles
     }
 }

@@ -11,7 +11,7 @@ class ADD_A_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
+                value = getImmediate()
             }
             4 -> {
                 super.add8(value)

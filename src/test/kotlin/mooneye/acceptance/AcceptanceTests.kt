@@ -138,19 +138,19 @@ class AcceptanceTests : MooneyeTest() {
     @Test
     fun oam_dma_restart() {
         val gb = GameBoy(File("${path}oam_dma_restart.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 1906711267)
     }
 
     @Test
     fun oam_dma_start() {
         val gb = GameBoy(File("${path}oam_dma_start.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, -2065568537)
     }
 
     @Test
     fun oam_dma_timing() {
         val gb = GameBoy(File("${path}oam_dma_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 1906711267)
     }
 
     @Test

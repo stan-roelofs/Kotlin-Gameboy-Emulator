@@ -64,6 +64,10 @@ class Sound : Memory {
         patternRam.fill(0)
     }
 
+    fun tick(cycles: Int) {
+
+    }
+
     override fun readByte(address: Int): Int {
         return when(address) {
             Mmu.NR10 -> this.NR10 or 0b10000000 // Bit 7 unused

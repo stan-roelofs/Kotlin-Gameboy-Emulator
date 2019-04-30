@@ -6,42 +6,56 @@ import utils.toHexString
 
 class Dma : Memory {
 
-    private var counter = 0
+    private var requested = false
+    private var starting = false
+    private var setInprogress = false
+
     var inProgress = false
-    private val cyclesMax = 644
+    private val totalBytes = 160
     private var source = 0
+    private var delay = 0
+    private var currentOffset = 0
 
     private var DMA = 0
 
     override fun reset() {
-        counter = 0
+        requested = false
+        starting = false
+        source = 0
+        delay = 0
+        currentOffset = 0
         inProgress = false
         DMA = 0
+        setInprogress = false
     }
 
     fun tick(cycles: Int) {
+        if (setInprogress) {
+            inProgress = true
+            setInprogress = false
+        }
         if (inProgress) {
             val mmu = Mmu.instance
 
-            var bytes = cycles / 4
-            while (counter < cyclesMax && bytes > 0) {
-                if (counter == 0) {
-                    counter += 4
+            val currentByte = currentOffset
+            currentOffset++
 
-                    if (bytes == 1) {
-                        break
-                    }
-                }
-
-                val offset = ((counter - 4) / 4)
-                mmu.writeByte(0xFE00 + offset, mmu.readByte(source + offset))
-                counter += 4
-                bytes--
-            }
-
-            if (counter >= cyclesMax) {
+            if (currentOffset >= totalBytes) {
                 inProgress = false
             }
+
+            val targetAddress = 0xFE00 + currentByte
+            val sourceAddress = source + currentByte
+            mmu.dmaWriteByte(targetAddress, mmu.dmaReadByte(sourceAddress))
+        }
+
+        if (starting) {
+            startTransfer(this.DMA)
+        }
+
+        if (requested) {
+            starting = true
+            requested = false
         }
     }
 
@@ -58,12 +72,13 @@ class Dma : Memory {
         }
 
         this.DMA = value and 0xFF
-        startTransfer(value)
+        requested = true
     }
 
     private fun startTransfer(value: Int) {
-        counter = 0
-        inProgress = true
+        currentOffset = 0
+        setInprogress = true
+        starting = false
 
         val newVal = if (value >= 0xf0) value - 0x20 else value
         source = (newVal and 0xFF) * 0x100

@@ -18,7 +18,7 @@ class ADD_SP_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
                 add8SP(value)
             }
             8,
-            16 -> {
+            12 -> {
 
             }
             else -> Log.e("Invalid state")

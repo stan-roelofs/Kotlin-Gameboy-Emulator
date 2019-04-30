@@ -12,7 +12,7 @@ class IO : Memory {
     val serial = Serial()
 
     private val sound = Sound()
-    private val dma = Dma()
+    val dma = Dma()
     private val timer = Timer()
 
     private var IF = 0
@@ -32,6 +32,7 @@ class IO : Memory {
         timer.tick(cycles)
         lcd.tick(cycles)
         dma.tick(cycles)
+        sound.tick(cycles)
     }
 
     override fun readByte(address: Int): Int {

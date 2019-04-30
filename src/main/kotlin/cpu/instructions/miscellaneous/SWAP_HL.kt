@@ -1,24 +1,41 @@
 package cpu.instructions.miscellaneous
 
-import memory.Mmu
 import cpu.Registers
+import memory.Mmu
+import utils.Log
 
 class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {
-    override fun execute(): Int {
 
-        val address = registers.getHL()
-        val value = mmu.readByte(address)
-        val new = swap(value)
+    private var new = 0
+    private var address = 0
+    override val totalCycles = 16
 
-        mmu.writeByte(address, new)
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        val zFlag = new == 0
+            }
+            4 -> {
+                address = registers.getHL()
+                val value = mmu.readByte(address)
+                new = swap(value)
+            }
+            8 -> {
+                mmu.writeByte(address, new)
 
-        registers.setZFlag(zFlag)
-        registers.setNFlag(false)
-        registers.setHFlag(false)
-        registers.setCFlag(false)
+                val zFlag = new == 0
 
-        return 16
+                registers.setZFlag(zFlag)
+                registers.setNFlag(false)
+                registers.setHFlag(false)
+                registers.setCFlag(false)
+            }
+            12 -> {
+
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

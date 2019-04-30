@@ -1,15 +1,30 @@
 package cpu.instructions.loads
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.Log
 
 class LD_HL_n(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
-    override fun execute(): Int {
+    private var value = 0
+    override val totalCycles = 12
 
-        mmu.writeByte(registers.getHL(), getImmediate())
+    override fun tick() {
+        when(currentCycle) {
+            0 -> {
 
-        return 12
+            }
+            4 -> {
+                value = getImmediate()
+                mmu.writeByte(registers.getHL(), value)
+            }
+            8 -> {
+
+            }
+            else -> Log.e("Invalid state")
+        }
+
+        currentCycle += 4
     }
 }

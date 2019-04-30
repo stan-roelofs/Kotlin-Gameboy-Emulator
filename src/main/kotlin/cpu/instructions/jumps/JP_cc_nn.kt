@@ -1,34 +1,51 @@
 package cpu.instructions.jumps
 
-import memory.Mmu
 import cpu.Registers
 import cpu.instructions.Instruction
+import memory.Mmu
+import utils.Log
+import utils.setSecondByte
 
 class JP_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private val state: Boolean) : Instruction(registers, mmu) {
 
-    override fun execute(): Int {
+    private var value = 0
+    private var conditionHolds = true
+    override val totalCycles = 16
 
-        val value = getWordImmediate()
+    override fun tick() {
 
-        when {
-            flag == registers.ZFlag && state && registers.getZFlag() -> {
-                registers.PC = value
-                return 16
+        when(currentCycle) {
+            0 -> {
+
             }
-            flag == registers.ZFlag && !state && !registers.getZFlag() -> {
-                registers.PC = value
-                return 16
+            4 -> {
+                value = getImmediate()
             }
-            flag == registers.CFlag && state && registers.getCFlag() -> {
-                registers.PC = value
-                return 16
+            8 -> {
+                value = setSecondByte(value, getImmediate())
+
+                if (!(flag == registers.ZFlag && state && registers.getZFlag()) &&
+                        !(flag == registers.ZFlag && !state && !registers.getZFlag()) &&
+                        !(flag == registers.CFlag && state && registers.getCFlag()) &&
+                        !(flag == registers.CFlag && !state && !registers.getCFlag())) {
+                    conditionHolds = false
+                }
             }
-            flag == registers.CFlag && !state && !registers.getCFlag() -> {
-                registers.PC = value
-                return 16
+            12 -> {
+                if (conditionHolds) {
+                    registers.PC = value
+                }
             }
+            else -> Log.e("Invalid state")
         }
 
-        return 12
+        currentCycle += 4
+    }
+
+    override fun isExecuting(): Boolean {
+        if ((!conditionHolds && currentCycle == 12) || (conditionHolds && currentCycle == totalCycles)) {
+            return false
+        }
+        return true
     }
 }

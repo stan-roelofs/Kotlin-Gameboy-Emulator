@@ -6,6 +6,9 @@ import memory.Mmu
 import utils.getBit
 
 abstract class RL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
+
+    protected var value = 0
+
     protected fun rl(value: Int): Int {
         val carry = registers.getCFlag()
 
