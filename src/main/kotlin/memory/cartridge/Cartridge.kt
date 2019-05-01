@@ -111,8 +111,14 @@ class Cartridge(file: File) : Memory {
                 Log.i("ROM+MBC1+RAM+BATTERY")
                 type = MBC1(romBanks, ramSize, true)
             }
-            0x05 -> Log.i("ROM+MBC2")
-            0x06 -> Log.i("ROM+MBC2+BATTERY")
+            0x05 -> {
+                Log.i("ROM+MBC2")
+                type = MBC2(romBanks)
+            }
+            0x06 -> {
+                Log.i("ROM+MBC2+BATTERY")
+                type = MBC2(romBanks, true)
+            }
             0x08 -> Log.i("ROM+RAM")
             0x09 -> Log.i("ROM+RAM+BATTERY")
             0x0B -> Log.i("ROM+MMM01")
