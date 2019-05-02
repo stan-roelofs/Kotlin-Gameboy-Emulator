@@ -55,8 +55,6 @@ class Cpu {
                 currentInstruction!!.tick()
                 increaseClock(4)
 
-
-
                 // If EI was executed, return such that interrupts are only enabled after the next instruction
                 if (opcode == 0xFB) {
                     return

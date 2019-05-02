@@ -12,7 +12,6 @@ import javafx.stage.FileChooser
 import javafx.util.Duration
 import memory.IO.Joypad
 import tornadofx.*
-import utils.Log
 import java.util.*
 
 class GameBoyView: View(), Observer {
@@ -39,7 +38,7 @@ class GameBoyView: View(), Observer {
                     try {
                         gb.step()
                     } catch (e: Exception) {
-                        Log.e(e.message!!)
+                        e.printStackTrace()
                         tl.stop()
                         break
                     }

@@ -202,7 +202,7 @@ class Lcd : Memory, Observable() {
             }
             Mmu.LY -> this.LY = 0
             Mmu.LYC -> this.LYC = newVal
-            Mmu.STAT -> this.STAT = (newVal and 0b11111000) // Last three bits are read-only
+            Mmu.STAT -> this.STAT = this.STAT or (newVal and 0b11111000) // Last three bits are read-only
             Mmu.SCY -> this.SCY = newVal
             Mmu.SCX -> this.SCX = newVal
             Mmu.WY -> this.WY = newVal
