@@ -29,7 +29,7 @@ class PpuTests : MooneyeTest() {
     @Test
     fun intr_2_mode0_timing() {
         val gb = GameBoy(File("${path}intr_2_mode0_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 327549774)
     }
 
     @Test
@@ -41,7 +41,7 @@ class PpuTests : MooneyeTest() {
     @Test
     fun intr_2_mode3_timing() {
         val gb = GameBoy(File("${path}intr_2_mode3_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 1478252561)
     }
 
     @Test
@@ -56,7 +56,6 @@ class PpuTests : MooneyeTest() {
         runMooneyeTest(gb, 0)
     }
 
-
     @Test
     fun lcdon_write_timing_GS() {
         val gb = GameBoy(File("${path}lcdon_write_timing-GS.gb"))
@@ -66,7 +65,7 @@ class PpuTests : MooneyeTest() {
     @Test
     fun stat_irq_blocking() {
         val gb = GameBoy(File("${path}stat_irq_blocking.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, -1059871625)
     }
 
     @Test
@@ -78,6 +77,6 @@ class PpuTests : MooneyeTest() {
     @Test
     fun vblank_stat_intr_GS() {
         val gb = GameBoy(File("${path}vblank_stat_intr-GS.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest(gb, 1108608479)
     }
 }

@@ -52,15 +52,15 @@ pathToTests in MooneyeTest.kt should be the location of the root Mooneye tests f
 - [ ] hblank_ly_scx_timing-GS
 - [ ] intr_1_2_timing-GS
 - [ ] intr_2_0_timing - Fails, incorrect timing between STAT mode=1 and STAT mode=2 interrupt
-- [ ] intr_2_mode0_timing
-- [ ] intr_2_mode0_timing_sprites - Crashes, somehow one of the indices becomes negative at screen in renderSprites()
-- [ ] intr_2_mode3_timing
+- [x] intr_2_mode0_timing
+- [ ] intr_2_mode0_timing_sprites
+- [x] intr_2_mode3_timing
 - [ ] intr_2_oam_ok_timing - E register value incorrect
 - [ ] lcdon_timing-dmgABCmgbS - Cycle: 00 Expected: 00 Actual: 90
 - [ ] lcdon_write_timing-GS - Cycle: 12 Expected: 00 Actual: 81
-- [ ] stat_irq_blocking - Crashes because somehow LY increases infinitely
+- [x] stat_irq_blocking
 - [ ] stat_lyc_onoff - Somehow tries to execute instruction 0xED which corresponds to nothing
-- [ ] vblank_stat_intr-GS - Crashes because somehow LY increases infinitely
+- [x] vblank_stat_intr-GS
 
 ### Timer
 - [x] div_write
