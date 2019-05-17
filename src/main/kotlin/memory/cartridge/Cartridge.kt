@@ -12,6 +12,7 @@ class Cartridge(file: File) : Memory {
     private var isSgb = false
     private var isGbc = false
     private lateinit var title: String
+    lateinit var cartridgeFile: File
 
     init {
         loadRom(file)
@@ -31,6 +32,7 @@ class Cartridge(file: File) : Memory {
             loadHeader(data)
 
             type.loadRom(data)
+            cartridgeFile = file
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -176,5 +178,13 @@ class Cartridge(file: File) : Memory {
 
     override fun writeByte(address: Int, value: Int) {
         return type.writeByte(address, value and 0xFF)
+    }
+
+    fun saveRam(file: File) {
+        type.saveRam(file)
+    }
+
+    fun loadRam(file: File) {
+        type.loadRam(file)
     }
 }

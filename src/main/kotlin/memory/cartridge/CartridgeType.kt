@@ -2,6 +2,7 @@ package memory.cartridge
 
 import memory.Memory
 import utils.toHexString
+import java.io.File
 
 interface CartridgeType : Memory {
 
@@ -33,6 +34,14 @@ interface CartridgeType : Memory {
 
     /** Write [value] to RAM at location [address] */
     fun writeRam(address: Int, value: Int)
+
+    fun saveRam(file: File) {
+        throw IllegalStateException("This cartridge type cannot load/save")
+    }
+
+    fun loadRam(file: File) {
+        throw IllegalStateException("This cartridge type cannot load/save")
+    }
 
     override fun readByte(address: Int): Int {
         if (address in 0x0000 until 0x8000) {

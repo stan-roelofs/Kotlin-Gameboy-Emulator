@@ -16,9 +16,13 @@ interface MBC : CartridgeType {
     /** Cartridge can have battery, which means ram can be saved */
     val hasBattery: Boolean
 
-    fun saveRam(file: File) {
+    override fun saveRam(file: File) {
         if (ram == null) {
-            throw IllegalArgumentException("Cannot load save on a cartridge that does not have RAM")
+            throw IllegalStateException("Cannot load save on a cartridge that does not have RAM")
+        }
+
+        if (!hasBattery) {
+            throw IllegalStateException("Cannot save on MBC without battery")
         }
 
         val bankSize = ram!![0].size
@@ -35,13 +39,17 @@ interface MBC : CartridgeType {
         file.writeBytes(data)
     }
 
-    fun loadRam(file: File) {
+    override fun loadRam(file: File) {
         try {
-            val data = Files.readAllBytes(file.toPath())
-
             if (ram == null) {
-                throw IllegalArgumentException("Cannot load save on a cartridge that does not have RAM")
+                throw IllegalStateException("Cannot load save on a cartridge that does not have RAM")
             }
+
+            if (!hasBattery) {
+                throw IllegalStateException("Cannot load on MBC without battery")
+            }
+
+            val data = Files.readAllBytes(file.toPath())
 
             // Calculate total size of ram by multiplying the number of banks by the bank size
             val bankSize = ram!![0].size

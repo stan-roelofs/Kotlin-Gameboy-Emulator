@@ -12,6 +12,7 @@ import javafx.stage.FileChooser
 import javafx.util.Duration
 import memory.IO.Joypad
 import tornadofx.*
+import java.io.File
 import java.util.*
 
 class GameBoyView: View(), Observer {
@@ -103,6 +104,29 @@ class GameBoyView: View(), Observer {
             button("Stop") {
                 action {
                     tl.stop()
+                }
+            }
+            button("Save") {
+                action {
+                    val cart = gb.mmu.cartridge
+                    val path = cart?.cartridgeFile?.parent
+                    val fileName = cart?.cartridgeFile?.nameWithoutExtension
+
+                    val saveFile = File(path, "$fileName.sav")
+                    cart?.saveRam(saveFile)
+                }
+            }
+            button("Load") {
+                action {
+                    val cart = gb.mmu.cartridge
+                    val path = cart?.cartridgeFile?.parent
+                    val fileName = cart?.cartridgeFile?.nameWithoutExtension
+
+                    val loadFile = File(path, "$fileName.sav")
+
+                    if (loadFile.exists() && !loadFile.isDirectory) {
+                        cart?.loadRam(loadFile)
+                    }
                 }
             }
         }
