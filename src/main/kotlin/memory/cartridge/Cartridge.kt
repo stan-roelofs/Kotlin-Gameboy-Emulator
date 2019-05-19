@@ -126,11 +126,26 @@ class Cartridge(file: File) : Memory {
             0x0B -> Log.i("ROM+MMM01")
             0x0C -> Log.i("ROM+MMM01+RAM")
             0x0D -> Log.i("ROM+MMM01+RAM+BATTERY")
-            0x0F -> Log.i("ROM+MBC3+TIMER+BATTERY")
-            0x10 -> Log.i("ROM+MBC3+TIMER+RAM+BATTERY")
-            0x11 -> Log.i("ROM+MBC3")
-            0x12 -> Log.i("ROM+MBC3+RAM")
-            0x13 -> Log.i("ROM+MBC3+RAM+BATTERY")
+            0x0F -> {
+                Log.i("ROM+MBC3+TIMER+BATTERY")
+                type = MBC3(romBanks, 0, true, true)
+            }
+            0x10 -> {
+                Log.i("ROM+MBC3+TIMER+RAM+BATTERY")
+                type = MBC3(romBanks, ramSize, true, true)
+            }
+            0x11 -> {
+                Log.i("ROM+MBC3")
+                type = MBC3(romBanks, 0, false, false)
+            }
+            0x12 -> {
+                Log.i("ROM+MBC3+RAM")
+                type = MBC3(romBanks, ramSize, false, false)
+            }
+            0x13 -> {
+                Log.i("ROM+MBC3+RAM+BATTERY")
+                type = MBC3(romBanks, ramSize, true, false)
+            }
             0x19 -> Log.i("ROM+MBC5")
             0x1A -> Log.i("ROM+MBC5+RAM")
             0x1B -> Log.i("ROM+MBC5+RAM+BATTERY")
