@@ -262,11 +262,15 @@ class Lcd : Memory, Observable() {
             // Add the offset to the current line
             mapOffset += (((LY - WY) and 0xFF) shr 3) shl 5
 
+            var newWX = WX - 7
+            if (newWX < 0) {
+                newWX += 255
+            }
             // Add the offset in the horizontal direction
-            var lineOffset = WX shr 3
+            var lineOffset = newWX shr 3
 
             val y = (LY - WY) and 7
-            var x = WX and 7
+            var x = newWX and 7
 
             var color: Int
             var tile = vram[mapOffset + lineOffset]
