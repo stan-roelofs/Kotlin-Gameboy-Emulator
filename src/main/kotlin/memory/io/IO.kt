@@ -1,7 +1,8 @@
-package memory.IO
+package memory.io
 
 import memory.Memory
 import memory.Mmu
+import memory.io.sound.Sound
 
 class IO : Memory {
 
@@ -11,7 +12,7 @@ class IO : Memory {
     val joypad = Joypad()
     val serial = Serial()
 
-    private val sound = Sound()
+    val sound = Sound()
     val dma = Dma()
     private val timer = Timer()
 
@@ -32,7 +33,7 @@ class IO : Memory {
         timer.tick(cycles)
         lcd.tick(cycles)
         dma.tick(cycles)
-        sound.tick(cycles)
+        //sound.tick(cycles)
     }
 
     override fun readByte(address: Int): Int {
