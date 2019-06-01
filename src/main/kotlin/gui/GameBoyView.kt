@@ -5,6 +5,7 @@ import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.EventHandler
+import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
@@ -16,6 +17,15 @@ import java.io.File
 import java.util.*
 
 class GameBoyView: View(), Observer {
+    private var scale = 1
+    set(value) {
+        field = if (value <= 0) {
+            1
+        } else {
+            value
+        }
+    }
+    private lateinit var imageViewLcd: ImageView
     private var lcd = WritableImage(320, 288)
     private var oldScreen = Array(144) {IntArray(160)}
 
@@ -30,6 +40,7 @@ class GameBoyView: View(), Observer {
     val colors = arrayOf(color0, color1, color2, color3)
 
     private var frameDone = false
+    private var forceRefresh = false
 
     private val tl = Timeline()
     private val play = KeyFrame(Duration.millis(17.0),
@@ -80,10 +91,23 @@ class GameBoyView: View(), Observer {
                         debugView.openWindow()
                     }
                 }
+
+                menu("Settings") {
+                    item("Increase lcd scale").action {
+                        scale++
+                        lcd = WritableImage(160 * scale, 144 * scale)
+                        imageViewLcd.image = lcd
+                    }
+                    item("Decrease lcd scale").action {
+                        scale--
+                        lcd = WritableImage(160 * scale, 144 * scale)
+                        imageViewLcd.image = lcd
+                    }
+                }
             }
         }
         row {
-            imageview(lcd) {
+            imageViewLcd = imageview(lcd) {
                 useMaxWidth = true
                 gridpaneConstraints {
                     columnSpan = 4
@@ -136,16 +160,11 @@ class GameBoyView: View(), Observer {
         gb.mmu.io.lcd.addObserver(this)
         reset()
         registerKeyboard()
+        forceRefresh = true
     }
 
     private fun reset() {
-        // set initial values to 100 such that the first frame all pixels are forced to redraw
-        // TODO: this is just a temporary hack, should be fixed later on
-        for (i in 0 until 144) {
-            for (j in 0 until 160) {
-                oldScreen[i][j] = 100
-            }
-        }
+        forceRefresh = true
     }
 
     private fun registerKeyboard() {
@@ -198,13 +217,20 @@ class GameBoyView: View(), Observer {
         for (y in 0 until 144) {
             for (x in 0 until 160) {
                 // If current pixel hasn't changed, skip drawing
-                if (oldScreen[y][x] != screen[y][x]) {
+                if (forceRefresh || oldScreen[y][x] != screen[y][x]) {
                     val c = colors[screen[y][x]]
-                    pixelWriter.setColor(2 * x, 2 * y, c)
-                    pixelWriter.setColor(2 * x + 1, 2 * y, c)
-                    pixelWriter.setColor(2 * x, 2 * y + 1, c)
-                    pixelWriter.setColor(2 * x + 1, 2 * y + 1, c)
+
+                    for (i in 0 until scale) {
+                        for (j in 0 until scale) {
+                            pixelWriter.setColor(scale * x + i, scale * y + j, c)
+                        }
+                    }
+
                     oldScreen[y][x] = screen[y][x]
+                }
+
+                if (forceRefresh) {
+                    forceRefresh = false
                 }
             }
         }
