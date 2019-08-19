@@ -15,28 +15,6 @@ class Sound : Memory {
         val SAMPLE_RATE = 131072 / 3
     }
 
-    private var NR10 = 0
-    private var NR11 = 0
-    private var NR12 = 0
-    private var NR13 = 0
-    private var NR14 = 0
-
-    private var NR21 = 0
-    private var NR22 = 0
-    private var NR23 = 0
-    private var NR24 = 0
-
-    private var NR30 = 0
-    private var NR31 = 0
-    private var NR32 = 0
-    private var NR33 = 0
-    private var NR34 = 0
-
-    private var NR41 = 0
-    private var NR42 = 0
-    private var NR43 = 0
-    private var NR44 = 0
-
     private var NR50 = 0
     private var NR51 = 0
     private var NR52 = 0
@@ -51,18 +29,17 @@ class Sound : Memory {
     var leftEnabled = Array<Boolean>(4){true}
     var rightEnabled = Array<Boolean>(4){true}
 
-    private val square1 = SquareWave()
-    private val square2 = SquareWave()
+    private val square1 = SquareWave1()
+    private val square2 = SquareWave2()
     private val wave = WaveChannel()
     private val noise = NoiseChannel()
 
     private lateinit var sourceDL : SourceDataLine
-    val SAMPLES_PER_FRAME = SAMPLE_RATE / 57
+    val SAMPLES_PER_FRAME = SAMPLE_RATE / 60
     val AUDIO_FORMAT = AudioFormat(SAMPLE_RATE.toFloat(), 8, 2, false, false)
 
     private val masterBuffer = ByteArray(SAMPLES_PER_FRAME * 2) {0}
     private val tempBuffer = ByteArray(SAMPLES_PER_FRAME) {0}
-
 
     init {
         try {
@@ -75,28 +52,6 @@ class Sound : Memory {
     }
 
     override fun reset() {
-        NR10 = 0x80
-        NR11 = 0xBF
-        NR12 = 0xF3
-        NR13 = 0xFF
-        NR14 = 0xBF
-
-        NR21 = 0x3F
-        NR22 = 0
-        NR23 = 0xFF
-        NR24 = 0xBF
-
-        NR30 = 0x7F
-        NR31 = 0xFF
-        NR32 = 0x9F
-        NR33 = 0xFF
-        NR34 = 0xBF
-
-        NR41 = 0xFF
-        NR42 = 0x00
-        NR43 = 0x00
-        NR44 = 0xBF
-
         NR50 = 0x77
         NR51 = 0xF3
         NR52 = 0xF1
@@ -105,7 +60,7 @@ class Sound : Memory {
     }
 
     fun frame() {
-
+        /*
         val samplesToWrite = Math.min(sourceDL.available() / 2, SAMPLES_PER_FRAME)
         masterBuffer.fill(0)
 
@@ -166,28 +121,37 @@ class Sound : Memory {
         }
 
         sourceDL.write(masterBuffer, 0, samplesToWrite * 2)
+        */
     }
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            Mmu.NR10 -> this.NR10 or 0b10000000 // Bit 7 unused
-            Mmu.NR11 -> this.NR11 or 0b00111111 // Only bits 6-7 can be read
-            Mmu.NR12 -> this.NR12
-            Mmu.NR13 -> this.NR13
-            Mmu.NR14 -> this.NR14 or 0b10111111 // Only bit 6 can be read
-            Mmu.NR21 -> this.NR21 or 0b00111111 // Only bits 6-7 can be read
-            Mmu.NR22 -> this.NR22
-            Mmu.NR23 -> this.NR23
-            Mmu.NR24 -> this.NR24 or 0b10111111 // Only bit 6 can be read
-            Mmu.NR30 -> this.NR30 or 0b01111111 // Only bit 7 can be read
-            Mmu.NR31 -> this.NR31
-            Mmu.NR32 -> this.NR32 or 0b10011111 // Only bits 5-6 can be read
-            Mmu.NR33 -> this.NR33
-            Mmu.NR34 -> this.NR34 or 0b10111111 // Only bit 6 can be read
-            Mmu.NR41 -> this.NR41 or 0b11000000 // Bits 6-7 unused
-            Mmu.NR42 -> this.NR42
-            Mmu.NR43 -> this.NR43
-            Mmu.NR44 -> this.NR44 or 0b10111111 // Only bit 6 can be read
+            Mmu.NR10,
+            Mmu.NR11,
+            Mmu.NR12,
+            Mmu.NR13,
+            Mmu.NR14 -> {
+                square1.readByte(address)
+            }
+            Mmu.NR21,
+            Mmu.NR22,
+            Mmu.NR23,
+            Mmu.NR24 -> {
+                square2.readByte(address)
+            }
+            Mmu.NR30,
+            Mmu.NR31,
+            Mmu.NR32,
+            Mmu.NR33,
+            Mmu.NR34 -> {
+                wave.readByte(address)
+            }
+            Mmu.NR41,
+            Mmu.NR42,
+            Mmu.NR43,
+            Mmu.NR44 -> {
+                noise.readByte(address)
+            }
             Mmu.NR50 -> this.NR50
             Mmu.NR51 -> this.NR51
             Mmu.NR52 -> this.NR52 or 0b01110000 // Bits 4-6 unused
@@ -199,36 +163,32 @@ class Sound : Memory {
     override fun writeByte(address: Int, value: Int) {
         val newVal = value and 0xFF
         when(address) {
-            in 0xFF10..0xFF14 -> {
-                square1.handleByte(address - 0xFF10,  value)
+            Mmu.NR10,
+            Mmu.NR11,
+            Mmu.NR12,
+            Mmu.NR13,
+            Mmu.NR14 -> {
+                square1.writeByte(address,  value)
             }
-            in 0xFF15..0xFF19 -> {
-                square2.handleByte(address - 0xFF10,  value)
+            Mmu.NR21,
+            Mmu.NR22,
+            Mmu.NR23,
+            Mmu.NR24 -> {
+                square2.writeByte(address,  value)
             }
-            in 0xFF1A..0xFF1E -> {
-                wave.handleByte(address - 0xFF10,  value)
+            Mmu.NR30,
+            Mmu.NR31,
+            Mmu.NR32,
+            Mmu.NR33,
+            Mmu.NR34 -> {
+                wave.writeByte(address,  value)
             }
-            in 0xFF1F..0xFF23 -> {
-                noise.handleByte(address - 0xFF10,  value)
+            Mmu.NR41,
+            Mmu.NR42,
+            Mmu.NR43,
+            Mmu.NR44 -> {
+                noise.writeByte(address,  value)
             }
-            Mmu.NR10 -> this.NR10 = newVal
-            Mmu.NR11 -> this.NR11 = newVal
-            Mmu.NR12 -> this.NR12 = newVal
-            Mmu.NR13 -> this.NR13 = newVal
-            Mmu.NR14 -> this.NR14 = newVal
-            Mmu.NR21 -> this.NR21 = newVal
-            Mmu.NR22 -> this.NR22 = newVal
-            Mmu.NR23 -> this.NR23 = newVal
-            Mmu.NR24 -> this.NR24 = newVal
-            Mmu.NR30 -> this.NR30 = newVal
-            Mmu.NR31 -> this.NR31 = newVal
-            Mmu.NR32 -> this.NR32 = newVal
-            Mmu.NR33 -> this.NR33 = newVal
-            Mmu.NR34 -> this.NR34 = newVal
-            Mmu.NR41 -> this.NR41 = newVal
-            Mmu.NR42 -> this.NR42 = newVal
-            Mmu.NR43 -> this.NR43 = newVal
-            Mmu.NR44 -> this.NR44 = newVal
             Mmu.NR50 -> this.NR50 = newVal
             Mmu.NR51 -> this.NR51 = newVal
             Mmu.NR52 -> this.NR52 = newVal

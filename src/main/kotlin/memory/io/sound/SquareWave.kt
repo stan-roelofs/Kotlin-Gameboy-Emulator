@@ -2,37 +2,32 @@ package memory.io.sound
 
 import java.io.Serializable
 
-class SquareWave : SoundChannel, Serializable {
-    protected var duty = 0
-    protected var lengthLoad = 0
-    protected var startingVolume = 0
-    protected var envelopeAdd = false
-    protected var envelopePeriod = 0
-    protected var frequency = 0
-    protected var playing = false
-    protected var lengthEnabled = false
-    protected var lengthCounter = 0
+abstract class SquareWave : SoundChannel, Serializable {
 
-    protected var currentVolume = 0
-    protected var ticks: Long = 0
-    protected var offset = 0
+    private var duty = 0
+
+    private val dutyCycles = arrayOf(0b00000001, 0b10000001, 0b10000111, 0b01111110)
+
+    private var lengthLoad = 0
+    private var startingVolume = 0
+    private var envelopeAdd = false
+    private var envelopePeriod = 0
+    private var frequency = 0
+    private var playing = false
+    private var lengthEnabled = false
+    private var lengthCounter = 0
+
+    private var currentVolume = 0
+    private var ticks: Long = 0
+    private var offset = 0
 
     private val transition = ByteArray(Sound.SAMPLE_RATE)
 
     val SAMPLE_RATE = Sound.SAMPLE_RATE
 
-    fun getWaveform(duty: Int): Int {
-        when (duty) {
-            0 -> return 32
-            1 -> return 48
-            2 -> return 60
-            3 -> return 126
-            else -> throw IllegalArgumentException("duty must be in [0,4)")
-        }
-    }
-
     //tick is 30 hz
     override fun tick(soundBuffer: ByteArray, samplesToWrite: Int): Boolean {
+        /*
         if (!this.playing) {
             return false
         }
@@ -66,12 +61,12 @@ class SquareWave : SoundChannel, Serializable {
         }
 
         offset = (offset + samplesToWrite) % waveLength
-
-        return true
+*/
+        return false
     }
 
     //location is 0, 1, 2, 3, 4
-    override fun handleByte(location: Int, value: Int) {
+    fun handleByte(location: Int, value: Int) {
         var newFrequency = frequency
 
         when (location) {

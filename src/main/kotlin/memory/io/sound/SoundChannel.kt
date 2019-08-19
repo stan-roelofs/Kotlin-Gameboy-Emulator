@@ -1,6 +1,10 @@
 package memory.io.sound
 
-interface SoundChannel {
-    fun handleByte(location: Int, value: Int)
+import memory.Memory
+
+interface SoundChannel : Memory {
+    override fun readByte(address: Int): Int
+    override fun writeByte(address: Int, value: Int)
+
     fun tick(soundBuffer: ByteArray, samples: Int): Boolean
 }
