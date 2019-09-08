@@ -33,7 +33,7 @@ class IO : Memory {
         timer.tick(cycles)
         lcd.tick(cycles)
         dma.tick(cycles)
-        //sound.tick(cycles)
+        sound.tick(cycles)
     }
 
     override fun readByte(address: Int): Int {

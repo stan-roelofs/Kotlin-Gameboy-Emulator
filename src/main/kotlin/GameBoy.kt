@@ -5,6 +5,11 @@ import utils.Log
 import java.io.File
 
 class GameBoy(cart: File?) {
+
+    companion object {
+        val TICKS_PER_SEC = 4194304
+    }
+
     val cpu = Cpu()
     private lateinit var cartridge: Cartridge
     val mmu = Mmu.instance

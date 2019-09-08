@@ -2,32 +2,36 @@ package memory.io.sound
 
 import memory.Mmu
 import utils.toHexString
-import java.io.Serializable
 
-class NoiseChannel : SoundChannel, Serializable {
+class NoiseChannel : SoundChannel() {
 
-    private var NR41 = 0
-    private var NR42 = 0
-    private var NR43 = 0
-    private var NR44 = 0
+    override var NR0 = 0
+    override var NR1 = 0xFF
+    override var NR2 = 0x00
+    override var NR3 = 0x00
+    override var NR4 = 0xBF
 
-    override fun reset() {
-        NR41 = 0xFF
-        NR42 = 0x00
-        NR43 = 0x00
-        NR44 = 0xBF
+    override fun trigger() {
+
     }
 
-    override fun tick(soundBuffer: ByteArray, samples: Int): Boolean {
-        return false
+    override fun tick(cycles: Int): Int {
+        return 0
+    }
+
+    override fun reset() {
+        NR1 = 0xFF
+        NR2 = 0x00
+        NR3 = 0x00
+        NR4 = 0xBF
     }
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            Mmu.NR41 -> this.NR41 or 0b11000000 // Bits 6-7 unused
-            Mmu.NR42 -> this.NR42
-            Mmu.NR43 -> this.NR43
-            Mmu.NR44 -> this.NR44 or 0b10111111 // Only bit 6 can be read
+            Mmu.NR41 -> this.NR1 or 0b11000000 // Bits 6-7 unused
+            Mmu.NR42 -> this.NR2
+            Mmu.NR43 -> this.NR3
+            Mmu.NR44 -> this.NR4 or 0b10111111 // Only bit 6 can be read
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to NoiseChannel")
         }
     }
@@ -36,16 +40,16 @@ class NoiseChannel : SoundChannel, Serializable {
         val newVal = value and 0xFF
         when(address) {
             Mmu.NR41 -> {
-                this.NR41 = newVal
+                this.NR1 = newVal
             }
             Mmu.NR42 -> {
-                this.NR42 = newVal
+                this.NR2 = newVal
             }
             Mmu.NR43 -> {
-                this.NR43 = newVal
+                this.NR3 = newVal
             }
             Mmu.NR44 -> {
-                this.NR44 = newVal
+                this.NR4 = newVal
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to NoiseChannel")
         }

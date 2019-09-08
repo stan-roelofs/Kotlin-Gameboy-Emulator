@@ -30,6 +30,7 @@ class GameBoyView: View(), Observer {
     val colors = arrayOf(color0, color1, color2, color3)
 
     private var frameDone = false
+    private var lastTime = 0L
 
     private val tl = Timeline()
     private val play = KeyFrame(Duration.millis(17.0),
@@ -190,8 +191,6 @@ class GameBoyView: View(), Observer {
 
     override fun update(o: Observable?, arg: Any?) {
         frameDone = true
-
-        gb.mmu.io.sound.frame()
 
         val pixelWriter = lcd.pixelWriter
 

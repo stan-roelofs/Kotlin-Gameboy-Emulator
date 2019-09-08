@@ -2,35 +2,38 @@ package memory.io.sound
 
 import memory.Mmu
 import utils.toHexString
-import java.io.Serializable
 
-class WaveChannel : SoundChannel, Serializable {
+class WaveChannel : SoundChannel() {
+    override fun trigger() {
 
-    private var NR30 = 0
-    private var NR31 = 0
-    private var NR32 = 0
-    private var NR33 = 0
-    private var NR34 = 0
-
-    override fun reset() {
-        NR30 = 0x7F
-        NR31 = 0xFF
-        NR32 = 0x9F
-        NR33 = 0xFF
-        NR34 = 0xBF
     }
 
-    override fun tick(soundBuffer: ByteArray, samples: Int): Boolean {
-        return false
+
+    override var NR0 = 0x7F
+    override var NR1 = 0xFF
+    override var NR2 = 0x9F
+    override var NR3 = 0xFF
+    override var NR4 = 0xBF
+
+    override fun reset() {
+        NR0 = 0x7F
+        NR1 = 0xFF
+        NR2 = 0x9F
+        NR3 = 0xFF
+        NR4 = 0xBF
+    }
+
+    override fun tick(cycles: Int): Int {
+        return 0
     }
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            Mmu.NR30 -> this.NR30 or 0b01111111 // Only bit 7 can be read
-            Mmu.NR31 -> this.NR31
-            Mmu.NR32 -> this.NR32 or 0b10011111 // Only bits 5-6 can be read
-            Mmu.NR33 -> this.NR33
-            Mmu.NR34 -> this.NR34 or 0b10111111 // Only bit 6 can be read
+            Mmu.NR30 -> this.NR0 or 0b01111111 // Only bit 7 can be read
+            Mmu.NR31 -> this.NR1
+            Mmu.NR32 -> this.NR2 or 0b10011111 // Only bits 5-6 can be read
+            Mmu.NR33 -> this.NR3
+            Mmu.NR34 -> this.NR4 or 0b10111111 // Only bit 6 can be read
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to WaveChannel")
         }
     }
@@ -39,19 +42,19 @@ class WaveChannel : SoundChannel, Serializable {
         val newVal = value and 0xFF
         when(address) {
             Mmu.NR30 -> {
-                this.NR30 = newVal
+                this.NR0 = newVal
             }
             Mmu.NR31 -> {
-                this.NR31 = newVal
+                this.NR1 = newVal
             }
             Mmu.NR32 -> {
-                this.NR32 = newVal
+                this.NR2 = newVal
             }
             Mmu.NR33 -> {
-                this.NR33 = newVal
+                this.NR3 = newVal
             }
             Mmu.NR34 -> {
-                this.NR34 = newVal
+                this.NR4 = newVal
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to WaveChannel")
         }

@@ -1,127 +1,104 @@
 package memory.io.sound
 
+import GameBoy
 import memory.Memory
 import memory.Mmu
+import utils.getBit
+import utils.setBit
 import utils.toHexString
 import javax.sound.sampled.AudioFormat
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.LineUnavailableException
 import javax.sound.sampled.SourceDataLine
 
-
 class Sound : Memory {
-
-    companion object {
-        val SAMPLE_RATE = 131072 / 3
-    }
 
     private var NR50 = 0
     private var NR51 = 0
-    private var NR52 = 0
 
     private val patternRam = IntArray(0x10)
-
-    val SQUARE1 = 0
-    val SQUARE2 = 1
-    val WAVE = 2
-    val NOISE = 3
-
-    var leftEnabled = Array<Boolean>(4){true}
-    var rightEnabled = Array<Boolean>(4){true}
 
     private val square1 = SquareWave1()
     private val square2 = SquareWave2()
     private val wave = WaveChannel()
     private val noise = NoiseChannel()
 
-    private lateinit var sourceDL : SourceDataLine
-    val SAMPLES_PER_FRAME = SAMPLE_RATE / 60
-    val AUDIO_FORMAT = AudioFormat(SAMPLE_RATE.toFloat(), 8, 2, false, false)
+    private val allChannels: Array<SoundChannel> = arrayOf(square1, square2, wave, noise)
+    private val samples = IntArray(4)
 
-    private val masterBuffer = ByteArray(SAMPLES_PER_FRAME * 2) {0}
-    private val tempBuffer = ByteArray(SAMPLES_PER_FRAME) {0}
+    private var enabled = false
+
+    private val SAMPLE_RATE = 48000f
+    private val BUFFER_SIZE = 1024
+    private val AUDIO_FORMAT = AudioFormat(SAMPLE_RATE, 8, 2, false, false)
+    private val buffer = ByteArray(BUFFER_SIZE)
+    private var sampleCounter = 0
+    private var bufferCounter = 0
+    private var rate = (GameBoy.TICKS_PER_SEC / SAMPLE_RATE).toInt()
+
+    private var line : SourceDataLine? = null
 
     init {
+        enabled = true
+
         try {
-            sourceDL = AudioSystem.getSourceDataLine(AUDIO_FORMAT)
-            sourceDL.open(AUDIO_FORMAT)
-            sourceDL.start()
+            line = AudioSystem.getSourceDataLine(AUDIO_FORMAT)
+            line?.open(AUDIO_FORMAT)
+            line?.start()
         } catch (e: LineUnavailableException) {
-            e.printStackTrace()
+            throw RuntimeException(e)
         }
     }
 
     override fun reset() {
         NR50 = 0x77
         NR51 = 0xF3
-        NR52 = 0xF1
+        //NR52 = 0xF1
 
         patternRam.fill(0)
     }
 
-    fun frame() {
-        /*
-        val samplesToWrite = Math.min(sourceDL.available() / 2, SAMPLES_PER_FRAME)
-        masterBuffer.fill(0)
-
-        var channelEnabled = square1.tick(tempBuffer, samplesToWrite)
-        if (channelEnabled) {
-            if (leftEnabled[SQUARE1]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i] = (masterBuffer[2 * i] + tempBuffer[i]).toByte()
-                }
-            }
-            if (rightEnabled[SQUARE1]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i + 1] = (masterBuffer[2 * i + 1] + tempBuffer[i]).toByte()
-                }
-            }
+    fun tick(cycles: Int) {
+        if (!enabled) {
+            return
         }
 
-        channelEnabled = square2.tick(tempBuffer, samplesToWrite)
-        if (channelEnabled) {
-            if (leftEnabled[SQUARE2]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i] = (masterBuffer[2 * i] + tempBuffer[i]).toByte()
-                }
-            }
-            if (rightEnabled[SQUARE2]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i + 1] = (masterBuffer[2 * i + 1] + tempBuffer[i]).toByte()
-                }
-            }
+        for (i in 0 until 4) {
+            samples[i] = allChannels[i].tick(cycles)
         }
 
-        channelEnabled = wave.tick(tempBuffer, samplesToWrite)
-        if (channelEnabled) {
-            if (leftEnabled[WAVE]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i] = (masterBuffer[2 * i] + tempBuffer[i]).toByte()
+        sampleCounter++
+        if (sampleCounter == rate) {
+            sampleCounter = 0
+
+            var left = 0
+            var right = 0
+
+            for (i in 0 until 4) {
+                if (NR51 and (1 shl i + 4) != 0) {
+                    left += samples[i]
+                }
+                if (NR51 and (1 shl i) != 0) {
+                    right += samples[i]
                 }
             }
-            if (rightEnabled[WAVE]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i + 1] = (masterBuffer[2 * i + 1] + tempBuffer[i]).toByte()
-                }
+            left /= 4
+            right /= 4
+
+            // Bits 4..6 contain left volume
+            left *= ((NR50 shl 4) and 0b111) + 1
+            // Bits 0..2 contain right volume
+            right *= (NR50 and 0b111) + 1
+
+            buffer[bufferCounter] = left.toByte()
+            buffer[bufferCounter + 1] = right.toByte()
+
+            bufferCounter += 2
+            if (bufferCounter == BUFFER_SIZE) {
+                bufferCounter = 0
+                line!!.write(buffer, 0, BUFFER_SIZE)
             }
         }
-
-        channelEnabled = noise.tick(tempBuffer, samplesToWrite)
-        if (channelEnabled) {
-            if (leftEnabled[NOISE]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i] = (masterBuffer[2 * i] + tempBuffer[i]).toByte()
-                }
-            }
-            if (rightEnabled[NOISE]) {
-                for (i in 0 until samplesToWrite) {
-                    masterBuffer[2 * i + 1] = (masterBuffer[2 * i + 1] + tempBuffer[i]).toByte()
-                }
-            }
-        }
-
-        sourceDL.write(masterBuffer, 0, samplesToWrite * 2)
-        */
     }
 
     override fun readByte(address: Int): Int {
@@ -154,7 +131,28 @@ class Sound : Memory {
             }
             Mmu.NR50 -> this.NR50
             Mmu.NR51 -> this.NR51
-            Mmu.NR52 -> this.NR52 or 0b01110000 // Bits 4-6 unused
+            Mmu.NR52 -> {
+                // Bits 0-3 are statuses of channels (1, 2, wave, noise)
+                var result = 0b01110000 // Bits 4-6 are unused
+                if (square1.isEnabled()) {
+                    result = setBit(result, 0)
+                }
+                if (square2.isEnabled()) {
+                    result = setBit(result, 1)
+                }
+                if (wave.isEnabled()) {
+                    result = setBit(result, 2)
+                }
+                if (noise.isEnabled()) {
+                    result = setBit(result, 3)
+                }
+
+                // Bit 7 is sound status
+                if (enabled) {
+                    result = setBit(result, 7)
+                }
+                result
+            }
             in 0xFF30..0xFF3F -> patternRam[address - 0xFF30]
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")
         }
@@ -191,7 +189,9 @@ class Sound : Memory {
             }
             Mmu.NR50 -> this.NR50 = newVal
             Mmu.NR51 -> this.NR51 = newVal
-            Mmu.NR52 -> this.NR52 = newVal
+            Mmu.NR52 -> {
+                enabled = value.getBit(7)
+            }
             in 0xFF30..0xFF3F -> patternRam[address - 0xFF30] = newVal
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")
         }

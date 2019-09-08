@@ -5,31 +5,40 @@ import utils.toHexString
 
 class SquareWave1 : SquareWave() {
 
-    private var NR10 = 0
-    private var NR11 = 0
-    private var NR12 = 0
-    private var NR13 = 0
-    private var NR14 = 0
+    override var NR0 = 0x80
+    override var NR1 = 0xBF
+    override var NR2 = 0xF3
+    override var NR3 = 0xFF
+    override var NR4 = 0xBF
 
-    override fun reset() {
-        NR10 = 0x80
-        NR11 = 0xBF
-        NR12 = 0xF3
-        NR13 = 0xFF
-        NR14 = 0xBF
+    init {
+        channelEnabled = true
+        dacEnabled = true
     }
 
-    override fun tick(soundBuffer: ByteArray, samplesToWrite: Int): Boolean {
-        return false
+    override fun tick(cycles: Int): Int {
+        return 0
+    }
+
+    override fun trigger() {
+
+    }
+
+    override fun reset() {
+        NR1 = 0x80
+        NR1 = 0xBF
+        NR1 = 0xF3
+        NR1 = 0xFF
+        NR1 = 0xBF
     }
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            Mmu.NR10 -> this.NR10 or 0b10000000 // Bit 7 unused
-            Mmu.NR11 -> this.NR11 or 0b00111111 // Only bits 6-7 can be read
-            Mmu.NR12 -> this.NR12
-            Mmu.NR13 -> this.NR13
-            Mmu.NR14 -> this.NR14 or 0b10111111 // Only bit 6 can be read
+            Mmu.NR10 -> this.NR0 or 0b10000000 // Bit 7 unused
+            Mmu.NR11 -> this.NR1 or 0b00111111 // Only bits 6-7 can be read
+            Mmu.NR12 -> this.NR2
+            Mmu.NR13 -> this.NR3
+            Mmu.NR14 -> this.NR4 or 0b10111111 // Only bit 6 can be read
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to SquareWave1")
         }
     }
@@ -38,19 +47,19 @@ class SquareWave1 : SquareWave() {
         val newVal = value and 0xFF
         when(address) {
             Mmu.NR10 -> {
-                this.NR10 = newVal
+                this.NR0 = newVal
             }
             Mmu.NR11 -> {
-                this.NR11 = newVal
+                this.NR1 = newVal
             }
             Mmu.NR12 -> {
-                this.NR12 = newVal
+                this.NR2 = newVal
             }
             Mmu.NR13 -> {
-                this.NR13 = newVal
+                this.NR3 = newVal
             }
             Mmu.NR14 -> {
-                this.NR14 = newVal
+                this.NR4 = newVal
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to SquareWave1")
         }
