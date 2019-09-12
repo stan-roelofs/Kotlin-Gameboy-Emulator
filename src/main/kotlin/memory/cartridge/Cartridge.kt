@@ -4,7 +4,6 @@ import memory.Memory
 import utils.Log
 import java.io.File
 import java.nio.file.Files
-import java.util.*
 
 class Cartridge(file: File) : Memory {
 
@@ -45,9 +44,9 @@ class Cartridge(file: File) : Memory {
                 0xBB, 0xBB, 0x67, 0x63, 0x6E, 0x0E, 0xEC, 0xCC, 0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E
                 )
 
-        val romGraphicBytes = Arrays.copyOfRange(data, 0x104, 0x134)
+        val romGraphicBytes = data.copyOfRange(0x104, 0x134)
 
-        val equal = (0 until romGraphicBytes.size).none { nintendoGraphicBytes[it].toByte() != romGraphicBytes[it] }
+        val equal = (romGraphicBytes.indices).none { nintendoGraphicBytes[it].toByte() != romGraphicBytes[it] }
         if (!equal) {
             Log.w("Scrolling Nintendo Graphic bytes do not match, rom would not run on GameBoy")
         } else {
@@ -58,18 +57,17 @@ class Cartridge(file: File) : Memory {
         isGbc = romColorGB
         Log.i("Is Color GB: $romColorGB")
 
-        title = String(Arrays.copyOfRange(data, 0x134, 0x143), Charsets.US_ASCII)
+        title = String(data.copyOfRange(0x134, 0x143), Charsets.US_ASCII)
         Log.i("Title: $title")
 
-        val romLicensee = String(Arrays.copyOfRange(data, 0x144, 0x146), Charsets.US_ASCII)
+        val romLicensee = String(data.copyOfRange(0x144, 0x146), Charsets.US_ASCII)
         Log.i("New Licensee Code: $romLicensee")
 
         val romSGB = data[0x146].toInt() == 0x03
         isSgb = romSGB
         Log.i("Supports SGB functions: $romSGB")
 
-        val romSize = data[0x148].toInt()
-        val romBanks = when(romSize) {
+        val romBanks = when(data[0x148].toInt()) {
             0x00 -> 2
             0x01 -> 4
             0x02 -> 8
@@ -84,8 +82,7 @@ class Cartridge(file: File) : Memory {
         }
         Log.i("Number of ROM banks: $romBanks")
 
-        val ramSizeByte = data[0x149].toInt()
-        val ramSize = when(ramSizeByte) {
+        val ramSize = when(data[0x149].toInt()) {
             0x00 -> 0
             0x01 -> 2048
             0x02 -> 8192
@@ -95,8 +92,7 @@ class Cartridge(file: File) : Memory {
         }
         Log.i("RAM size: $ramSize bytes")
 
-        val romType = data[0x147].toInt()
-        when (romType) {
+        when (data[0x147].toInt()) {
             0x00 -> {
                 Log.i("ROM ONLY")
                 type = ROMONLY()
@@ -128,23 +124,23 @@ class Cartridge(file: File) : Memory {
             0x0D -> Log.i("ROM+MMM01+RAM+BATTERY")
             0x0F -> {
                 Log.i("ROM+MBC3+TIMER+BATTERY")
-                type = MBC3(romBanks, 0, true, true)
+                type = MBC3(romBanks, 0, hasBattery = true, hasTimer = true)
             }
             0x10 -> {
                 Log.i("ROM+MBC3+TIMER+RAM+BATTERY")
-                type = MBC3(romBanks, ramSize, true, true)
+                type = MBC3(romBanks, ramSize, hasBattery = true, hasTimer = true)
             }
             0x11 -> {
                 Log.i("ROM+MBC3")
-                type = MBC3(romBanks, 0, false, false)
+                type = MBC3(romBanks, 0, hasBattery = false, hasTimer = false)
             }
             0x12 -> {
                 Log.i("ROM+MBC3+RAM")
-                type = MBC3(romBanks, ramSize, false, false)
+                type = MBC3(romBanks, ramSize, hasBattery = false, hasTimer = false)
             }
             0x13 -> {
                 Log.i("ROM+MBC3+RAM+BATTERY")
-                type = MBC3(romBanks, ramSize, true, false)
+                type = MBC3(romBanks, ramSize, hasBattery = true, hasTimer = false)
             }
             0x19 -> Log.i("ROM+MBC5")
             0x1A -> Log.i("ROM+MBC5+RAM")
