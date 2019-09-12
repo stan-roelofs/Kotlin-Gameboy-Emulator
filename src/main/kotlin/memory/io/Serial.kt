@@ -1,4 +1,4 @@
-package memory.IO
+package memory.io
 
 import memory.Memory
 import memory.Mmu

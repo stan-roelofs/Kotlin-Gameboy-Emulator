@@ -1,7 +1,7 @@
 package memory
 
-import memory.IO.IO
 import memory.cartridge.Cartridge
+import memory.io.IO
 import utils.toHexString
 
 class Mmu private constructor() : Memory {

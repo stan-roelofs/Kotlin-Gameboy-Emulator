@@ -4,6 +4,7 @@ import org.junit.Test
 
 internal class MemTiming2Tests : BlarggTest() {
 
+    // TODO: these tests write output to a different location in memory than the other tests, so are reported to fail even though they actually pass
     override val path = "mem_timing-2/rom_singles"
 
     @Test
