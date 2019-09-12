@@ -1,76 +1,63 @@
 package blargg
 
-import GameBoy
 import org.junit.Test
-import java.io.File
 
 internal class CpuInstrsTests : BlarggTest() {
 
-    override val path = "${pathToTests}cpu_instrs/individual/"
+    override val path = "cpu_instrs/individual"
 
     @Test
     fun test1() {
-        val gb = GameBoy(File("${path}01-special.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("01-special.gb")
     }
 
     @Test
     fun test2() {
-        val gb = GameBoy(File("${path}02-interrupts.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("02-interrupts.gb")
     }
 
     @Test
     fun test3() {
-        val gb = GameBoy(File("${path}03-op sp,hl.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("03-op sp,hl.gb")
     }
 
     @Test
     fun test4() {
-        val gb = GameBoy(File("${path}04-op r,imm.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("04-op r,imm.gb")
     }
 
     @Test
     fun test5() {
-        val gb = GameBoy(File("${path}05-op rp.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("05-op rp.gb")
     }
 
     @Test
     fun test6() {
-        val gb = GameBoy(File("${path}06-ld r,r.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("06-ld r,r.gb")
     }
 
     @Test
     fun test7() {
-        val gb = GameBoy(File("${path}07-jr,jp,call,ret,rst.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("07-jr,jp,call,ret,rst.gb")
     }
 
     @Test
     fun test8() {
-        val gb = GameBoy(File("${path}08-misc instrs.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("08-misc instrs.gb")
     }
 
     @Test
     fun test9() {
-        val gb = GameBoy(File("${path}09-op r,r.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("09-op r,r.gb")
     }
 
     @Test
     fun test10() {
-        val gb = GameBoy(File("${path}10-bit ops.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("10-bit ops.gb")
     }
 
     @Test
     fun test11() {
-        val gb = GameBoy(File("${path}11-op a,(hl).gb"))
-        runBlarggTest(gb)
+        runBlarggTest("11-op a,(hl).gb")
     }
 }

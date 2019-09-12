@@ -1,28 +1,23 @@
 package blargg
 
-import GameBoy
 import org.junit.Test
-import java.io.File
 
 internal class MemTimingTests : BlarggTest() {
 
-    override val path = "${pathToTests}mem_timing/individual/"
+    override val path = "mem_timing/individual"
 
     @Test
     fun test1() {
-        val gb = GameBoy(File("${path}01-read_timing.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("01-read_timing.gb")
     }
 
     @Test
     fun test2() {
-        val gb = GameBoy(File("${path}02-write_timing.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("02-write_timing.gb")
     }
 
     @Test
     fun test3() {
-        val gb = GameBoy(File("${path}03-modify_timing.gb"))
-        runBlarggTest(gb)
+        runBlarggTest("03-modify_timing.gb")
     }
 }

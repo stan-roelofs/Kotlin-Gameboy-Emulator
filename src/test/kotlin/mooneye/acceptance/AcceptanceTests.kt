@@ -1,38 +1,35 @@
 package mooneye.acceptance
 
-import GameBoy
 import mooneye.MooneyeTest
 import org.junit.Test
-import java.io.File
 
 class AcceptanceTests : MooneyeTest() {
 
-    override val path = pathToTests + "acceptance/"
+    override val path = "acceptance"
 
+    /*
     @Test
     fun add_sp_e_timing() {
-        val gb = GameBoy(File("${path}add_sp_e_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("add_sp_e_timing.gb", 0)
     }
 
     @Test
     fun boot_div_dmgABC() {
         val gb = GameBoy(File("${path}boot_div-dmgABCmgb.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 
     @Test
     fun boot_hwio_dmgABC() {
-        val gb = GameBoy(File("${path}boot_hwio-dmgABCmgb.gb"))
-        runMooneyeTest(gb, -1059871625)
+        runMooneyeTest("boot_hwio-dmgABCmgb.gb", -1059871625)
     }
 
     @Test
     fun boot_regs_dmgABC() {
-        val gb = GameBoy(File("${path}boot_regs-dmgABC.gb"))
-        runMooneyeTest(gb, 2030127056)
+        runMooneyeTest("boot_regs-dmgABC.gb", 2030127056)
     }
 
+    /*
     @Test
     fun call_cc_timing() {
         val gb = GameBoy(File("${path}call_cc_timing.gb"))
@@ -61,56 +58,53 @@ class AcceptanceTests : MooneyeTest() {
     fun di_timing_GS() {
         val gb = GameBoy(File("${path}di_timing-GS.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 
     @Test
     fun div_timing() {
-        val gb = GameBoy(File("${path}div_timing.gb"))
-        runMooneyeTest(gb, 618563916)
+        runMooneyeTest("div_timing.gb", 618563916)
     }
 
+    /*
     @Test
     fun ei_sequence() {
         val gb = GameBoy(File("${path}ei_sequence.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 
     @Test
     fun ei_timing() {
-        val gb = GameBoy(File("${path}ei_timing.gb"))
-        runMooneyeTest(gb, -2097771431)
+        runMooneyeTest("ei_timing.gb", -2097771431)
     }
 
     @Test
     fun halt_ime0_ei() {
-        val gb = GameBoy(File("${path}halt_ime0_ei.gb"))
-        runMooneyeTest(gb, -1059871625)
+        runMooneyeTest("halt_ime0_ei.gb", -1059871625)
     }
 
     @Test
     fun halt_ime0_nointr_timing() {
-        val gb = GameBoy(File("${path}halt_ime0_nointr_timing.gb"))
-        runMooneyeTest(gb, 427613825)
+        runMooneyeTest("halt_ime0_nointr_timing.gb", 427613825)
     }
 
     @Test
     fun halt_ime1_timing() {
-        val gb = GameBoy(File("${path}halt_ime1_timing.gb"))
-        runMooneyeTest(gb, -769890694)
+        runMooneyeTest("halt_ime1_timing.gb", -769890694)
     }
 
+    /*
     @Test
     fun halt_ime1_timing2_GS() {
         val gb = GameBoy(File("${path}halt_ime1_timing2-GS.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 
     @Test
     fun if_ie_registers() {
-        val gb = GameBoy(File("${path}if_ie_registers.gb"))
-        runMooneyeTest(gb, 1747996174)
+        runMooneyeTest("if_ie_registers.gb", 1747996174)
     }
 
+    /*
     @Test
     fun intr_timing() {
         val gb = GameBoy(File("${path}intr_timing.gb"))
@@ -134,25 +128,23 @@ class AcceptanceTests : MooneyeTest() {
         val gb = GameBoy(File("${path}ld_hl_sp_e_timing.gb"))
         runMooneyeTest(gb, 0)
     }
-
+*/
     @Test
     fun oam_dma_restart() {
-        val gb = GameBoy(File("${path}oam_dma_restart.gb"))
-        runMooneyeTest(gb, 1906711267)
+        runMooneyeTest("oam_dma_restart.gb", 1906711267)
     }
 
     @Test
     fun oam_dma_start() {
-        val gb = GameBoy(File("${path}oam_dma_start.gb"))
-        runMooneyeTest(gb, -2065568537)
+        runMooneyeTest("oam_dma_start.gb", -2065568537)
     }
 
     @Test
     fun oam_dma_timing() {
-        val gb = GameBoy(File("${path}oam_dma_timing.gb"))
-        runMooneyeTest(gb, 1906711267)
+        runMooneyeTest("oam_dma_timing.gb", 1906711267)
     }
 
+    /*
     @Test
     fun pop_timing() {
         val gb = GameBoy(File("${path}pop_timing.gb"))
@@ -163,14 +155,14 @@ class AcceptanceTests : MooneyeTest() {
     fun push_timing() {
         val gb = GameBoy(File("${path}push_timing.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 
     @Test
     fun rapid_di_ei() {
-        val gb = GameBoy(File("${path}rapid_di_ei.gb"))
-        runMooneyeTest(gb, 978629457)
+        runMooneyeTest("rapid_di_ei.gb", 978629457)
     }
 
+    /*
     @Test
     fun ret_cc_timing() {
         val gb = GameBoy(File("${path}ret_cc_timing.gb"))
@@ -181,14 +173,14 @@ class AcceptanceTests : MooneyeTest() {
     fun ret_timing() {
         val gb = GameBoy(File("${path}ret_timing.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 
     @Test
     fun reti_intr_timing() {
-        val gb = GameBoy(File("${path}reti_intr_timing.gb"))
-        runMooneyeTest(gb, 1502539589)
+        runMooneyeTest("reti_intr_timing.gb", 1502539589)
     }
 
+    /*
     @Test
     fun reti_timing() {
         val gb = GameBoy(File("${path}reti_timing.gb"))
@@ -199,5 +191,5 @@ class AcceptanceTests : MooneyeTest() {
     fun rst_timing() {
         val gb = GameBoy(File("${path}rst_timing.gb"))
         runMooneyeTest(gb, 0)
-    }
+    }*/
 }

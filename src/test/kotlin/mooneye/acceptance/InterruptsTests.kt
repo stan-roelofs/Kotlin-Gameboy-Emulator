@@ -1,16 +1,13 @@
 package mooneye.acceptance
 
-import GameBoy
 import mooneye.MooneyeTest
 import org.junit.Test
-import java.io.File
 
 class InterruptsTests : MooneyeTest() {
-    override val path = "$pathToTests/acceptance/interrupts/"
+    override val path = "acceptance/interrupts"
 
     @Test
     fun ie_push() {
-        val gb = GameBoy(File("${path}ie_push.gb"))
-        runMooneyeTest(gb, -1059871625)
+        runMooneyeTest("ie_push.gb", -1059871625)
     }
 }
