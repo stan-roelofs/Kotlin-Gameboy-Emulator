@@ -5,6 +5,7 @@ import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.EventHandler
+import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
@@ -17,7 +18,7 @@ import java.io.File
 import java.util.*
 
 class GameBoyView: View(), Observer {
-    private var scale = 1
+    private var scale = 2
     set(value) {
         field = if (value <= 0) {
             1
@@ -41,6 +42,9 @@ class GameBoyView: View(), Observer {
 
     private var frameDone = false
     private var forceRefresh = false
+    private var prevTime = 0L
+    private var frameCount = 0
+    private lateinit var labelFps: Label
 
     private val tl = Timeline()
     private val play = KeyFrame(Duration.millis(17.0),
@@ -97,11 +101,13 @@ class GameBoyView: View(), Observer {
                         scale++
                         lcd = WritableImage(160 * scale, 144 * scale)
                         imageViewLcd.image = lcd
+                        forceRefresh = true
                     }
                     item("Decrease lcd scale").action {
                         scale--
                         lcd = WritableImage(160 * scale, 144 * scale)
                         imageViewLcd.image = lcd
+                        forceRefresh = true
                     }
                 }
             }
@@ -152,6 +158,9 @@ class GameBoyView: View(), Observer {
                         cart?.loadRam(loadFile)
                     }
                 }
+            }
+            labelFps = label("FPS: ") {
+
             }
         }
     }
@@ -208,11 +217,20 @@ class GameBoyView: View(), Observer {
     }
 
     override fun update(o: Observable?, arg: Any?) {
+        frameCount++
+
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - prevTime >= 1000) {
+           labelFps.text = "FPS: $frameCount"
+
+            prevTime = currentTime
+            frameCount = 0
+        }
+
         frameDone = true
 
         val pixelWriter = lcd.pixelWriter
 
-        @Suppress("UNCHECKED_CAST")
         val screen = arg as Array<IntArray>
         for (y in 0 until 144) {
             for (x in 0 until 160) {
@@ -228,11 +246,11 @@ class GameBoyView: View(), Observer {
 
                     oldScreen[y][x] = screen[y][x]
                 }
-
-                if (forceRefresh) {
-                    forceRefresh = false
-                }
             }
+        }
+
+        if (forceRefresh) {
+            forceRefresh = false
         }
     }
 }
