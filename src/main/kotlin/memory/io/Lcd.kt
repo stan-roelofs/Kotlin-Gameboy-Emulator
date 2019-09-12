@@ -70,7 +70,7 @@ class Lcd : Memory, Observable() {
     }
 
     fun tick(cyclesElapsed: Int) {
-        if (!LcdEnabled()) {
+        if (!lcdEnabled()) {
             return
         }
 
@@ -160,7 +160,7 @@ class Lcd : Memory, Observable() {
         return when(address) {
             Mmu.LCDC -> this.LCDC
             Mmu.LY -> {
-                if (LcdEnabled()) {
+                if (lcdEnabled()) {
                     this.LY
                 } else {
                     0 // If LCD is off this register is fixed at 0
@@ -168,7 +168,7 @@ class Lcd : Memory, Observable() {
             }
             Mmu.LYC -> this.LYC
             Mmu.STAT -> {
-                if (LcdEnabled()) {
+                if (lcdEnabled()) {
                     this.STAT or 0b10000000 // Bit 7 is always 1
                 } else {
                     (this.STAT or 0b10000000) and 0b11111000 // Bits 0-2 return 0 when LCD is off
@@ -190,11 +190,11 @@ class Lcd : Memory, Observable() {
         val newVal = value and 0xFF
         when(address) {
             Mmu.LCDC -> {
-                val lcdBefore = LcdEnabled()
+                val lcdBefore = lcdEnabled()
 
                 this.LCDC = newVal
 
-                if (lcdBefore && !LcdEnabled()) {
+                if (lcdBefore && !lcdEnabled()) {
                     cycleCounter = 0
                     setMode(Mode.HBLANK)
                     this.LY = 0
@@ -491,7 +491,7 @@ class Lcd : Memory, Observable() {
         }
     }
 
-    private fun LcdEnabled(): Boolean {
+    private fun lcdEnabled(): Boolean {
         return LCDC.getBit(7)
     }
 

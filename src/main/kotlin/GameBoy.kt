@@ -1,7 +1,6 @@
 import cpu.Cpu
 import memory.Mmu
 import memory.cartridge.Cartridge
-import utils.Log
 import java.io.File
 
 class GameBoy(cart: File?) {
@@ -18,18 +17,6 @@ class GameBoy(cart: File?) {
     fun reset() {
         mmu.reset()
         cpu.reset()
-    }
-
-    fun frame() {
-        val start = cpu.registers.clock
-        try {
-            while (cpu.registers.clock - start < 70224) {
-                step()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e("Exception occured")
-        }
     }
 
     fun step() {

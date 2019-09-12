@@ -586,9 +586,8 @@ class Cpu {
     }
 
     /**
-     * Returns the instruction corresponding to CB followed by [opcode]
-     * @param opcode The opcode
-     * @return an instruction that implements the opcode
+     * Assumes the previous instruction was 0xCB. Reads the value at PC and increases PC, then executes the
+     * instruction according to the value that was read
      */
     private fun getExtendedInstruction(): Instruction {
         val opcode = mmu.readByte(registers.PC)
