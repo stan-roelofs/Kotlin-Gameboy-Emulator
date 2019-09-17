@@ -1,7 +1,9 @@
 # KGB (Kotlin-Gameboy-Emulator)
-Gameboy emulator written in Kotlin. This project started as a way for me to 
-understand emulation. It is written in Kotlin because it seemed like an interesting 
-language that I wanted to try out.
+A Gameboy emulator written in Kotlin.
+
+## Can I use this emulator to play?
+Yes you can, but you shouldn't. There are a lot more capable emulators available. 
+This is a work in progress personal project with the aim for me to learn about emulation.
 
 ## Downloads
 See [releases](https://github.com/stan-roelofs/Kotlin-Gameboy-Emulator/releases)
