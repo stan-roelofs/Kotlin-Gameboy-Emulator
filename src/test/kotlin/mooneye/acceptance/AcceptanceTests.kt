@@ -21,12 +21,12 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun boot_hwio_dmgABC() {
-        runMooneyeTest("boot_hwio-dmgABCmgb.gb", -1059871625)
+        runMooneyeTest("boot_hwio-dmgABCmgb.gb", 1864719267)
     }
 
     @Test
     fun boot_regs_dmgABC() {
-        runMooneyeTest("boot_regs-dmgABC.gb", 2030127056)
+        runMooneyeTest("boot_regs-dmgABC.gb", -1938941160)
     }
 
     /*
@@ -62,7 +62,7 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun div_timing() {
-        runMooneyeTest("div_timing.gb", 618563916)
+        runMooneyeTest("div_timing.gb", 944462996)
     }
 
     /*
@@ -74,22 +74,22 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun ei_timing() {
-        runMooneyeTest("ei_timing.gb", -2097771431)
+        runMooneyeTest("ei_timing.gb", -1771872351)
     }
 
     @Test
     fun halt_ime0_ei() {
-        runMooneyeTest("halt_ime0_ei.gb", -1059871625)
+        runMooneyeTest("halt_ime0_ei.gb", 1864719267)
     }
 
     @Test
     fun halt_ime0_nointr_timing() {
-        runMooneyeTest("halt_ime0_nointr_timing.gb", 427613825)
+        runMooneyeTest("halt_ime0_nointr_timing.gb", -1918004250)
     }
 
     @Test
     fun halt_ime1_timing() {
-        runMooneyeTest("halt_ime1_timing.gb", -769890694)
+        runMooneyeTest("halt_ime1_timing.gb", -443991614)
     }
 
     /*
@@ -101,7 +101,7 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun if_ie_registers() {
-        runMooneyeTest("if_ie_registers.gb", 1747996174)
+        runMooneyeTest("if_ie_registers.gb", 2073895254)
     }
 
     /*
@@ -131,17 +131,17 @@ class AcceptanceTests : MooneyeTest() {
 */
     @Test
     fun oam_dma_restart() {
-        runMooneyeTest("oam_dma_restart.gb", 1906711267)
+        runMooneyeTest("oam_dma_restart.gb", 1809143252)
     }
 
     @Test
     fun oam_dma_start() {
-        runMooneyeTest("oam_dma_start.gb", -2065568537)
+        runMooneyeTest("oam_dma_start.gb", -41705204)
     }
 
     @Test
     fun oam_dma_timing() {
-        runMooneyeTest("oam_dma_timing.gb", 1906711267)
+        runMooneyeTest("oam_dma_timing.gb", 1809143252)
     }
 
     /*
@@ -159,7 +159,7 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun rapid_di_ei() {
-        runMooneyeTest("rapid_di_ei.gb", 978629457)
+        runMooneyeTest("rapid_di_ei.gb", 1304528537)
     }
 
     /*
@@ -177,7 +177,7 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun reti_intr_timing() {
-        runMooneyeTest("reti_intr_timing.gb", 1502539589)
+        runMooneyeTest("reti_intr_timing.gb", 1828438669)
     }
 
     /*

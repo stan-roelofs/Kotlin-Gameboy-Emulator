@@ -45,7 +45,7 @@
 ### Oam_dma
 - [x] basic
 - [x] reg_read
-- [x] sources-dmgABCmgbS
+- [ ] sources-dmgABCmgbS
 
 ### PPU
 - [ ] hblank_ly_scx_timing-GS
@@ -93,4 +93,4 @@
 - [x] rom_16Mb
 - [x] ram_256Kb
 - [x] ram_64Kb
-- [x] bits_ram_en
+- [ ] bits_ram_en

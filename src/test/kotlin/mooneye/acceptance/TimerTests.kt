@@ -8,52 +8,52 @@ class TimerTests : MooneyeTest() {
 
     @Test
     fun div_write() {
-        runMooneyeTest("div_write.gb", -1059871625)
+        runMooneyeTest("div_write.gb", 1864719267)
     }
 
     @Test
     fun rapid_toggle() {
-        runMooneyeTest("rapid_toggle.gb", 488748970)
+        runMooneyeTest("rapid_toggle.gb", 814648050)
     }
 
     @Test
     fun tim00() {
-        runMooneyeTest("tim00.gb", 1674011845)
+        runMooneyeTest("tim00.gb", 1999910925)
     }
 
     @Test
     fun tim00_div_trigger() {
-        runMooneyeTest("tim00_div_trigger.gb", 1674011845)
+        runMooneyeTest("tim00_div_trigger.gb", 1999910925)
     }
 
     @Test
     fun tim01() {
-        runMooneyeTest("tim01.gb", -352991524)
+        runMooneyeTest("tim01.gb", -27092444)
     }
 
     @Test
     fun tim01_div_trigger() {
-        runMooneyeTest("tim01_div_trigger.gb", -245527860)
+        runMooneyeTest("tim01_div_trigger.gb", 80371220)
     }
 
     @Test
     fun tim10() {
-        runMooneyeTest("tim10.gb", 1674011845)
+        runMooneyeTest("tim10.gb", 1999910925)
     }
 
     @Test
     fun tim10_div_trigger() {
-        runMooneyeTest("tim10_div_trigger.gb", -774197449)
+        runMooneyeTest("tim10_div_trigger.gb", -448298369)
     }
 
     @Test
     fun tim11() {
-        runMooneyeTest("tim11.gb", 1674011845)
+        runMooneyeTest("tim11.gb", 1999910925)
     }
 
     @Test
     fun tim11_div_trigger() {
-        runMooneyeTest("tim11_div_trigger.gb", 1674011845)
+        runMooneyeTest("tim11_div_trigger.gb", 1999910925)
     }
 
     /*

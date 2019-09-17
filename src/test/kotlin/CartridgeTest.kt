@@ -8,21 +8,21 @@ internal class CartridgeTest {
 
     @Test
     fun ramSize0() {
-        val cart = MBC1(2, 0)
+        val cart = MBC1(2, 0, true)
 
         val file = File("test")
 
         try {
             cart.saveRam(file)
         } catch (e : Exception) {
-            assert(e is IllegalArgumentException)
+            assert(e is IllegalStateException)
         }
     }
 
     private fun testRam(size: Int, banks: Int) {
         val totalSize = size * banks
 
-        val cart = MBC1(2, totalSize)
+        val cart = MBC1(2, totalSize, true)
         cart.ramEnabled = true
 
         for (i in 0 until totalSize) {

@@ -8,6 +8,6 @@ class InstrTests : MooneyeTest() {
 
     @Test
     fun daa() {
-        runMooneyeTest("daa.gb", -1059871625)
+        runMooneyeTest("daa.gb", 1864719267)
     }
 }
