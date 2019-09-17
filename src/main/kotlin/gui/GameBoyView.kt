@@ -186,6 +186,7 @@ class GameBoyView: View(), Observer {
                 KeyCode.DOWN -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.DOWN)
                 KeyCode.Z -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.A)
                 KeyCode.X -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.B)
+                KeyCode.TAB -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.SELECT)
                 else -> {}
             }
 
@@ -201,6 +202,7 @@ class GameBoyView: View(), Observer {
                 KeyCode.DOWN -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.DOWN)
                 KeyCode.Z -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.A)
                 KeyCode.X -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.B)
+                KeyCode.TAB -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.SELECT)
                 else -> {}
             }
 
