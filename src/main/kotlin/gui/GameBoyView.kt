@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
-import javafx.stage.FileChooser
 import javafx.util.Duration
 import memory.io.Joypad
 import tornadofx.*
@@ -29,6 +28,7 @@ class GameBoyView: View(), Observer {
     private lateinit var imageViewLcd: ImageView
     private var lcd = WritableImage(320, 288)
     private var oldScreen = Array(144) {IntArray(160)}
+    private val romChooser = RomChooser()
 
     private val gb = GameBoy(null)
     private val vramView = VRamView(gb)
@@ -73,10 +73,10 @@ class GameBoyView: View(), Observer {
                 }
                 menu("File") {
                     item("Load").action {
-                        val files = chooseFile("rom", arrayOf(FileChooser.ExtensionFilter("Roms", "*.gb")), FileChooserMode.Single)
+                        val file = romChooser.chooseRom(null)
 
-                        if (files.isNotEmpty()) {
-                            gb.loadCartridge(files[0])
+                        if (file != null) {
+                            gb.loadCartridge(file)
 
                             tl.stop()
                             tl.keyFrames.remove(0, tl.keyFrames.size)
