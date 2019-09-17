@@ -2,6 +2,7 @@ package memory
 
 import memory.cartridge.Cartridge
 import memory.io.IO
+import utils.Log
 import utils.toHexString
 
 class Mmu private constructor() : Memory {
@@ -93,6 +94,9 @@ class Mmu private constructor() : Memory {
     }
 
     fun tick(cycles: Int) {
+        if (cycles != 4) {
+            Log.w("Cycles != 4, should not be possible")
+        }
         io.tick(cycles)
     }
 
