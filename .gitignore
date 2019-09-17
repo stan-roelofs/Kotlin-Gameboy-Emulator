@@ -24,6 +24,9 @@ hs_err_pid*
 .gradle/
 .idea/
 out/
+src/test/resources/blargg/**/source
+src/test/resources/mooneye/**/*.sym
+build/
 
 # Reference project
 src/test/kotlin/ReferenceTest.kt
