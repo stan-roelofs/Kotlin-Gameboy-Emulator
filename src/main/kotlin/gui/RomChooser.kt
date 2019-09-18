@@ -10,7 +10,7 @@ class RomChooser {
 
     init {
         fileChooser.title = "Choose rom"
-        fileChooser.selectedExtensionFilter = FileChooser.ExtensionFilter("Roms", "*.gb")
+        fileChooser.extensionFilters.add(FileChooser.ExtensionFilter("Roms", "*.gb"))
     }
 
     fun chooseRom(parentWindow: Window?): File? {
