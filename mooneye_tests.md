@@ -97,3 +97,12 @@
 - [x] bits_bank2
 - [x] bits_mode
 - [x] bits_ramg
+
+### MBC1
+- [x] rom_1Mb
+- [x] rom_2Mb
+- [x] rom_512Kb
+- [x] ram
+- [x] bits_ramg
+- [x] bits_romb
+- [x] bits_unused

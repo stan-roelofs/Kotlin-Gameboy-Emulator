@@ -14,8 +14,6 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
     override var currentRamBank = 0
     override var ramEnabled = false
 
-    var mode = 0
-
     init {
         if (romBanks !in 0..16) {
             throw IllegalArgumentException("Illegal number of ROM banks: $romBanks")
@@ -28,7 +26,6 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
         super.reset()
         currentRamBank = 0
         currentRomBank = 1
-        mode = 0
         ramEnabled = false
         ram[0].fill(0)
     }
@@ -56,12 +53,10 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
 
     override fun writeRom(address: Int, value: Int) {
         when(address) {
-            // ROM Bank Number lower 5 bits
             in 0x0000 until 0x4000 -> {
                 if (!address.getSecondByte().getBit(0)) {
                     ramEnabled = (value and 0x0F) == 0x0A
                 } else {
-                    // Only use lower bits, since romBanks in 0..15
                     val newVal = value and 0x0f
                     var newRomBank = newVal
 
@@ -69,14 +64,14 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
                         newRomBank = 1
                     }
 
-                    currentRomBank = newRomBank
+                    currentRomBank = newRomBank % rom.size
                 }
             }
         }
     }
 
     override fun readRam(address: Int): Int {
-        if (address !in 0xA000 until 0xA200) {
+        if (address !in 0xA000 until 0xC000) {
             throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
         }
 
@@ -84,12 +79,12 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
             return 0xFF
         }
 
-        val newAddress = address - 0xA000
-        return this.ram[0][newAddress] and 0x0f // Only lower 4 bits are used
+        val newAddress = (address - 0xA000) % 0x200
+        return 0xF0 or (this.ram[0][newAddress] and 0x0F) // Only lower 4 bits are used
     }
 
     override fun writeRam(address: Int, value: Int) {
-        if (address !in 0xA000 until 0xA200) {
+        if (address !in 0xA000 until 0xC000) {
             throw IllegalArgumentException("Address ${address.toHexString(2)} out of bounds")
         }
 
@@ -97,7 +92,7 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
             return
         }
 
-        val newAddress = address - 0xA000
+        val newAddress = (address - 0xA000) % 0x200
         val newVal = value and 0x0F // Only lower 4 bits are used
         this.ram[0][newAddress] = newVal
     }

@@ -19,22 +19,22 @@ class Mbc1Tests : MooneyeTest() {
     }*/
 
     @Test
-    fun bitsbank1() {
+    fun bits_bank1() {
         runMooneyeTest("bits_bank1", 1864719267)
     }
 
     @Test
-    fun bitsbank2() {
+    fun bits_bank2() {
         runMooneyeTest("bits_bank2", 1864719267)
     }
 
     @Test
-    fun bitsmode() {
+    fun bits_mode() {
         runMooneyeTest("bits_mode", 1864719267)
     }
 
     @Test
-    fun bitsramg() {
+    fun bits_ramg() {
         runMooneyeTest("bits_ramg", 1864719267)
     }
 
