@@ -93,4 +93,7 @@
 - [x] rom_16Mb
 - [x] ram_256Kb
 - [x] ram_64Kb
-- [ ] bits_ram_en
+- [x] bits_bank1
+- [x] bits_bank2
+- [x] bits_mode
+- [x] bits_ramg

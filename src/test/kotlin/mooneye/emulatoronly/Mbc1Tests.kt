@@ -1,4 +1,4 @@
-package mooneye.emulatoronly.mbc1
+package mooneye.emulatoronly
 
 import mooneye.MooneyeTest
 import org.junit.Test
@@ -17,6 +17,26 @@ class Mbc1Tests : MooneyeTest() {
     fun multicart_rom_8mb() {
         runMooneyeTest("multicart_rom_8Mb.gb", -1059871625)
     }*/
+
+    @Test
+    fun bitsbank1() {
+        runMooneyeTest("bits_bank1", 1864719267)
+    }
+
+    @Test
+    fun bitsbank2() {
+        runMooneyeTest("bits_bank2", 1864719267)
+    }
+
+    @Test
+    fun bitsmode() {
+        runMooneyeTest("bits_mode", 1864719267)
+    }
+
+    @Test
+    fun bitsramg() {
+        runMooneyeTest("bits_ramg", 1864719267)
+    }
 
     @Test
     fun ram64kb() {
