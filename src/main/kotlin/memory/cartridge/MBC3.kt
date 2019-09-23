@@ -142,4 +142,8 @@ class MBC3(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
             this.ram[currentRamBank][newAddress] = newVal
         }
     }
+
+    override fun toString(): String {
+        return "MBC3, ${rom.size} banks of ROM, ${ram?.size ?: 0} banks of RAM, Battery: $hasBattery, Timer: $hasTimer"
+    }
 }

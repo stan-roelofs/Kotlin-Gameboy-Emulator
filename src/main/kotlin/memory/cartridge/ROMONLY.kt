@@ -4,7 +4,6 @@ import memory.Memory
 import utils.toHexString
 
 class ROMONLY : Memory, CartridgeType {
-
     override val ram: Array<IntArray>? = arrayOf(intArrayOf(0))
     override val rom: Array<IntArray> = arrayOf(IntArray(0x8000))
 
@@ -32,5 +31,9 @@ class ROMONLY : Memory, CartridgeType {
 
     override fun writeRam(address: Int, value: Int) {
         return
+    }
+
+    override fun toString(): String {
+        return "ROM Only"
     }
 }

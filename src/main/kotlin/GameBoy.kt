@@ -5,8 +5,8 @@ import java.io.File
 
 class GameBoy(cart: File?) {
     val cpu = Cpu()
-    private lateinit var cartridge: Cartridge
     val mmu = Mmu.instance
+    lateinit var cartridge: Cartridge
 
     init {
         if (cart != null) {
@@ -24,8 +24,7 @@ class GameBoy(cart: File?) {
     }
 
     fun loadCartridge(cart: File) {
-        val temp = Cartridge(cart)
-        cartridge = temp
+        cartridge = Cartridge(cart)
         mmu.cartridge = cartridge
         reset()
     }

@@ -33,6 +33,7 @@ class GameBoyView: View(), Observer {
     private val gb = GameBoy(null)
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
+    private val cartridgeView = CartridgeView(gb)
 
     val color0 = Color(224f / 255.0, 248f / 255.0, 208f / 255.0, 1.0)
     val color1 = Color(136f / 255.0, 192f / 255.0, 112f / 255.0, 1.0)
@@ -77,6 +78,7 @@ class GameBoyView: View(), Observer {
 
                         if (file != null) {
                             gb.loadCartridge(file)
+                            cartridgeView.update()
 
                             tl.stop()
                             tl.keyFrames.remove(0, tl.keyFrames.size)
@@ -93,6 +95,9 @@ class GameBoyView: View(), Observer {
                     }
                     item("Debug window").action {
                         debugView.openWindow()
+                    }
+                    item("Cartridge information").action {
+                        cartridgeView.openWindow()
                     }
                 }
 

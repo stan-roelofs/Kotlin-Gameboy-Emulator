@@ -7,11 +7,18 @@ import java.nio.file.Files
 
 class Cartridge(file: File) : Memory {
 
-    private lateinit var type: CartridgeType
-    private var isSgb = false
-    private var isGbc = false
-    private lateinit var title: String
+    lateinit var type: CartridgeType
+    var isSgb = false
+    var isGbc = false
+    lateinit var title: String
     lateinit var cartridgeFile: File
+    var graphicBytesMatch = false
+    var licensee = ""
+    var destination = ""
+    var destinationCode = 0
+    var versionNumber = 0
+    var oldLicenseeCode = 0
+    var headerChecksum = false
 
     init {
         loadRom(file)
@@ -20,6 +27,13 @@ class Cartridge(file: File) : Memory {
     override fun reset() {
         isSgb = false
         isGbc = false
+        graphicBytesMatch = false
+        licensee = ""
+        destinationCode = 0
+        destination = ""
+        versionNumber = 0
+        oldLicenseeCode = 0
+        headerChecksum = false
         type.reset()
     }
 
@@ -46,26 +60,24 @@ class Cartridge(file: File) : Memory {
 
         val romGraphicBytes = data.copyOfRange(0x104, 0x134)
 
-        val equal = (romGraphicBytes.indices).none { nintendoGraphicBytes[it].toByte() != romGraphicBytes[it] }
-        if (!equal) {
+        graphicBytesMatch = (romGraphicBytes.indices).none { nintendoGraphicBytes[it].toByte() != romGraphicBytes[it] }
+        if (!graphicBytesMatch) {
             Log.w("Scrolling Nintendo Graphic bytes do not match, rom would not run on GameBoy")
         } else {
             Log.i("Scrolling Nintendo Graphic bytes match")
         }
 
-        val romColorGB = data[0x143].toInt() == 0x80
-        isGbc = romColorGB
-        Log.i("Is Color GB: $romColorGB")
+        isGbc = data[0x143].toInt() == 0x80
+        Log.i("Is Color GB: $isGbc")
 
         title = String(data.copyOfRange(0x134, 0x143), Charsets.US_ASCII)
         Log.i("Title: $title")
 
-        val romLicensee = String(data.copyOfRange(0x144, 0x146), Charsets.US_ASCII)
-        Log.i("New Licensee Code: $romLicensee")
+        licensee = String(data.copyOfRange(0x144, 0x146), Charsets.US_ASCII)
+        Log.i("New Licensee Code: $licensee")
 
-        val romSGB = data[0x146].toInt() == 0x03
-        isSgb = romSGB
-        Log.i("Supports SGB functions: $romSGB")
+        isSgb = data[0x146].toInt() == 0x03
+        Log.i("Supports SGB functions: $isSgb")
 
         val romBanks = when(data[0x148].toInt()) {
             0x00 -> 2
@@ -154,18 +166,18 @@ class Cartridge(file: File) : Memory {
             0xFF -> Log.i("Hudson HuC-1")
         }
 
-        val romDestCode = data[0x14A].toInt()
-        val romDest = if (romDestCode == 0x00) "Japanese" else "Non-Japanese"
-        Log.i("Destination Code: $romDest")
+        destinationCode = data[0x14A].toInt()
+        destination = if (destinationCode == 0x00) "Japanese" else "Non-Japanese"
+        Log.i("Destination Code: $destination")
 
-        val romOldLicensee = data[0x14B].toInt()
-        if (romSGB) {
+        oldLicenseeCode = data[0x14B].toInt()
+        if (isSgb) {
             Log.w("SGB Functions require old licensee code to be 0x33")
         }
-        Log.i("Old Licensee Code: $romOldLicensee")
+        Log.i("Old Licensee Code: $oldLicenseeCode")
 
-        val romVersionNumber = data[0x14C].toInt()
-        Log.i("ROM version: $romVersionNumber")
+        versionNumber = data[0x14C].toInt()
+        Log.i("ROM version: $versionNumber")
 
         var sum = 0
         for (i in 0x134..0x14C) {
@@ -175,8 +187,10 @@ class Cartridge(file: File) : Memory {
         val romHeaderChecksum = data[0x14D].toInt() and 0xFF
 
         if (sum != romHeaderChecksum) {
+            headerChecksum = false
             Log.w("Header Checksum is incorrect, game would normally not run")
         } else {
+            headerChecksum = true
             Log.i("Header Checksum correct")
         }
 

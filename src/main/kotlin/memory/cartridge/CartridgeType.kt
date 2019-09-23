@@ -66,4 +66,6 @@ interface CartridgeType : Memory {
 
         throw IllegalArgumentException("Address ${address.toHexString()} does not belong to cartridge")
     }
+
+    override fun toString(): String
 }
