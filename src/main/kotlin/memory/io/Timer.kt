@@ -22,6 +22,7 @@ class Timer : Memory {
 
     private var timerCycles = clock0Cycles
     private var timerCounter = 0
+    private var reload = 0
 
     override fun reset() {
         internalCounter = 0xABCC
@@ -30,10 +31,18 @@ class Timer : Memory {
         TIMA = 0
         TMA = 0
         TAC = 0
+        reload = 0
     }
 
-    // TODO this implementation is currently a mess
     fun tick(cycles: Int) {
+        if (reload > 0) {
+            reload -= cycles
+
+            if (reload == 0) {
+                TIMA = TMA
+                requestInterrupt(2)
+            }
+        }
         // Set new value of the counter
         internalCounter += cycles
         internalCounter = internalCounter and 0xFFFF
@@ -47,8 +56,7 @@ class Timer : Memory {
                 TIMA++
 
                 if (TIMA > 0xFF) {
-                    TIMA = TMA
-                    requestInterrupt(2)
+                    reload = 4
                 }
             }
         }
@@ -82,7 +90,12 @@ class Timer : Memory {
                 internalCounter = 0
                 timerCounter = 0
             }
-            Mmu.TIMA -> this.TIMA = newVal
+            Mmu.TIMA -> {
+                if (reload > 1) {
+                    reload = 0
+                }
+                this.TIMA = newVal
+            }
             Mmu.TMA -> this.TMA = newVal
             Mmu.TAC -> {
                 // Disabling can trigger TIMA increase

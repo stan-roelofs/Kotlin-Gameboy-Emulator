@@ -72,7 +72,7 @@
 - [x] tim10_div_trigger
 - [x] tim11
 - [x] tim11_div_trigger
-- [ ] tima_reload
+- [x] tima_reload
 - [ ] time_write_reloading
 - [ ] tma_write_reloading
 
