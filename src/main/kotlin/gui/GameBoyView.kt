@@ -70,7 +70,7 @@ class GameBoyView: View(), Observer {
             menubar {
                 useMaxWidth = true
                 gridpaneConstraints {
-                    columnSpan = 4
+                    columnSpan = 5
                 }
                 menu("File") {
                     item("Load").action {
@@ -104,15 +104,21 @@ class GameBoyView: View(), Observer {
                 menu("Settings") {
                     item("Increase lcd scale").action {
                         scale++
-                        lcd = WritableImage(160 * scale, 144 * scale)
+                        val width = 160 * scale
+                        val height = 144 * scale
+                        lcd = WritableImage(width, height)
                         imageViewLcd.image = lcd
                         forceRefresh = true
+                        primaryStage.sizeToScene()
                     }
                     item("Decrease lcd scale").action {
                         scale--
-                        lcd = WritableImage(160 * scale, 144 * scale)
+                        val width = 160 * scale
+                        val height = 144 * scale
+                        lcd = WritableImage(width, height)
                         imageViewLcd.image = lcd
                         forceRefresh = true
+                        primaryStage.sizeToScene()
                     }
                 }
             }
@@ -121,7 +127,7 @@ class GameBoyView: View(), Observer {
             imageViewLcd = imageview(lcd) {
                 useMaxWidth = true
                 gridpaneConstraints {
-                    columnSpan = 4
+                    columnSpan = 5
                 }
             }
         }
