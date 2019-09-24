@@ -38,7 +38,7 @@ class Timer : Memory {
         if (reload > 0) {
             reload -= cycles
 
-            if (reload == 0) {
+            if (reload <= 4) {
                 TIMA = TMA
                 requestInterrupt(2)
             }
@@ -56,7 +56,7 @@ class Timer : Memory {
                 TIMA++
 
                 if (TIMA > 0xFF) {
-                    reload = 4
+                    reload = 8
                 }
             }
         }
@@ -91,8 +91,13 @@ class Timer : Memory {
                 timerCounter = 0
             }
             Mmu.TIMA -> {
-                if (reload > 1) {
+                // Prevent reload
+                if (reload > 4) {
                     reload = 0
+                }
+                // Prevent write
+                if (reload > 0) {
+                    return
                 }
                 this.TIMA = newVal
             }

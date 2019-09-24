@@ -73,8 +73,8 @@
 - [x] tim11
 - [x] tim11_div_trigger
 - [x] tima_reload
-- [ ] time_write_reloading
-- [ ] tma_write_reloading
+- [x] time_write_reloading
+- [x] tma_write_reloading
 
 ### Instructions
 - [x] daa
@@ -98,7 +98,7 @@
 - [x] bits_mode
 - [x] bits_ramg
 
-### MBC1
+### MBC2
 - [x] rom_1Mb
 - [x] rom_2Mb
 - [x] rom_512Kb
@@ -106,3 +106,13 @@
 - [x] bits_ramg
 - [x] bits_romb
 - [x] bits_unused
+
+### MBC5
+- [ ] rom_1Mb
+- [ ] rom_2Mb
+- [ ] rom_4Mb
+- [ ] rom_8Mb
+- [ ] rom_16Mb
+- [ ] rom_32Mb
+- [ ] rom_64Mb
+- [ ] rom_512Kb
