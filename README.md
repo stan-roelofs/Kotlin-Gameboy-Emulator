@@ -23,5 +23,4 @@ Some games are playable but there is an issue where sprites are missing in some 
 This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.
 
 ## Preview
-![alt text](https://media.giphy.com/media/51WvJVuSGZAu9jbbLM/giphy.gif)
 ![alt text](https://media.giphy.com/media/Sr8w0qUxx9K9LhviS1/giphy.gif)
