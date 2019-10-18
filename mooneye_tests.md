@@ -40,7 +40,7 @@
 - [x] unused_hwio
 
 ### Interrupts
-- [x] ie_push - R4: unwanted cancel
+- [x] ie_push
 
 ### Oam_dma
 - [x] basic
@@ -58,7 +58,7 @@
 - [ ] lcdon_timing-dmgABCmgbS - Cycle: 00 Expected: 00 Actual: 90
 - [ ] lcdon_write_timing-GS - Cycle: 12 Expected: 00 Actual: 81
 - [x] stat_irq_blocking
-- [ ] stat_lyc_onoff - Somehow tries to execute instruction 0xED which corresponds to nothing
+- [ ] stat_lyc_onoff
 - [x] vblank_stat_intr-GS
 
 ### Timer

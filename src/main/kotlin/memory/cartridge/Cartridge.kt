@@ -87,6 +87,8 @@ class Cartridge(file: File) : Memory {
             0x04 -> 32
             0x05 -> 64
             0x06 -> 128
+            0x07 -> 256
+            0x08 -> 512
             0x52 -> 72
             0x53 -> 80
             0x54 -> 96
@@ -100,6 +102,7 @@ class Cartridge(file: File) : Memory {
             0x02 -> 8192
             0x03 -> 32768
             0x04 -> 131072
+            0x05 -> 65536
             else -> throw Exception("Invalid RAM size identifier")
         }
         Log.i("RAM size: $ramSize bytes")
@@ -154,9 +157,18 @@ class Cartridge(file: File) : Memory {
                 Log.i("ROM+MBC3+RAM+BATTERY")
                 type = MBC3(romBanks, ramSize, hasBattery = true, hasTimer = false)
             }
-            0x19 -> Log.i("ROM+MBC5")
-            0x1A -> Log.i("ROM+MBC5+RAM")
-            0x1B -> Log.i("ROM+MBC5+RAM+BATTERY")
+            0x19 -> {
+                Log.i("ROM+MBC5")
+                type = MBC5(romBanks, 0, false)
+            }
+            0x1A -> {
+                Log.i("ROM+MBC5+RAM")
+                type = MBC5(romBanks, ramSize, false)
+            }
+            0x1B -> {
+                Log.i("ROM+MBC5+RAM+BATTERY")
+                type = MBC5(romBanks, ramSize, true)
+            }
             0x1C -> Log.i("ROM+MBC5+RUMBLE")
             0x1D -> Log.i("ROM+MBC5+RUMBLE+SRAM")
             0x1E -> Log.i("ROM+MBC5+RUMBLE+SRAM+BATTERY")

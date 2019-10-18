@@ -242,7 +242,6 @@ class Lcd : Memory, Observable() {
     }
 
     private fun renderScanline() {
-        // TODO: if lcdenabled
         val row = IntArray(160)
         renderBackground(row)
         renderWindow(row)
