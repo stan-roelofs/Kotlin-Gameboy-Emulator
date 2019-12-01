@@ -26,7 +26,7 @@ class Sound : Memory {
     private val samples = IntArray(4)
 
     init {
-       output.start()
+
     }
 
     override fun reset() {
@@ -158,6 +158,11 @@ class Sound : Memory {
             Mmu.NR51 -> this.NR51 = newVal
             Mmu.NR52 -> {
                 enabled = value.getBit(7)
+                if (enabled) {
+                    output.start()
+                } else {
+                    output.stop()
+                }
             }
             in 0xFF30..0xFF3F -> patternRam[address - 0xFF30] = newVal
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")

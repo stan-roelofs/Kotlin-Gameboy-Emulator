@@ -10,7 +10,7 @@ class GameBoy(cart: File?) : Runnable {
     }
 
     val cpu = Cpu()
-    private lateinit var cartridge: Cartridge
+    lateinit var cartridge: Cartridge
     val mmu = Mmu.instance
 
     init {

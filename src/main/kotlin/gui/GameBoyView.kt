@@ -1,15 +1,10 @@
 package gui
 
 import GameBoy
-import javafx.animation.Animation
-import javafx.animation.KeyFrame
-import javafx.animation.Timeline
-import javafx.event.EventHandler
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
 import javafx.stage.FileChooser
-import javafx.util.Duration
 import memory.io.Joypad
 import tornadofx.*
 import java.io.File
@@ -20,6 +15,7 @@ class GameBoyView: View(), Observer {
     private var oldScreen = Array(144) {IntArray(160)}
 
     private val gb = GameBoy(null)
+    private val gbThread = Thread(gb)
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
 
@@ -28,42 +24,6 @@ class GameBoyView: View(), Observer {
     val color2 = Color(52f / 255.0, 104f / 255.0, 86f / 255.0, 1.0)
     val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
     val colors = arrayOf(color0, color1, color2, color3)
-
-    private var frameDone = false
-    private var lastTime = 0L
-
-    private val ticksPerFrame = GameBoy.TICKS_PER_SEC / 60 / 4
-
-    private val tl = Timeline()
-    private val play = KeyFrame(Duration.millis(17.0),
-            EventHandler {
-                /*
-                // Keep executing until a frame is ready
-                var time = System.currentTimeMillis()
-                var kak = 0
-
-                while(!frameDone) {
-                    try {
-                        gb.step()
-                        kak++
-                        if (kak > 5000) {
-                            kak = 0
-                            Thread.sleep(1)
-                        }
-
-
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        tl.stop()
-                        break
-                    }
-                }
-
-
-                updateVram()
-                updateDebug()*/
-                frameDone = false
-            })
 
     override val root = gridpane {
         row {
@@ -78,15 +38,7 @@ class GameBoyView: View(), Observer {
 
                         if (files.isNotEmpty()) {
                             gb.loadCartridge(files[0])
-
-                            tl.stop()
-                            tl.keyFrames.remove(0, tl.keyFrames.size)
-                            tl.keyFrames.add(play)
-                            tl.cycleCount = Animation.INDEFINITE
-                            tl.play()
-
-                            Thread(gb).start()
-
+                            gbThread.start()
                         }
                     }
                 }
@@ -112,19 +64,12 @@ class GameBoyView: View(), Observer {
         row {
             button("Start") {
                 action {
-                    /*
-                    if (tl.status != Animation.Status.RUNNING) {
-                        tl.keyFrames.remove(0, tl.keyFrames.size)
-                        tl.keyFrames.add(play)
-                        tl.cycleCount = Animation.INDEFINITE
-                        tl.play()
-                    }*/
-                    Thread(gb).start()
+                    gbThread.start()
                 }
             }
             button("Stop") {
                 action {
-                    tl.stop()
+                    gbThread.stop()
                 }
             }
             button("Save") {
@@ -210,11 +155,6 @@ class GameBoyView: View(), Observer {
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        if (frameDone) {
-            return
-        }
-        frameDone = true
-
         val pixelWriter = lcd.pixelWriter
 
         @Suppress("UNCHECKED_CAST")
