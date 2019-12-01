@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
-import javafx.util.Duration
+import javafx.stage.FileChooser
 import memory.io.Joypad
 import tornadofx.*
 import java.io.File
@@ -31,6 +31,7 @@ class GameBoyView: View(), Observer {
     private val romChooser = RomChooser()
 
     private val gb = GameBoy(null)
+    private val gbThread = Thread(gb)
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
     private val cartridgeView = CartridgeView(gb)
@@ -42,28 +43,10 @@ class GameBoyView: View(), Observer {
     val colors = arrayOf(color0, color1, color2, color3)
 
     private var frameDone = false
-    private var forceRefresh = false
+    private var lastTime = 0L
     private var prevTime = 0L
     private var frameCount = 0
     private lateinit var labelFps: Label
-
-    private val tl = Timeline()
-    private val play = KeyFrame(Duration.millis(17.0),
-            EventHandler {
-                // Keep executing until a frame is ready
-                while(!frameDone) {
-                    try {
-                        gb.step()
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        tl.stop()
-                        break
-                    }
-                }
-                updateVram()
-                updateDebug()
-                frameDone = false
-            })
 
     override val root = gridpane {
         row {
@@ -77,14 +60,8 @@ class GameBoyView: View(), Observer {
                         val file = romChooser.chooseRom(null)
 
                         if (file != null) {
-                            gb.loadCartridge(file)
-                            cartridgeView.update()
-
-                            tl.stop()
-                            tl.keyFrames.remove(0, tl.keyFrames.size)
-                            tl.keyFrames.add(play)
-                            tl.cycleCount = Animation.INDEFINITE
-                            tl.play()
+                            gb.loadCartridge(files[0])
+                            gbThread.start()
                         }
                     }
                 }
@@ -134,17 +111,12 @@ class GameBoyView: View(), Observer {
         row {
             button("Start") {
                 action {
-                    if (tl.status != Animation.Status.RUNNING) {
-                        tl.keyFrames.remove(0, tl.keyFrames.size)
-                        tl.keyFrames.add(play)
-                        tl.cycleCount = Animation.INDEFINITE
-                        tl.play()
-                    }
+                    gbThread.start()
                 }
             }
             button("Stop") {
                 action {
-                    tl.stop()
+                    gbThread.stop()
                 }
             }
             button("Save") {
@@ -239,8 +211,6 @@ class GameBoyView: View(), Observer {
             prevTime = currentTime
             frameCount = 0
         }
-
-        frameDone = true
 
         val pixelWriter = lcd.pixelWriter
 
