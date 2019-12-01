@@ -57,7 +57,7 @@ class GameBoyView: View(), Observer {
 
                         if (file != null) {
                             gb.loadCartridge(file)
-                            debugView.update()
+                            cartridgeView.update()
                             gbThread.start()
                         }
                     }
