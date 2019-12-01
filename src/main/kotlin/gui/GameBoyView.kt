@@ -57,6 +57,7 @@ class GameBoyView: View(), Observer {
 
                         if (file != null) {
                             gb.loadCartridge(file)
+                            debugView.update()
                             gbThread.start()
                         }
                     }
@@ -112,7 +113,7 @@ class GameBoyView: View(), Observer {
             }
             button("Stop") {
                 action {
-                    gbThread.stop()
+                   // gbThread.stop()
                 }
             }
             button("Save") {
@@ -145,6 +146,12 @@ class GameBoyView: View(), Observer {
     }
 
     init {
+        primaryStage.setOnCloseRequest {
+            gb.running = false
+            Platform.exit()
+            System.exit(0)
+        }
+
         gb.mmu.io.lcd.addObserver(this)
         gb.mmu.io.sound.output = SoundOutput()
         reset()
@@ -232,6 +239,11 @@ class GameBoyView: View(), Observer {
 
         if (forceRefresh) {
             forceRefresh = false
+        }
+
+        Platform.runLater {
+            updateDebug()
+            updateVram()
         }
     }
 }

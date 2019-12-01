@@ -1,7 +1,6 @@
 import cpu.Cpu
 import memory.Mmu
 import memory.cartridge.Cartridge
-import utils.Log
 import java.io.File
 
 class GameBoy(cart: File?) : Runnable {
@@ -12,6 +11,8 @@ class GameBoy(cart: File?) : Runnable {
     val cpu = Cpu()
     val mmu = Mmu.instance
     lateinit var cartridge: Cartridge
+    var running = false
+    var paused = false
 
     init {
         if (cart != null) {
@@ -29,7 +30,8 @@ class GameBoy(cart: File?) : Runnable {
     }
 
     override fun run() {
-        while (true) {
+        running = true
+        while (running) {
             step()
         }
     }
