@@ -46,13 +46,13 @@ class SquareWave2 : SquareWave() {
             }
         }
 
-        val volume = (NR2 and 0b1111) shr 4
+        val volume = (NR2 shr 4) and 0b1111
         val temp = dutyCycles[duty].getBit(dutyCounter)
 
         return if (!temp) {
             0
         } else {
-            100
+            volume
         }
     }
 

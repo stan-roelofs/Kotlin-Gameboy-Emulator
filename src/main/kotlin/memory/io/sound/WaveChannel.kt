@@ -8,7 +8,6 @@ class WaveChannel : SoundChannel() {
 
     }
 
-
     override var NR0 = 0x7F
     override var NR1 = 0xFF
     override var NR2 = 0x9F
