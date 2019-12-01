@@ -1,16 +1,12 @@
 package gui
 
 import GameBoy
-import javafx.animation.Animation
-import javafx.animation.KeyFrame
-import javafx.animation.Timeline
-import javafx.event.EventHandler
+import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
-import javafx.stage.FileChooser
 import memory.io.Joypad
 import tornadofx.*
 import java.io.File
@@ -42,8 +38,7 @@ class GameBoyView: View(), Observer {
     val color3 = Color(8f / 255.0, 24f / 255.0, 32f / 255.0, 1.0)
     val colors = arrayOf(color0, color1, color2, color3)
 
-    private var frameDone = false
-    private var lastTime = 0L
+    private var forceRefresh = false
     private var prevTime = 0L
     private var frameCount = 0
     private lateinit var labelFps: Label
@@ -60,7 +55,7 @@ class GameBoyView: View(), Observer {
                         val file = romChooser.chooseRom(null)
 
                         if (file != null) {
-                            gb.loadCartridge(files[0])
+                            gb.loadCartridge(file)
                             gbThread.start()
                         }
                     }
@@ -206,10 +201,11 @@ class GameBoyView: View(), Observer {
 
         val currentTime = System.currentTimeMillis()
         if (currentTime - prevTime >= 1000) {
-           labelFps.text = "FPS: $frameCount"
-
-            prevTime = currentTime
-            frameCount = 0
+            Platform.runLater {
+                labelFps.text = "FPS: $frameCount"
+                prevTime = currentTime
+                frameCount = 0
+            }
         }
 
         val pixelWriter = lcd.pixelWriter

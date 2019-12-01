@@ -2,6 +2,7 @@ package memory.io
 
 import memory.Memory
 import memory.Mmu
+import memory.io.sound.Sound
 
 class IO : Memory {
 
