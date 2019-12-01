@@ -8,18 +8,17 @@ import javax.sound.sampled.LineUnavailableException
 import javax.sound.sampled.SourceDataLine
 
 class SoundOutput {
-    private val SAMPLE_RATE = 131072f
-    private val SAMPLES_PER_FRAME = SAMPLE_RATE.toInt() / 60
-    private val AUDIO_FORMAT = AudioFormat(SAMPLE_RATE, 8, 2, false, false)
+    private val SAMPLE_RATE = 22050f
+    private val BUFFER_SIZE = 1024
+    private val AUDIO_FORMAT = AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED, SAMPLE_RATE, 8, 2, 2, SAMPLE_RATE, false)
 
     private var counter = 0
-    private var divider = GameBoy.TICKS_PER_SEC / SAMPLE_RATE.toInt()
+    private var divider : Int = 0
 
-    private var masterBuffer: ByteArray = ByteArray(6 * SAMPLES_PER_FRAME)
-    private var tempBuffer: ByteArray = ByteArray(3 * SAMPLES_PER_FRAME)
     private var bufferIndex = 0
 
     private var line : SourceDataLine? = null
+    private var buffer = ByteArray(BUFFER_SIZE)
 
     fun start() {
         if (line != null) {
@@ -29,13 +28,14 @@ class SoundOutput {
         Log.d("Start sound")
         try {
             line = AudioSystem.getSourceDataLine(AUDIO_FORMAT)
-            line?.open(AUDIO_FORMAT)
-            line?.start()
+            line?.open(AUDIO_FORMAT, BUFFER_SIZE)
         } catch (e: LineUnavailableException) {
             throw RuntimeException(e)
         }
+        line?.start()
 
-        //buffer = ByteArray(line!!.bufferSize)
+        buffer = ByteArray(line!!.bufferSize)
+        divider = GameBoy.TICKS_PER_SEC / AUDIO_FORMAT.sampleRate.toInt()
     }
 
     fun stop() {
@@ -58,13 +58,12 @@ class SoundOutput {
             Log.e("Left or right not in range")
         }
 
-       // buffer[bufferIndex++] = left.toByte()
-        //buffer[bufferIndex++] = right.toByte()
+        buffer[bufferIndex++] = left.toByte()
+        buffer[bufferIndex++] = right.toByte()
 
-        //if (bufferIndex >= BUFFER_SIZE) {
-            val samplesToWrite = Math.min(line!!.available(), bufferIndex)
-        //    line?.write(buffer, 0, samplesToWrite)
+        if (bufferIndex > BUFFER_SIZE / 2) {
+            line?.write(buffer, 0, bufferIndex)
             bufferIndex = 0
-        //}
+        }
     }
 }

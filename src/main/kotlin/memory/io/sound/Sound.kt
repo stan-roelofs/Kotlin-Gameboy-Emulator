@@ -1,15 +1,10 @@
 package memory.io.sound
 
-import GameBoy
 import memory.Memory
 import memory.Mmu
 import utils.getBit
 import utils.setBit
 import utils.toHexString
-import javax.sound.sampled.AudioFormat
-import javax.sound.sampled.AudioSystem
-import javax.sound.sampled.LineUnavailableException
-import javax.sound.sampled.SourceDataLine
 
 class Sound : Memory {
 
@@ -24,30 +19,14 @@ class Sound : Memory {
     private val noise = NoiseChannel()
 
     private val allChannels: Array<SoundChannel> = arrayOf(square1, square2, wave, noise)
-    private val samples = IntArray(4)
 
     private var enabled = false
 
-    private val SAMPLE_RATE = 48000f
-    private val BUFFER_SIZE = 1024
-    private val AUDIO_FORMAT = AudioFormat(SAMPLE_RATE, 8, 2, false, false)
-    private val buffer = ByteArray(BUFFER_SIZE)
-    private var sampleCounter = 0
-    private var bufferCounter = 0
-    private var rate = (GameBoy.TICKS_PER_SEC / SAMPLE_RATE).toInt()
-
-    private var line : SourceDataLine? = null
+    private val output = SoundOutput()
+    private val samples = IntArray(4)
 
     init {
-        enabled = true
-
-        try {
-            line = AudioSystem.getSourceDataLine(AUDIO_FORMAT)
-            line?.open(AUDIO_FORMAT)
-            line?.start()
-        } catch (e: LineUnavailableException) {
-            throw RuntimeException(e)
-        }
+       output.start()
     }
 
     override fun reset() {
@@ -67,38 +46,26 @@ class Sound : Memory {
             samples[i] = allChannels[i].tick(cycles)
         }
 
-        sampleCounter++
-        if (sampleCounter == rate) {
-            sampleCounter = 0
+        var left = 0
+        var right = 0
 
-            var left = 0
-            var right = 0
-
-            for (i in 0 until 4) {
-                if (NR51 and (1 shl i + 4) != 0) {
-                    left += samples[i]
-                }
-                if (NR51 and (1 shl i) != 0) {
-                    right += samples[i]
-                }
+        for (i in 0 until 4) {
+            if (NR51 and (1 shl i + 4) != 0) {
+                left += samples[i]
             }
-            left /= 4
-            right /= 4
-
-            // Bits 4..6 contain left volume
-            left *= ((NR50 shl 4) and 0b111) + 1
-            // Bits 0..2 contain right volume
-            right *= (NR50 and 0b111) + 1
-
-            buffer[bufferCounter] = left.toByte()
-            buffer[bufferCounter + 1] = right.toByte()
-
-            bufferCounter += 2
-            if (bufferCounter == BUFFER_SIZE) {
-                bufferCounter = 0
-                line!!.write(buffer, 0, BUFFER_SIZE)
+            if (NR51 and (1 shl i) != 0) {
+                right += samples[i]
             }
         }
+        left /= 4
+        right /= 4
+
+        // Bits 4..6 contain left volume
+        left *= ((NR50 shl 4) and 0b111) + 1
+        // Bits 0..2 contain right volume
+        right *= (NR50 and 0b111) + 1
+
+        output.play(left, right)
     }
 
     override fun readByte(address: Int): Int {

@@ -32,21 +32,36 @@ class GameBoyView: View(), Observer {
     private var frameDone = false
     private var lastTime = 0L
 
+    private val ticksPerFrame = GameBoy.TICKS_PER_SEC / 60 / 4
+
     private val tl = Timeline()
     private val play = KeyFrame(Duration.millis(17.0),
             EventHandler {
+                /*
                 // Keep executing until a frame is ready
+                var time = System.currentTimeMillis()
+                var kak = 0
+
                 while(!frameDone) {
                     try {
                         gb.step()
+                        kak++
+                        if (kak > 5000) {
+                            kak = 0
+                            Thread.sleep(1)
+                        }
+
+
                     } catch (e: Exception) {
                         e.printStackTrace()
                         tl.stop()
                         break
                     }
                 }
+
+
                 updateVram()
-                updateDebug()
+                updateDebug()*/
                 frameDone = false
             })
 
@@ -69,6 +84,9 @@ class GameBoyView: View(), Observer {
                             tl.keyFrames.add(play)
                             tl.cycleCount = Animation.INDEFINITE
                             tl.play()
+
+                            Thread(gb).start()
+
                         }
                     }
                 }
@@ -94,12 +112,14 @@ class GameBoyView: View(), Observer {
         row {
             button("Start") {
                 action {
+                    /*
                     if (tl.status != Animation.Status.RUNNING) {
                         tl.keyFrames.remove(0, tl.keyFrames.size)
                         tl.keyFrames.add(play)
                         tl.cycleCount = Animation.INDEFINITE
                         tl.play()
-                    }
+                    }*/
+                    Thread(gb).start()
                 }
             }
             button("Stop") {
@@ -190,6 +210,9 @@ class GameBoyView: View(), Observer {
     }
 
     override fun update(o: Observable?, arg: Any?) {
+        if (frameDone) {
+            return
+        }
         frameDone = true
 
         val pixelWriter = lcd.pixelWriter
