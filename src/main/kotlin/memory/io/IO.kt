@@ -12,7 +12,7 @@ class IO : Memory {
     val joypad = Joypad()
     val serial = Serial()
 
-    private val sound = Sound()
+    val sound = Sound()
     val dma = Dma()
     private val timer = Timer()
 

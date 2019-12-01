@@ -49,6 +49,10 @@ class SoundOutput {
     }
 
     fun play(left: Int, right: Int) {
+        if (line == null) {
+            return
+        }
+
         if (counter++ != 0) {
             counter %= divider
             return

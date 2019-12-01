@@ -20,9 +20,9 @@ class Sound : Memory {
 
     private val allChannels: Array<SoundChannel> = arrayOf(square1, square2, wave, noise)
 
-    private var enabled = false
+    private var enabled = true
 
-    private val output = SoundOutput()
+    var output : SoundOutput? = null
     private val samples = IntArray(4)
 
     init {
@@ -65,7 +65,7 @@ class Sound : Memory {
         // Bits 0..2 contain right volume
         right *= (NR50 and 0b111) + 1
 
-        output.play(left, right)
+        output?.play(left, right)
     }
 
     override fun readByte(address: Int): Int {
@@ -159,9 +159,9 @@ class Sound : Memory {
             Mmu.NR52 -> {
                 enabled = value.getBit(7)
                 if (enabled) {
-                    output.start()
+                    output?.start()
                 } else {
-                    output.stop()
+                    output?.stop()
                 }
             }
             in 0xFF30..0xFF3F -> patternRam[address - 0xFF30] = newVal
