@@ -14,7 +14,7 @@ abstract class MooneyeTest {
     // Test passes when a hash of the screenBuffer matches a provided hash
     // Provided hash is a hash of the screenBuffer after a test passed
     fun runMooneyeTest(fileName: String, hashCode: Int) {
-        val url: URI = MooneyeTest::class.java.classLoader.getResource("mooneye/${path}/${fileName}")!!.toURI()
+        val url: URI = MooneyeTest::class.java.classLoader.getResource("mooneye/$path/$fileName")!!.toURI()
         val romFile = File(url)
         val gb = GameBoy(romFile)
 
@@ -23,7 +23,7 @@ abstract class MooneyeTest {
         Log.i("Provided hash $hashCode")
 
         // TODO: theres probably a better way to do this...
-        for (i in 0..50000000) {
+        for (i in 0..10000000) {
             gb.step()
         }
         val hash = getScreenHash(gb.mmu.io.lcd.screenBuffer)
