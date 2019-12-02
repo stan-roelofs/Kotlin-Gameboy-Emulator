@@ -27,8 +27,8 @@ class GameBoyView: View(), Observer {
     private var oldScreen = Array(144) {IntArray(160)}
     private val romChooser = RomChooser()
 
+    private var gbThread : Thread? = null
     private val gb = GameBoy(null)
-    private val gbThread = Thread(gb)
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
     private val cartridgeView = CartridgeView(gb)
@@ -55,10 +55,14 @@ class GameBoyView: View(), Observer {
                     item("Load").action {
                         val file = romChooser.chooseRom(null)
 
+                        gb.stop()
+                        gbThread?.join()
+
                         if (file != null) {
                             gb.loadCartridge(file)
                             cartridgeView.update()
-                            gbThread.start()
+                            gbThread = Thread(gb)
+                            gbThread?.start()
                         }
                     }
                 }
@@ -108,12 +112,12 @@ class GameBoyView: View(), Observer {
         row {
             button("Start") {
                 action {
-                    gbThread.start()
+                    gb.unpause()
                 }
             }
-            button("Stop") {
+            button("Pause") {
                 action {
-                   // gbThread.stop()
+                   gb.pause()
                 }
             }
             button("Save") {
@@ -147,7 +151,7 @@ class GameBoyView: View(), Observer {
 
     init {
         primaryStage.setOnCloseRequest {
-            gb.running = false
+            gb.stop()
             Platform.exit()
             System.exit(0)
         }
@@ -206,42 +210,40 @@ class GameBoyView: View(), Observer {
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        frameCount++
+        Platform.runLater {
+            frameCount++
 
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - prevTime >= 1000) {
-            Platform.runLater {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - prevTime >= 1000) {
                 labelFps.text = "FPS: $frameCount"
                 prevTime = currentTime
                 frameCount = 0
             }
-        }
 
-        val pixelWriter = lcd.pixelWriter
+            val pixelWriter = lcd.pixelWriter
 
-        val screen = arg as Array<IntArray>
-        for (y in 0 until 144) {
-            for (x in 0 until 160) {
-                // If current pixel hasn't changed, skip drawing
-                if (forceRefresh || oldScreen[y][x] != screen[y][x]) {
-                    val c = colors[screen[y][x]]
+            val screen = arg as Array<IntArray>
+            for (y in 0 until 144) {
+                for (x in 0 until 160) {
+                    // If current pixel hasn't changed, skip drawing
+                    if (forceRefresh || oldScreen[y][x] != screen[y][x]) {
+                        val c = colors[screen[y][x]]
 
-                    for (i in 0 until scale) {
-                        for (j in 0 until scale) {
-                            pixelWriter.setColor(scale * x + i, scale * y + j, c)
+                        for (i in 0 until scale) {
+                            for (j in 0 until scale) {
+                                pixelWriter.setColor(scale * x + i, scale * y + j, c)
+                            }
                         }
-                    }
 
-                    oldScreen[y][x] = screen[y][x]
+                        oldScreen[y][x] = screen[y][x]
+                    }
                 }
             }
-        }
 
-        if (forceRefresh) {
-            forceRefresh = false
-        }
+            if (forceRefresh) {
+                forceRefresh = false
+            }
 
-        Platform.runLater {
             updateDebug()
             updateVram()
         }

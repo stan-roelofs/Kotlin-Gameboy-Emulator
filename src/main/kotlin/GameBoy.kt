@@ -11,8 +11,8 @@ class GameBoy(cart: File?) : Runnable {
     val cpu = Cpu()
     val mmu = Mmu.instance
     lateinit var cartridge: Cartridge
-    var running = false
-    var paused = false
+    private var running = false
+    private var paused = false
 
     init {
         if (cart != null) {
@@ -29,10 +29,24 @@ class GameBoy(cart: File?) : Runnable {
         cpu.step()
     }
 
+    fun pause() {
+        paused = true
+    }
+
+    fun unpause() {
+        paused = false
+    }
+
+    fun stop() {
+        running = false
+    }
+
     override fun run() {
         running = true
         while (running) {
-            step()
+            if (!paused) {
+                step()
+            }
         }
     }
 
