@@ -7,7 +7,7 @@ import java.nio.file.Files
 
 class Cartridge(file: File) : Memory {
 
-    lateinit var type: CartridgeType
+    var type: CartridgeType? = null
     var isSgb = false
     var isGbc = false
     lateinit var title: String
@@ -21,6 +21,7 @@ class Cartridge(file: File) : Memory {
     var headerChecksum = false
 
     init {
+        reset()
         loadRom(file)
     }
 
@@ -34,7 +35,7 @@ class Cartridge(file: File) : Memory {
         versionNumber = 0
         oldLicenseeCode = 0
         headerChecksum = false
-        type.reset()
+        type?.reset()
     }
 
     private fun loadRom(file: File) {
@@ -44,7 +45,7 @@ class Cartridge(file: File) : Memory {
             val data = Files.readAllBytes(file.toPath())
             loadHeader(data)
 
-            type.loadRom(data)
+            type!!.loadRom(data)
             cartridgeFile = file
         } catch (e: Exception) {
             e.printStackTrace()
@@ -210,18 +211,18 @@ class Cartridge(file: File) : Memory {
     }
 
     override fun readByte(address: Int): Int {
-        return type.readByte(address)
+        return type!!.readByte(address)
     }
 
     override fun writeByte(address: Int, value: Int) {
-        return type.writeByte(address, value and 0xFF)
+        return type!!.writeByte(address, value and 0xFF)
     }
 
     fun saveRam(file: File) {
-        type.saveRam(file)
+        type!!.saveRam(file)
     }
 
     fun loadRam(file: File) {
-        type.loadRam(file)
+        type!!.loadRam(file)
     }
 }

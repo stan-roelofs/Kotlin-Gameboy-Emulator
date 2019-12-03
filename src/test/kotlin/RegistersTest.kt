@@ -7,7 +7,6 @@ internal class RegistersTest {
     @Test
     fun testSet8BitRegister() {
         val r = Registers()
-        assertEquals(0, r.A)
 
         // Normal test
         r.A = 5
@@ -21,12 +20,6 @@ internal class RegistersTest {
     @Test
     fun testSet16BitRegister() {
         val r = Registers()
-        assertEquals(0, r.getAF())
-        assertEquals(0, r.getBC())
-        assertEquals(0, r.getDE())
-        assertEquals(0, r.getHL())
-        assertEquals(0, r.SP)
-        assertEquals(0, r.PC)
 
         // Normal test
         r.setAF(0x1032)
@@ -60,11 +53,6 @@ internal class RegistersTest {
     @Test
     fun testSetFlags() {
         val r = Registers()
-        assertEquals(false, r.getCFlag())
-        assertEquals(false, r.getHFlag())
-        assertEquals(false, r.getNFlag())
-        assertEquals(false, r.getZFlag())
-
         r.setCFlag(true)
         r.setHFlag(true)
         r.setNFlag(true)
@@ -89,7 +77,7 @@ internal class RegistersTest {
     @Test
     fun testIncSP() {
         val r = Registers()
-        assertEquals(0, r.SP)
+        r.SP = 0
 
         // Normal test
         r.incSP()
@@ -104,7 +92,6 @@ internal class RegistersTest {
     @Test
     fun testDecSP() {
         val r = Registers()
-        assertEquals(0, r.SP)
 
         // Normal test
         r.SP = 16
@@ -120,7 +107,8 @@ internal class RegistersTest {
     @Test
     fun testIncPC() {
         val r = Registers()
-        assertEquals(0, r.PC)
+
+        r.PC = 0
 
         // Normal test
         r.incPC()

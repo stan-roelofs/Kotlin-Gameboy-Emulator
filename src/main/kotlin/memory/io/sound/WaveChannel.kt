@@ -4,17 +4,20 @@ import memory.Mmu
 import utils.toHexString
 
 class WaveChannel : SoundChannel() {
-    override fun trigger() {
 
+    override var NR0 = 0
+    override var NR1 = 0
+    override var NR2 = 0
+    override var NR3 = 0
+    override var NR4 = 0
+
+    init {
+        reset()
     }
 
-    override var NR0 = 0x7F
-    override var NR1 = 0xFF
-    override var NR2 = 0x9F
-    override var NR3 = 0xFF
-    override var NR4 = 0xBF
-
     override fun reset() {
+        channelEnabled = false
+        dacEnabled = false
         NR0 = 0x7F
         NR1 = 0xFF
         NR2 = 0x9F
@@ -24,6 +27,10 @@ class WaveChannel : SoundChannel() {
 
     override fun tick(cycles: Int): Int {
         return 0
+    }
+
+    override fun trigger() {
+
     }
 
     override fun readByte(address: Int): Int {

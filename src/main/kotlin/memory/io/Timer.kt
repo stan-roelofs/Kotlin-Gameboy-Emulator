@@ -13,7 +13,7 @@ class Timer : Memory {
     private var TMA = 0
     private var TAC = 0
 
-    private var selectedBit = 9
+    private var selectedBit = 0
 
     private val clock0Cycles = 1024
     private val clock1Cycles = 16
@@ -24,6 +24,10 @@ class Timer : Memory {
     private var timerCounter = 0
     private var reload = 0
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         internalCounter = 0xABCC
         timerCounter = 0
@@ -32,6 +36,7 @@ class Timer : Memory {
         TMA = 0
         TAC = 0
         reload = 0
+        selectedBit = 9
     }
 
     fun tick(cycles: Int) {

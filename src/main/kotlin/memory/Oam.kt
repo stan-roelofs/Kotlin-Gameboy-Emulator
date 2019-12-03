@@ -6,6 +6,10 @@ class Oam : Memory {
 
     private val oam: IntArray = IntArray(0xA0)
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         oam.fill(0)
     }

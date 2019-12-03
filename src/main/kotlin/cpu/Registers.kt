@@ -63,6 +63,10 @@ class Registers {
 
     var clock = 0
 
+    init {
+        reset()
+    }
+
     fun reset() {
         A = 0x01
         F = 0xB0

@@ -8,13 +8,15 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     override val ram: Array<IntArray>?
     override val rom: Array<IntArray>
 
-    override var currentRomBank = 1
+    override var currentRomBank = 0
     override var currentRamBank = 0
     override var ramEnabled = false
 
     var mode = 0
 
     init {
+        reset()
+
         if (romBanks !in 0..128) {
             throw IllegalArgumentException("Illegal number of ROM banks: $romBanks")
         }

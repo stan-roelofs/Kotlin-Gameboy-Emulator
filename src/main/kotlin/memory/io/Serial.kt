@@ -11,6 +11,10 @@ class Serial : Memory {
 
     var testOutput = false
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         SB = 0
         SC = 0

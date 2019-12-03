@@ -6,6 +6,10 @@ class InternalRam : Memory {
 
     private val ram: IntArray = IntArray(0x2000)
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         ram.fill(0) //TODO: this should actually be random
     }

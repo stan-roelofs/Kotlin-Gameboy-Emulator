@@ -15,12 +15,16 @@ class GameBoy(cart: File?) : Runnable {
     private var paused = false
 
     init {
+        reset()
+
         if (cart != null) {
             loadCartridge(cart)
         }
     }
 
     fun reset() {
+        running = false
+        paused = false
         mmu.reset()
         cpu.reset()
     }

@@ -9,8 +9,12 @@ import java.util.*
 
 class Joypad : Memory {
 
-    private var P1 = 0b11001111
+    private var P1 = 0
     private val pressedKeys = EnumSet.noneOf(JoypadKey::class.java)!!
+
+    init {
+        reset()
+    }
 
     override fun reset() {
         P1 = 0b11001111

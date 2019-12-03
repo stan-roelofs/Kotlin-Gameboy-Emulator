@@ -16,6 +16,8 @@ class MBC5(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     var mode = 0
 
     init {
+        reset()
+
         if (romBanks !in 0..512) {
             throw IllegalArgumentException("Illegal number of ROM banks: $romBanks")
         }

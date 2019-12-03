@@ -85,6 +85,10 @@ class Mmu private constructor() : Memory {
     private val internalRam = InternalRam()
     val io = IO()
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         hram.reset()
         oam.reset()

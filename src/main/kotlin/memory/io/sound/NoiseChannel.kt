@@ -6,10 +6,14 @@ import utils.toHexString
 class NoiseChannel : SoundChannel() {
 
     override var NR0 = 0
-    override var NR1 = 0xFF
-    override var NR2 = 0x00
-    override var NR3 = 0x00
-    override var NR4 = 0xBF
+    override var NR1 = 0
+    override var NR2 = 0
+    override var NR3 = 0
+    override var NR4 = 0
+
+    init {
+        reset()
+    }
 
     override fun trigger() {
 
@@ -20,6 +24,9 @@ class NoiseChannel : SoundChannel() {
     }
 
     override fun reset() {
+        channelEnabled = false
+        dacEnabled = false
+        NR0 = 0
         NR1 = 0xFF
         NR2 = 0x00
         NR3 = 0x00

@@ -5,15 +5,14 @@ import utils.toHexString
 
 class SquareWave1 : SquareWave() {
 
-    override var NR0 = 0x80
-    override var NR1 = 0xBF
-    override var NR2 = 0xF3
-    override var NR3 = 0xFF
-    override var NR4 = 0xBF
+    override var NR0 = 0
+    override var NR1 = 0
+    override var NR2 = 0
+    override var NR3 = 0
+    override var NR4 = 0
 
     init {
-        channelEnabled = true
-        dacEnabled = true
+        reset()
     }
 
     override fun tick(cycles: Int): Int {
@@ -25,11 +24,13 @@ class SquareWave1 : SquareWave() {
     }
 
     override fun reset() {
-        NR1 = 0x80
+        channelEnabled = true
+        dacEnabled = true
+        NR0 = 0x80
         NR1 = 0xBF
-        NR1 = 0xF3
-        NR1 = 0xFF
-        NR1 = 0xBF
+        NR2 = 0xF3
+        NR3 = 0xFF
+        NR4 = 0xBF
     }
 
     override fun readByte(address: Int): Int {

@@ -26,15 +26,21 @@ class Sound : Memory {
     private val samples = IntArray(4)
 
     init {
-
+        reset()
     }
 
     override fun reset() {
         NR50 = 0x77
         NR51 = 0xF3
-        //NR52 = 0xF1
 
         patternRam.fill(0)
+
+        for (channel in allChannels) {
+            channel.reset()
+        }
+
+        enabled = true
+        samples.fill(0)
     }
 
     fun tick(cycles: Int) {

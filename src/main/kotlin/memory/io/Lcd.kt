@@ -39,6 +39,10 @@ class Lcd : Memory, Observable() {
     private var isAnyStat = false
     var cycleCounter = 0
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         LCDC = 0x91
         LY = 0x00
@@ -53,6 +57,13 @@ class Lcd : Memory, Observable() {
         OBP1 = 0xFF
 
         vram.fill(0)
+
+        for (i in 0 until 144) {
+            screenBuffer[i].fill(0)
+            backgroundBuffer[i].fill(0)
+            windowBuffer[i].fill(0)
+            spritesBuffer[i].fill(0)
+        }
 
         for (i in 0 until sprites.size) {
             sprites[i] = Sprite()

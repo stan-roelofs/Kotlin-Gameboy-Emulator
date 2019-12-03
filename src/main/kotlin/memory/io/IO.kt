@@ -18,6 +18,10 @@ class IO : Memory {
 
     private var IF = 0
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         timer.reset()
         lcd.reset()

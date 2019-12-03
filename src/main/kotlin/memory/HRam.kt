@@ -6,6 +6,10 @@ class HRam : Memory {
 
     private val hram: IntArray = IntArray(0x80)
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         hram.fill(0)
     }

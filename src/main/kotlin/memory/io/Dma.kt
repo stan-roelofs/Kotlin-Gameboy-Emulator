@@ -18,6 +18,10 @@ class Dma : Memory {
 
     private var DMA = 0
 
+    init {
+        reset()
+    }
+
     override fun reset() {
         requested = false
         starting = false

@@ -10,11 +10,13 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
     override val ram: Array<IntArray>
     override val rom: Array<IntArray>
 
-    override var currentRomBank = 1
+    override var currentRomBank = 0
     override var currentRamBank = 0
     override var ramEnabled = false
 
     init {
+        reset()
+
         if (romBanks !in 0..16) {
             throw IllegalArgumentException("Illegal number of ROM banks: $romBanks")
         }
@@ -27,7 +29,6 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
         currentRamBank = 0
         currentRomBank = 1
         ramEnabled = false
-        ram[0].fill(0)
     }
 
     override fun loadRom(value: ByteArray) {

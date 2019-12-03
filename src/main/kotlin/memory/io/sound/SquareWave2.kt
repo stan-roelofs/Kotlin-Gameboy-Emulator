@@ -7,19 +7,24 @@ import utils.toHexString
 class SquareWave2 : SquareWave() {
 
     override var NR0 = 0
-    override var NR1 = 0x3F
+    override var NR1 = 0
     override var NR2 = 0
-    override var NR3 = 0xFF
-    override var NR4 = 0xBF
-
-    //private val volumeEnvelope = VolumeEnvelope()
+    override var NR3 = 0
+    override var NR4 = 0
 
     private var timer = 0
     private var dutyCounter = 0
     private var lengthCounter = 0
     private var volumeTimer = 0
 
+    init {
+        reset()
+    }
+
     override fun reset() {
+        channelEnabled = false
+        dacEnabled = false
+        NR0 = 0
         NR1 = 0x3F
         NR2 = 0
         NR3 = 0xFF

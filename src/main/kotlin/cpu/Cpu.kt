@@ -28,9 +28,14 @@ class Cpu {
 
     var eiExecuted = false
 
+    init {
+        reset()
+    }
+
     fun reset() {
         registers.reset()
         currentInstruction = null
+        eiExecuted = false
     }
 
     fun step() {
