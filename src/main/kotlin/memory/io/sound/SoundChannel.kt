@@ -4,12 +4,10 @@ import memory.Memory
 
 abstract class SoundChannel : Memory {
 
-    protected var channelEnabled = false
     protected var dacEnabled = false
 
-    protected val LENGTH_CLOCKS = 16384
-    protected val SWEEP_CLOCKS = 32768
-    protected val VOL_CLOCKS = 65536
+    protected abstract val lengthCounter: LengthCounter
+    protected val volumeEnvelope = VolumeEnvelope()
 
     protected abstract var NR0: Int
     protected abstract var NR1: Int
@@ -22,6 +20,6 @@ abstract class SoundChannel : Memory {
     protected abstract fun trigger()
 
     fun isEnabled(): Boolean {
-        return channelEnabled && dacEnabled
+        return lengthCounter.enabled && dacEnabled
     }
 }

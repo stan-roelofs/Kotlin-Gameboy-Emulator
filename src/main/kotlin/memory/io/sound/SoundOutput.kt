@@ -20,12 +20,11 @@ class SoundOutput {
     private var line : SourceDataLine? = null
     private var buffer = ByteArray(BUFFER_SIZE)
 
-    fun start() {
-        if (line != null) {
-            Log.d("Sound already started")
-            return
-        }
-        Log.d("Start sound")
+    fun reset() {
+        line?.drain()
+    }
+
+    init {
         try {
             line = AudioSystem.getSourceDataLine(AUDIO_FORMAT)
             line?.open(AUDIO_FORMAT, BUFFER_SIZE)
@@ -36,16 +35,6 @@ class SoundOutput {
 
         buffer = ByteArray(line!!.bufferSize)
         divider = GameBoy.TICKS_PER_SEC / AUDIO_FORMAT.sampleRate.toInt()
-    }
-
-    fun stop() {
-        if (line == null) {
-            Log.d("Can't stop - sound wasn't started")
-        }
-        Log.d("Stop sound")
-        line?.drain()
-        line?.stop()
-        line = null
     }
 
     fun play(left: Int, right: Int) {

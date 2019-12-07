@@ -8,11 +8,6 @@ import utils.toHexString
 
 class Sound : Memory {
 
-    private var NR50 = 0
-    private var NR51 = 0
-
-    private val patternRam = IntArray(0x10)
-
     private val square1 = SquareWave1()
     private val square2 = SquareWave2()
     private val wave = WaveChannel()
@@ -25,15 +20,28 @@ class Sound : Memory {
     var output : SoundOutput? = null
     private val samples = IntArray(4)
 
+    private var vinLeft = false
+    private var vinRight = false
+    private var volumeLeft = 0
+    private var volumeRight = 0
+    private var leftEnables = Array(4) {false}
+    private var rightEnables = Array(4) {false}
+
     init {
         reset()
     }
 
     override fun reset() {
-        NR50 = 0x77
-        NR51 = 0xF3
+        vinLeft = false
+        vinRight = false
+        volumeLeft = 0b111
+        volumeRight = 0b111
 
-        patternRam.fill(0)
+        leftEnables.fill(true)
+        rightEnables[0] = true
+        rightEnables[1] = true
+        rightEnables[2] = false
+        rightEnables[3] = false
 
         for (channel in allChannels) {
             channel.reset()
@@ -41,25 +49,27 @@ class Sound : Memory {
 
         enabled = true
         samples.fill(0)
+
+        output?.reset()
     }
 
     fun tick(cycles: Int) {
-        if (!enabled) {
-            return
-        }
-
         for (i in 0 until 4) {
             samples[i] = allChannels[i].tick(cycles)
+        }
+
+        if (!enabled) {
+            return
         }
 
         var left = 0
         var right = 0
 
         for (i in 0 until 4) {
-            if (NR51 and (1 shl i + 4) != 0) {
+            if (leftEnables[i]) {
                 left += samples[i]
             }
-            if (NR51 and (1 shl i) != 0) {
+            if (rightEnables[i]) {
                 right += samples[i]
             }
         }
@@ -67,9 +77,9 @@ class Sound : Memory {
         right /= 4
 
         // Bits 4..6 contain left volume
-        left *= ((NR50 shl 4) and 0b111) + 1
+        left *= volumeLeft// + 1
         // Bits 0..2 contain right volume
-        right *= (NR50 and 0b111) + 1
+        right *= volumeRight// + 1
 
         output?.play(left, right)
     }
@@ -93,7 +103,8 @@ class Sound : Memory {
             Mmu.NR31,
             Mmu.NR32,
             Mmu.NR33,
-            Mmu.NR34 -> {
+            Mmu.NR34,
+            in 0xFF30..0xFF3F -> {
                 wave.readByte(address)
             }
             Mmu.NR41,
@@ -102,8 +113,26 @@ class Sound : Memory {
             Mmu.NR44 -> {
                 noise.readByte(address)
             }
-            Mmu.NR50 -> this.NR50
-            Mmu.NR51 -> this.NR51
+            Mmu.NR50 -> {
+                var result = 0
+                result = setBit(result, 7, this.vinLeft)
+                result = result or (this.volumeLeft shl 4)
+                result = setBit(result, 3, this.vinRight)
+                result = result or (this.volumeRight)
+                result
+            }
+            Mmu.NR51 -> {
+                var result = 0
+                result = setBit(result, 7, leftEnables[3])
+                result = setBit(result, 6, leftEnables[2])
+                result = setBit(result, 5, leftEnables[1])
+                result = setBit(result, 4, leftEnables[0])
+                result = setBit(result, 3, rightEnables[3])
+                result = setBit(result, 2, rightEnables[2])
+                result = setBit(result, 1, rightEnables[1])
+                result = setBit(result, 0, rightEnables[0])
+                result
+            }
             Mmu.NR52 -> {
                 // Bits 0-3 are statuses of channels (1, 2, wave, noise)
                 var result = 0b01110000 // Bits 4-6 are unused
@@ -126,7 +155,6 @@ class Sound : Memory {
                 }
                 result
             }
-            in 0xFF30..0xFF3F -> patternRam[address - 0xFF30]
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")
         }
     }
@@ -151,7 +179,8 @@ class Sound : Memory {
             Mmu.NR31,
             Mmu.NR32,
             Mmu.NR33,
-            Mmu.NR34 -> {
+            Mmu.NR34,
+            in 0xFF30..0xFF3F -> {
                 wave.writeByte(address,  value)
             }
             Mmu.NR41,
@@ -160,17 +189,25 @@ class Sound : Memory {
             Mmu.NR44 -> {
                 noise.writeByte(address,  value)
             }
-            Mmu.NR50 -> this.NR50 = newVal
-            Mmu.NR51 -> this.NR51 = newVal
+            Mmu.NR50 -> {
+                this.vinLeft = newVal.getBit(7)
+                this.volumeLeft = (newVal shr 4) and 0b111
+                this.vinRight = newVal.getBit(3)
+                this.volumeRight = newVal and 0b111
+            }
+            Mmu.NR51 -> {
+                this.leftEnables[3] = newVal.getBit(7)
+                this.leftEnables[2] = newVal.getBit(6)
+                this.leftEnables[1] = newVal.getBit(5)
+                this.leftEnables[0] = newVal.getBit(4)
+                this.rightEnables[3] = newVal.getBit(3)
+                this.rightEnables[2] = newVal.getBit(2)
+                this.rightEnables[1] = newVal.getBit(1)
+                this.rightEnables[0] = newVal.getBit(0)
+            }
             Mmu.NR52 -> {
                 enabled = value.getBit(7)
-                if (enabled) {
-                    output?.start()
-                } else {
-                    output?.stop()
-                }
             }
-            in 0xFF30..0xFF3F -> patternRam[address - 0xFF30] = newVal
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")
         }
     }

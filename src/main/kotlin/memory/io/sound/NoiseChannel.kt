@@ -5,6 +5,7 @@ import utils.toHexString
 
 class NoiseChannel : SoundChannel() {
 
+    override val lengthCounter = LengthCounter(64)
     override var NR0 = 0
     override var NR1 = 0
     override var NR2 = 0
@@ -24,7 +25,6 @@ class NoiseChannel : SoundChannel() {
     }
 
     override fun reset() {
-        channelEnabled = false
         dacEnabled = false
         NR0 = 0
         NR1 = 0xFF

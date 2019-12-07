@@ -5,6 +5,9 @@ import utils.toHexString
 
 class WaveChannel : SoundChannel() {
 
+    private val patternRam = IntArray(0x10)
+
+    override val lengthCounter = LengthCounter(64)
     override var NR0 = 0
     override var NR1 = 0
     override var NR2 = 0
@@ -16,13 +19,14 @@ class WaveChannel : SoundChannel() {
     }
 
     override fun reset() {
-        channelEnabled = false
         dacEnabled = false
         NR0 = 0x7F
         NR1 = 0xFF
         NR2 = 0x9F
         NR3 = 0xFF
         NR4 = 0xBF
+
+        patternRam.fill(0)
     }
 
     override fun tick(cycles: Int): Int {
@@ -40,6 +44,7 @@ class WaveChannel : SoundChannel() {
             Mmu.NR32 -> this.NR2 or 0b10011111 // Only bits 5-6 can be read
             Mmu.NR33 -> this.NR3
             Mmu.NR34 -> this.NR4 or 0b10111111 // Only bit 6 can be read
+            in 0xFF30..0xFF3F -> this.patternRam[address - 0xFF30]
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to WaveChannel")
         }
     }
@@ -62,6 +67,7 @@ class WaveChannel : SoundChannel() {
             Mmu.NR34 -> {
                 this.NR4 = newVal
             }
+            in 0xFF30..0xFF3F -> this.patternRam[address - 0xFF30] = newVal
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to WaveChannel")
         }
     }

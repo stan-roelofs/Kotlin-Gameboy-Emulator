@@ -13,30 +13,31 @@ class SquareWave2 : SquareWave() {
     override var NR4 = 0
 
     private var timer = 0
+    private var counter = 0
+
     private var dutyCounter = 0
-    private var lengthCounter = 0
-    private var volumeTimer = 0
+    override val lengthCounter = LengthCounter(64)
 
     init {
         reset()
     }
 
     override fun reset() {
-        channelEnabled = false
         dacEnabled = false
-        NR0 = 0
-        NR1 = 0x3F
         NR2 = 0
         NR3 = 0xFF
         NR4 = 0xBF
 
         timer = 0
         dutyCounter = 0
-        volumeTimer = 0
-        lengthCounter = 0
+        lengthCounter.reset()
+        volumeEnvelope.reset()
     }
 
     override fun tick(cycles: Int): Int {
+        //lengthCounter.tick()
+        volumeEnvelope.tick()
+
         if (!isEnabled()) {
             return 0
         }
@@ -51,7 +52,7 @@ class SquareWave2 : SquareWave() {
             }
         }
 
-        val volume = (NR2 shr 4) and 0b1111
+        val volume = volumeEnvelope.volume
         val temp = dutyCycles[duty].getBit(dutyCounter)
 
         return if (!temp) {
@@ -61,25 +62,15 @@ class SquareWave2 : SquareWave() {
         }
     }
 
-    private fun getFrequency(): Int {
-        return 2048 - (NR3 or (NR4 and 0b111 shl 8))
-    }
-
     override fun trigger() {
-        channelEnabled = true
         timer = getFrequency()
-
-        if (lengthCounter == 0) {
-            lengthCounter = 64
-        }
-
-        volumeTimer = getFrequency()
-
+        lengthCounter.trigger()
+        volumeEnvelope.trigger()
     }
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            Mmu.NR21 -> this.NR1 or 0b00111111 // Only bits 6-7 can be read
+            Mmu.NR21 -> (this.duty shl 6) or 0b00111111 // Only bits 6-7 can be read
             Mmu.NR22 -> this.NR2
             Mmu.NR23 -> this.NR3
             Mmu.NR24 -> this.NR4 or 0b10111111 // Only bit 6 can be read
@@ -91,13 +82,21 @@ class SquareWave2 : SquareWave() {
         val newVal = value and 0xFF
         when(address) {
             Mmu.NR21 -> {
-                this.NR1 = newVal
-                duty = (newVal and 0b11000000) shr 6
-                lengthCounter = newVal and 0b00111111
+                duty = (newVal shr 6) and 0b11
+                counter = 64 - (newVal and 0b111111)
+
+                lengthCounter.setNr1(newVal)
             }
             Mmu.NR22 -> {
                 this.NR2 = newVal
-                dacEnabled = newVal and 0b11111000 != 0
+
+                // If at least one of the upper 5 bits of NRx2 is 1, dac is enabled
+                dacEnabled = (newVal and 0b11111000) != 0
+
+                // If the DAC is off, the channel is disabled, but turning it on does not enable the channel
+                lengthCounter.enabled = lengthCounter.enabled && dacEnabled
+
+                volumeEnvelope.setNr2(newVal)
             }
             Mmu.NR23 -> {
                 this.NR3 = newVal
