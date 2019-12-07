@@ -347,7 +347,7 @@ class Lcd : Memory, Observable() {
             // Add the offset in the horizontal direction
             var lineOffset = SCX shr 3
 
-            val y = LY and 7
+            val y = LY + SCY and 7
             var x = SCX and 7
 
             var color: Int
