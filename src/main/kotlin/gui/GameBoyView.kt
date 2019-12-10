@@ -6,12 +6,16 @@ import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 import memory.io.Joypad
 import memory.io.sound.SoundOutput
 import tornadofx.*
+import utils.Log
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
+import kotlin.system.exitProcess
 
 class GameBoyView: View(), Observer {
     private var scale = 2
@@ -53,16 +57,19 @@ class GameBoyView: View(), Observer {
                 }
                 menu("File") {
                     item("Load").action {
-                        val file = romChooser.chooseRom(null)
+                        try {
+                            val file = romChooser.chooseRom(null)
+                            gb.stop()
+                            gbThread?.join()
 
-                        gb.stop()
-                        gbThread?.join()
-
-                        if (file != null) {
-                            gb.loadCartridge(file)
-                            cartridgeView.update()
-                            gbThread = Thread(gb)
-                            gbThread?.start()
+                            if (file != null) {
+                                gb.loadCartridge(file)
+                                cartridgeView.update()
+                                gbThread = Thread(gb)
+                                gbThread?.start()
+                            }
+                        } catch (e: IllegalArgumentException) {
+                            Log.e("Could not load file: ${e.message}")
                         }
                     }
                 }
@@ -153,7 +160,7 @@ class GameBoyView: View(), Observer {
         primaryStage.setOnCloseRequest {
             gb.stop()
             Platform.exit()
-            System.exit(0)
+            exitProcess(0)
         }
 
         gb.mmu.io.lcd.addObserver(this)
@@ -168,7 +175,7 @@ class GameBoyView: View(), Observer {
     }
 
     private fun registerKeyboard() {
-        root.setOnKeyPressed { e ->
+        root.addEventFilter(KeyEvent.KEY_PRESSED) { e: KeyEvent ->
             when (e.code) {
                 KeyCode.ENTER -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
                 KeyCode.LEFT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.LEFT)
@@ -184,7 +191,7 @@ class GameBoyView: View(), Observer {
             e.consume()
         }
 
-        root.setOnKeyReleased { e ->
+        root.addEventFilter(KeyEvent.KEY_RELEASED) { e: KeyEvent ->
             when (e.code) {
                 KeyCode.ENTER -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
                 KeyCode.LEFT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.LEFT)
