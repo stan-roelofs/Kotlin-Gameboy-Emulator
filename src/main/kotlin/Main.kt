@@ -5,8 +5,6 @@ import tornadofx.App
 
 class Main : App(GameBoyView::class) {
     override fun start(stage: Stage) {
-        stage.title = "KGB"
-
         super.start(stage)
         //stage.isFullScreen = true
     }

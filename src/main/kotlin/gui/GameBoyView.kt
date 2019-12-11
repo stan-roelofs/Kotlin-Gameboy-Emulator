@@ -2,10 +2,10 @@ package gui
 
 import GameBoy
 import javafx.application.Platform
-import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
 import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 import memory.io.Joypad
 import memory.io.sound.SoundOutput
@@ -42,96 +42,31 @@ class GameBoyView: View(), Observer {
     private var forceRefresh = false
     private var prevTime = 0L
     private var frameCount = 0
-    private lateinit var labelFps: Label
 
-    override val root = gridpane {
-        row {
-            menubar {
-                useMaxWidth = true
-                gridpaneConstraints {
-                    columnSpan = 5
-                }
-                menu("File") {
-                    item("Load").action {
-                        val file = romChooser.chooseRom(null)
+    override val root = vbox {
+        menubar {
+            menu("File") {
+                item("Open rom").action {
+                    val file = romChooser.chooseRom(null)
 
-                        gb.stop()
-                        gbThread?.join()
+                    gb.stop()
+                    gbThread?.join()
 
-                        if (file != null) {
-                            gb.loadCartridge(file)
-                            cartridgeView.update()
-                            gbThread = Thread(gb)
-                            gbThread?.start()
-                        }
-                    }
-                }
-
-                menu("Window") {
-                    item("Video RAM / OAM viewer").action {
-                        vramView.openWindow()
-                    }
-                    item("Debug window").action {
-                        debugView.openWindow()
-                    }
-                    item("Cartridge information").action {
-                        cartridgeView.openWindow()
-                    }
-                }
-
-                menu("Settings") {
-                    item("Increase lcd scale").action {
-                        scale++
-                        val width = 160 * scale
-                        val height = 144 * scale
-                        lcd = WritableImage(width, height)
-                        imageViewLcd.image = lcd
-                        forceRefresh = true
-                        primaryStage.sizeToScene()
-                    }
-                    item("Decrease lcd scale").action {
-                        scale--
-                        val width = 160 * scale
-                        val height = 144 * scale
-                        lcd = WritableImage(width, height)
-                        imageViewLcd.image = lcd
-                        forceRefresh = true
-                        primaryStage.sizeToScene()
+                    if (file != null) {
+                        gb.loadCartridge(file)
+                        cartridgeView.update()
+                        gbThread = Thread(gb)
+                        gbThread?.start()
                     }
                 }
             }
-        }
-        row {
-            imageViewLcd = imageview(lcd) {
-                useMaxWidth = true
-                gridpaneConstraints {
-                    columnSpan = 5
-                }
-            }
-        }
-        row {
-            button("Start") {
-                action {
-                    gb.unpause()
-                }
-            }
-            button("Pause") {
-                action {
-                   gb.pause()
-                }
-            }
-            button("Save") {
-                action {
-                    val cart = gb.mmu.cartridge
-                    val path = cart?.cartridgeFile?.parent
-                    val fileName = cart?.cartridgeFile?.nameWithoutExtension
 
-                    val saveFile = File(path, "$fileName.sav")
-                    cart?.saveRam(saveFile)
+            menu("System") {
+                item("Toggle pause").action {
+                    gb.togglePause()
                 }
-            }
-            button("Load") {
-                action {
+                separator()
+                item("Load ").action {
                     val cart = gb.mmu.cartridge
                     val path = cart?.cartridgeFile?.parent
                     val fileName = cart?.cartridgeFile?.nameWithoutExtension
@@ -142,14 +77,55 @@ class GameBoyView: View(), Observer {
                         cart?.loadRam(loadFile)
                     }
                 }
-            }
-            labelFps = label("FPS: ") {
+                item("Save").action {
+                    val cart = gb.mmu.cartridge
+                    val path = cart?.cartridgeFile?.parent
+                    val fileName = cart?.cartridgeFile?.nameWithoutExtension
 
+                    val saveFile = File(path, "$fileName.sav")
+                    cart?.saveRam(saveFile)
+                }
+            }
+
+            menu("Window") {
+                item("Video RAM / OAM viewer").action {
+                    vramView.openWindow()
+                }
+                item("Debug window").action {
+                    debugView.openWindow()
+                }
+                item("Cartridge information").action {
+                    cartridgeView.openWindow()
+                }
+            }
+
+            menu("Settings") {
+                item("Increase lcd scale").action {
+                    scale++
+                    val width = 160 * scale
+                    val height = 144 * scale
+                    lcd = WritableImage(width, height)
+                    imageViewLcd.image = lcd
+                    forceRefresh = true
+                    primaryStage.sizeToScene()
+                }
+                item("Decrease lcd scale").action {
+                    scale--
+                    val width = 160 * scale
+                    val height = 144 * scale
+                    lcd = WritableImage(width, height)
+                    imageViewLcd.image = lcd
+                    forceRefresh = true
+                    primaryStage.sizeToScene()
+                }
             }
         }
+
+        imageViewLcd = imageview(lcd)
     }
 
     init {
+        primaryStage.titleProperty().unbind()
         primaryStage.setOnCloseRequest {
             gb.stop()
             Platform.exit()
@@ -168,36 +144,38 @@ class GameBoyView: View(), Observer {
     }
 
     private fun registerKeyboard() {
-        root.setOnKeyPressed { e ->
-            when (e.code) {
-                KeyCode.ENTER -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
-                KeyCode.LEFT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.LEFT)
-                KeyCode.RIGHT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.RIGHT)
-                KeyCode.UP -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.UP)
-                KeyCode.DOWN -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.DOWN)
-                KeyCode.Z -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.A)
-                KeyCode.X -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.B)
-                KeyCode.TAB -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.SELECT)
-                else -> {}
+        whenDocked {
+            root.scene.addEventFilter(KeyEvent.KEY_PRESSED) { e ->
+                when (e.code) {
+                    KeyCode.ENTER -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
+                    KeyCode.LEFT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.LEFT)
+                    KeyCode.RIGHT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.RIGHT)
+                    KeyCode.UP -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.UP)
+                    KeyCode.DOWN -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.DOWN)
+                    KeyCode.Z -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.A)
+                    KeyCode.X -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.B)
+                    KeyCode.TAB -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.SELECT)
+                    else -> {}
+                }
+
+                e.consume()
             }
 
-            e.consume()
-        }
+            root.scene.addEventFilter(KeyEvent.KEY_RELEASED) { e ->
+                when (e.code) {
+                    KeyCode.ENTER -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
+                    KeyCode.LEFT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.LEFT)
+                    KeyCode.RIGHT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.RIGHT)
+                    KeyCode.UP -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.UP)
+                    KeyCode.DOWN -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.DOWN)
+                    KeyCode.Z -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.A)
+                    KeyCode.X -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.B)
+                    KeyCode.TAB -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.SELECT)
+                    else -> {}
+                }
 
-        root.setOnKeyReleased { e ->
-            when (e.code) {
-                KeyCode.ENTER -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
-                KeyCode.LEFT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.LEFT)
-                KeyCode.RIGHT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.RIGHT)
-                KeyCode.UP -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.UP)
-                KeyCode.DOWN -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.DOWN)
-                KeyCode.Z -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.A)
-                KeyCode.X -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.B)
-                KeyCode.TAB -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.SELECT)
-                else -> {}
+                e.consume()
             }
-
-            e.consume()
         }
     }
 
@@ -215,7 +193,7 @@ class GameBoyView: View(), Observer {
 
             val currentTime = System.currentTimeMillis()
             if (currentTime - prevTime >= 1000) {
-                labelFps.text = "FPS: $frameCount"
+                title = "KGB - FPS: $frameCount"
                 prevTime = currentTime
                 frameCount = 0
             }
