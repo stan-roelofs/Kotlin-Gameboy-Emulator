@@ -2,9 +2,11 @@ package gui
 
 import javafx.stage.FileChooser
 import javafx.stage.Window
+import utils.Log
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 import java.util.zip.ZipFile
 
 class RomChooser {
@@ -26,22 +28,32 @@ class RomChooser {
         if (file != null) {
             lastLocation = file.parentFile
 
-            if (file.extension == "zip") {
-                val zipFile = ZipFile(file.path)
+            when (file.extension) {
+                "zip" -> {
+                    val zipFile = ZipFile(file.path)
 
-                val entries = zipFile.entries()
-                while(entries.hasMoreElements()) {
-                    val entry = entries.nextElement()
-                    if (entry.name.endsWith(".gb")) {
-                        val inputStream = zipFile.getInputStream(entry)
-                        val newPath = "${file.parentFile.path}/${entry.name}"
-                        Files.copy(inputStream, Paths.get(newPath))
-                        file = File(newPath)
+                    val entries = zipFile.entries()
+                    while(entries.hasMoreElements()) {
+                        val entry = entries.nextElement()
+                        if (entry.name.endsWith(".gb")) {
+                            val inputStream = zipFile.getInputStream(entry)
+                            val newPath = "${file.parentFile.path}/${entry.name}"
+
+                            Files.copy(inputStream, Paths.get(newPath), StandardCopyOption.REPLACE_EXISTING)
+                            file = File(newPath)
+                            return file
+                        }
                     }
+                }
+                "gb" -> {
+                    return file
+                }
+                else -> {
+                    Log.e("Unknown file type, choose a .gb file or a .zip file")
                 }
             }
         }
 
-        return file
+        return null
     }
 }
