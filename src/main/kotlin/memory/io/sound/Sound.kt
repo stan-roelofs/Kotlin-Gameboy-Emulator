@@ -136,16 +136,16 @@ class Sound : Memory {
             Mmu.NR52 -> {
                 // Bits 0-3 are statuses of channels (1, 2, wave, noise)
                 var result = 0b01110000 // Bits 4-6 are unused
-                if (square1.isEnabled()) {
+                if (square1.enabled) {
                     result = setBit(result, 0)
                 }
-                if (square2.isEnabled()) {
+                if (square2.enabled) {
                     result = setBit(result, 1)
                 }
-                if (wave.isEnabled()) {
+                if (wave.enabled) {
                     result = setBit(result, 2)
                 }
-                if (noise.isEnabled()) {
+                if (noise.enabled) {
                     result = setBit(result, 3)
                 }
 

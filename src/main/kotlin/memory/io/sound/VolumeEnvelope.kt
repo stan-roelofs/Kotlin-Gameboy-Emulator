@@ -2,6 +2,7 @@ package memory.io.sound
 
 import GameBoy
 import utils.getBit
+import utils.setBit
 
 class VolumeEnvelope {
 
@@ -13,7 +14,7 @@ class VolumeEnvelope {
     private var volumeTimer = 0
     private var period = 0
     private var counter = 0
-    var enabled = false
+    private var enabled = false
 
     init {
         reset()
@@ -55,6 +56,18 @@ class VolumeEnvelope {
         this.startingVolume = (value shr 4) and 0b1111
         this.add = value.getBit(3)
         this.period = value and 0b111
+    }
+
+    fun getNr2(): Int {
+        var result = this.startingVolume shl 4
+        result = setBit(result, 3, add)
+        result = result or period
+        return result
+    }
+
+    fun getDac(): Boolean {
+        // If any of the upper 5 bits is enabled, dac is enabled
+        return (getNr2() and 0b11111000) != 0
     }
 
     fun trigger() {

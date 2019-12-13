@@ -4,10 +4,10 @@ import memory.Memory
 
 abstract class SoundChannel : Memory {
 
-    protected var dacEnabled = false
-
+    var enabled = false
     protected abstract val lengthCounter: LengthCounter
     protected val volumeEnvelope = VolumeEnvelope()
+    protected var lastOutput = 0
 
     protected abstract var NR0: Int
     protected abstract var NR1: Int
@@ -17,9 +17,19 @@ abstract class SoundChannel : Memory {
 
     abstract fun tick(cycles: Int): Int
 
-    protected abstract fun trigger()
+    protected open fun trigger() {
+        enabled = true
+        lengthCounter.trigger()
+        volumeEnvelope.trigger()
 
-    fun isEnabled(): Boolean {
-        return lengthCounter.enabled && dacEnabled
+        if (!volumeEnvelope.getDac()) {
+            enabled = false
+        }
+    }
+
+    override fun reset() {
+        lastOutput = 0
+        lengthCounter.reset()
+        volumeEnvelope.reset()
     }
 }

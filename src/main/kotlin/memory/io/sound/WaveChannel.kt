@@ -19,7 +19,6 @@ class WaveChannel : SoundChannel() {
     }
 
     override fun reset() {
-        dacEnabled = false
         NR0 = 0x7F
         NR1 = 0xFF
         NR2 = 0x9F
