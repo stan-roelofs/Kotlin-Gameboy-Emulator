@@ -118,6 +118,35 @@ class GameBoyView: View(), Observer {
                     forceRefresh = true
                     primaryStage.sizeToScene()
                 }
+                separator()
+                checkmenuitem("Sound channel 1") {
+                    isSelected = true
+
+                    action {
+                        gb.mmu.io.sound.optionChannelEnables[0] = isSelected
+                    }
+                }
+                checkmenuitem("Sound channel 2") {
+                    isSelected = true
+
+                    action {
+                        gb.mmu.io.sound.optionChannelEnables[1] = isSelected
+                    }
+                }
+                checkmenuitem("Sound channel 3") {
+                    isSelected = true
+
+                    action {
+                        gb.mmu.io.sound.optionChannelEnables[2] = isSelected
+                    }
+                }
+                checkmenuitem("Sound channel 4") {
+                    isSelected = true
+
+                    action {
+                        gb.mmu.io.sound.optionChannelEnables[3] = isSelected
+                    }
+                }
             }
         }
 

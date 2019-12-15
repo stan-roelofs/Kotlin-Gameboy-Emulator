@@ -9,12 +9,6 @@ abstract class SoundChannel : Memory {
     protected val volumeEnvelope = VolumeEnvelope()
     protected var lastOutput = 0
 
-    protected abstract var NR0: Int
-    protected abstract var NR1: Int
-    protected abstract var NR2: Int
-    protected abstract var NR3: Int
-    protected abstract var NR4: Int
-
     abstract fun tick(cycles: Int): Int
 
     protected open fun trigger() {
@@ -28,6 +22,7 @@ abstract class SoundChannel : Memory {
     }
 
     override fun reset() {
+        enabled = false
         lastOutput = 0
         lengthCounter.reset()
         volumeEnvelope.reset()

@@ -10,11 +10,6 @@ class NoiseChannel : SoundChannel() {
     private val lfsr = Lfsr()
     private val polynomialCounter = PolynomialCounter()
     override val lengthCounter = LengthCounter(64)
-    override var NR0 = 0
-    override var NR1 = 0
-    override var NR2 = 0
-    override var NR3 = 0
-    override var NR4 = 0
 
     init {
         reset()
@@ -26,15 +21,19 @@ class NoiseChannel : SoundChannel() {
     }
 
     override fun tick(cycles: Int): Int {
+        volumeEnvelope.tick()
+
         lengthCounter.tick()
         if (lengthCounter.enabled && lengthCounter.length == 0) {
             enabled = false
         }
 
-        volumeEnvelope.tick()
-
         if (polynomialCounter.tick()) {
             lastOutput = lfsr.nextBit(polynomialCounter.width7)
+        }
+
+        if (!enabled) {
+            return 0
         }
 
         val volume = volumeEnvelope.volume
@@ -66,7 +65,7 @@ class NoiseChannel : SoundChannel() {
         val newVal = value and 0xFF
         when(address) {
             Mmu.NR41 -> {
-                lengthCounter.setNr1(value)
+                lengthCounter.setNr1(newVal and 0b00111111)
             }
             Mmu.NR42 -> {
                 volumeEnvelope.setNr2(newVal)

@@ -6,21 +6,15 @@ import utils.setBit
 import utils.toHexString
 
 abstract class SquareWave : SoundChannel() {
-    override var NR0 = 0
-    override var NR1 = 0
-    override var NR2 = 0
-    override var NR3 = 0
-    override var NR4 = 0
-
-    protected val dutyCycles = arrayOf(0b00000001, 0b10000001, 0b10000111, 0b01111110)
+    private val dutyCycles = arrayOf(0b00000001, 0b10000001, 0b10000111, 0b01111110)
 
     // Current duty
     protected var duty = 0
 
     // Current bit in duty
-    protected var dutyCounter = 0
+    private var dutyCounter = 0
 
-    protected var frequency = 0
+    private var frequency = 0
 
     protected var timer = 0
     override val lengthCounter = LengthCounter(64)
@@ -29,6 +23,7 @@ abstract class SquareWave : SoundChannel() {
         super.reset()
         dutyCounter = 0
         timer = 0
+        frequency = 0
     }
 
     override fun trigger() {
@@ -37,12 +32,12 @@ abstract class SquareWave : SoundChannel() {
     }
 
     override fun tick(cycles: Int): Int {
+        volumeEnvelope.tick()
+
         lengthCounter.tick()
         if (lengthCounter.enabled && lengthCounter.length == 0) {
             enabled = false
         }
-
-        volumeEnvelope.tick()
 
         timer--
         if (timer == 0) {
@@ -83,7 +78,7 @@ abstract class SquareWave : SoundChannel() {
             Mmu.NR11,
             Mmu.NR21 -> {
                 duty = (newVal shr 6) and 0b11
-                lengthCounter.setNr1(newVal)
+                lengthCounter.setNr1(newVal and 0b00111111)
             }
             Mmu.NR12,
             Mmu.NR22 -> {

@@ -13,6 +13,8 @@ class Sound : Memory {
     private val wave = WaveChannel()
     private val noise = NoiseChannel()
 
+    var optionChannelEnables = Array(4) {true}
+
     private val allChannels: Array<SoundChannel> = arrayOf(square1, square2, wave, noise)
 
     private var enabled = true
@@ -55,7 +57,7 @@ class Sound : Memory {
 
     fun tick(cycles: Int) {
         for (i in 0 until 4) {
-            samples[i] = allChannels[i].tick(cycles)
+            samples[i] = if (optionChannelEnables[i]) allChannels[i].tick(cycles) else 0
         }
 
         if (!enabled) {

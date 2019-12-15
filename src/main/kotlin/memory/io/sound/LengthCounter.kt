@@ -31,7 +31,7 @@ class LengthCounter(private val fullLength: Int) {
     }
 
     fun setNr1(value: Int) {
-        this.length = fullLength - (value and 0b00111111)
+        this.length = if (value == 0) fullLength else value
     }
 
     fun trigger() {

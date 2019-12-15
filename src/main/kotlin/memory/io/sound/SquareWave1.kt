@@ -18,7 +18,8 @@ class SquareWave1 : SquareWave() {
     override fun readByte(address: Int): Int {
         return when(address) {
             Mmu.NR10 -> {
-                this.NR0 or 0b10000000
+                0
+               // this.NR0 or 0b10000000
             }
             else -> super.readByte(address)
         }

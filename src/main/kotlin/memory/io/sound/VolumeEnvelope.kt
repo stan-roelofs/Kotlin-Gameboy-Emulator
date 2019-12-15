@@ -32,7 +32,7 @@ class VolumeEnvelope {
 
     fun tick() {
         counter++
-        if (counter >= DIVIDER) {
+        if (counter >= period * DIVIDER) {
             counter = 0
             if (enabled && volumeTimer > 0) {
                 volumeTimer--
