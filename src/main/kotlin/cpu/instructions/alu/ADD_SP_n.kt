@@ -9,6 +9,8 @@ class ADD_SP_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
     override val totalCycles = 16
 
     override fun tick() {
+        Log.d(mmu.io.dma.getOamAccessible().toString())
+
         when(currentCycle) {
             0 -> {
 

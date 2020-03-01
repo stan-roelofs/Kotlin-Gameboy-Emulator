@@ -5,7 +5,7 @@ import java.io.File
 
 class GameBoy(cart: File?) : Runnable {
     companion object {
-        val TICKS_PER_SEC = 4194304 / 4
+        const val TICKS_PER_SEC = 4194304 / 4
     }
 
     val cpu = Cpu()

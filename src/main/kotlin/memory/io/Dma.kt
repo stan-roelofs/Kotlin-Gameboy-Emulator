@@ -8,13 +8,12 @@ class Dma : Memory {
 
     private var requested = false
     private var starting = false
-    private var setInprogress = false
-
     var inProgress = false
     private val totalBytes = 160
     private var source = 0
-    private var delay = 0
     private var currentOffset = 0
+    private var lastReadByte = 0
+    //private var kak = false
 
     private var DMA = 0
 
@@ -23,42 +22,47 @@ class Dma : Memory {
     }
 
     override fun reset() {
-        requested = false
-        starting = false
         source = 0
-        delay = 0
         currentOffset = 0
         inProgress = false
         DMA = 0
-        setInprogress = false
+        lastReadByte = 0
+        starting = false
+        requested = false
+        //kak = false
     }
 
     fun tick(cycles: Int) {
-        if (setInprogress) {
-            inProgress = true
-            setInprogress = false
-        }
-        if (inProgress) {
+        //if (kak) {
+          //  inProgress = false
+            //kak = false
+        //}
+        if (inProgress || starting) {
             val mmu = Mmu.instance
 
             val currentByte = currentOffset
-            currentOffset++
 
-            if (currentOffset >= totalBytes) {
-                inProgress = false
+            // Start writing after 1 setup cycle
+            if (currentByte > 0) {
+                if (starting) {
+                    starting = false
+                    inProgress = true
+                }
+                val targetAddress = 0xFE00 + currentByte - 1
+                mmu.dmaWriteByte(targetAddress, lastReadByte)
             }
 
-            val targetAddress = 0xFE00 + currentByte
             val sourceAddress = source + currentByte
-            mmu.dmaWriteByte(targetAddress, mmu.dmaReadByte(sourceAddress))
-        }
+            lastReadByte = mmu.dmaReadByte(sourceAddress)
+            currentOffset++
 
-        if (starting) {
-            startTransfer(this.DMA)
+            if (currentByte >= totalBytes) {
+                inProgress = false
+               // kak = true
+            }
         }
-
         if (requested) {
-            starting = true
+            startTransfer(this.DMA)
             requested = false
         }
     }
@@ -81,10 +85,15 @@ class Dma : Memory {
 
     private fun startTransfer(value: Int) {
         currentOffset = 0
-        setInprogress = true
-        starting = false
+        lastReadByte = 0
+        starting = true
+        //kak = false
 
         val newVal = if (value >= 0xf0) value - 0x20 else value
         source = (newVal and 0xFF) * 0x100
+    }
+
+    fun getOamAccessible(): Boolean {
+        return !inProgress
     }
 }

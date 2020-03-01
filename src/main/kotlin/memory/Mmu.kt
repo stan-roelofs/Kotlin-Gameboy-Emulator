@@ -105,8 +105,8 @@ class Mmu private constructor() : Memory {
     }
 
     override fun readByte(address: Int): Int {
-        if (io.dma.inProgress) {
-            if (address !in 0xFF80..0xFFFF && address != Mmu.DMA) {
+        if (!io.dma.getOamAccessible()) {
+            if (address in 0xFE00 until 0xFEA0) {
                 return 0xFF
             }
         }
@@ -127,9 +127,8 @@ class Mmu private constructor() : Memory {
     }
 
     override fun writeByte(address: Int, value: Int) {
-        // All memory is not accessible during DMA except for high ram (apparently)
-        if (io.dma.inProgress) {
-            if (address !in 0xFF80..0xFFFF && address != Mmu.DMA) {
+        if (!io.dma.getOamAccessible()) {
+            if (address in 0xFE00 until 0xFEA0) {
                 return
             }
         }

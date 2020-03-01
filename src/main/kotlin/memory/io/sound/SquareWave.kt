@@ -105,4 +105,8 @@ abstract class SquareWave : SoundChannel() {
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to SquareWave")
         }
     }
+
+    protected open fun getFrequency(): Int {
+        return 2048 - frequency
+    }
 }
