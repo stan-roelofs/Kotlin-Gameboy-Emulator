@@ -10,6 +10,7 @@ import java.net.URI
 internal class MemTiming2Tests : BlarggTest() {
 
     override val path = "mem_timing-2/rom_singles"
+    override val method = ValidateMethod.SERIAL
 
     @Test
     fun test1() {

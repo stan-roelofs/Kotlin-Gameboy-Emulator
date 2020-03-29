@@ -5,6 +5,7 @@ import org.junit.Test
 internal class CpuInstrsTests : BlarggTest() {
 
     override val path = "cpu_instrs/individual"
+    override val method = ValidateMethod.SERIAL
 
     @Test
     fun test1() {
