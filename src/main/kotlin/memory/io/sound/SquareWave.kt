@@ -26,10 +26,10 @@ abstract class SquareWave : SoundChannel() {
         frequency = 0
     }
 
-    override fun disable() {
+    override fun powerOff() {
         reset()
 
-        super.disable()
+        super.powerOff()
         duty = 0
         frequency = 0
     }

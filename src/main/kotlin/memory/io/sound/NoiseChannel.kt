@@ -23,8 +23,8 @@ class NoiseChannel : SoundChannel() {
         lfsr.reset()
     }
 
-    override fun disable() {
-        super.disable()
+    override fun powerOff() {
+        super.powerOff()
         reset()
     }
 

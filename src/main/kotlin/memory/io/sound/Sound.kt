@@ -163,6 +163,17 @@ class Sound : Memory {
 
     override fun writeByte(address: Int, value: Int) {
         val newVal = value and 0xFF
+
+        /* When powered off, all registers (NR10-NR51) are instantly written with zero and any writes to those
+         * registers are ignored while power remains off (except on the DMG, where length counters are
+         * unaffected by power and can still be written while off)
+         */
+        if (!enabled) {
+            if (address != Mmu.NR52) {
+                return
+            }
+        }
+
         when(address) {
             Mmu.NR10,
             Mmu.NR11,
@@ -208,20 +219,23 @@ class Sound : Memory {
                 this.rightEnables[0] = newVal.getBit(0)
             }
             Mmu.NR52 -> {
+                val wasEnabled = enabled
                 enabled = value.getBit(7)
 
-                for (channel in allChannels) {
-                    channel.disable()
-                }
+                if (wasEnabled && !enabled) {
+                    for (channel in allChannels) {
+                        channel.powerOff()
+                    }
 
-                vinLeft = false
-                volumeLeft = 0
-                vinRight = false
-                volumeRight = 0
+                    vinLeft = false
+                    volumeLeft = 0
+                    vinRight = false
+                    volumeRight = 0
 
-                for (i in 0..3) {
-                    this.leftEnables[i] = false
-                    this.rightEnables[i] = false
+                    for (i in 0..3) {
+                        this.leftEnables[i] = false
+                        this.rightEnables[i] = false
+                    }
                 }
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")

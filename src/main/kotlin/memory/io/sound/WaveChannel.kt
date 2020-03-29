@@ -31,8 +31,8 @@ class WaveChannel : SoundChannel() {
         patternRam.fill(0)
     }
 
-    override fun disable() {
-        super.disable()
+    override fun powerOff() {
+        super.powerOff()
         dac = false
         volumeShift = 4
         volumeCode = 0
