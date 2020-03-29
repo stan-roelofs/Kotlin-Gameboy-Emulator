@@ -11,4 +11,9 @@ class SoundTests : BlarggTest() {
     fun testRegisters() {
         runBlarggTest("01-registers.gb")
     }
+
+    @Test
+    fun testLengthCounter() {
+        runBlarggTest("02-len ctr.gb")
+    }
 }

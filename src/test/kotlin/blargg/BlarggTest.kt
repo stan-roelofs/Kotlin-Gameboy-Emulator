@@ -86,6 +86,8 @@ abstract class BlarggTest {
                 }
 
                 println("Finished test with status code: $statusCode and output: $output")
+
+                Assert.assertEquals(0, statusCode)
             }
         }
     }

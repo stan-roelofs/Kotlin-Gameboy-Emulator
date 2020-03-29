@@ -77,16 +77,10 @@ class DebugView(private val gb: GameBoy): View() {
             button("Step 100") {
 
                 action {
-                    //for (i in 1..100) {
-                    val lol = HashSet<String>()
-                    while(gb.cpu.registers.PC != 0xC24F) {
+                    for (i in 1..100) {
                         gb.step()
-                        lol.add(gb.cpu.currentInstruction!!::class.simpleName!!)
                         updateRegisters()
                         updateInstructions()
-                    }
-                    for (poep in lol) {
-                        println(poep)
                     }
                 }
             }
