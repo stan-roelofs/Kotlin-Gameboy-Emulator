@@ -15,9 +15,17 @@ class NoiseChannel : SoundChannel() {
         reset()
     }
 
-    override fun trigger() {
-        super.trigger()
+
+    override fun reset() {
+        super.reset()
+        lengthCounter.setNr1(0xFF)
+        polynomialCounter.reset()
         lfsr.reset()
+    }
+
+    override fun disable() {
+        super.disable()
+        reset()
     }
 
     override fun tick(cycles: Int): Int {
@@ -40,10 +48,8 @@ class NoiseChannel : SoundChannel() {
         return lastOutput * volume
     }
 
-    override fun reset() {
-        super.reset()
-        lengthCounter.setNr1(0xFF)
-        polynomialCounter.reset()
+    override fun trigger() {
+        super.trigger()
         lfsr.reset()
     }
 

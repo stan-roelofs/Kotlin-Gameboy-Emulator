@@ -11,6 +11,12 @@ abstract class SoundChannel : Memory {
 
     abstract fun tick(cycles: Int): Int
 
+    open fun disable() {
+        enabled = false
+        lengthCounter.reset()
+        volumeEnvelope.reset()
+    }
+
     protected open fun trigger() {
         enabled = true
         lengthCounter.trigger()

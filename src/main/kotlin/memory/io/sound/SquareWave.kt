@@ -26,6 +26,14 @@ abstract class SquareWave : SoundChannel() {
         frequency = 0
     }
 
+    override fun disable() {
+        reset()
+
+        super.disable()
+        duty = 0
+        frequency = 0
+    }
+
     override fun trigger() {
         super.trigger()
         timer = 2048 - frequency

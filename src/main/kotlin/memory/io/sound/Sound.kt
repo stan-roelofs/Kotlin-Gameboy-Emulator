@@ -209,6 +209,20 @@ class Sound : Memory {
             }
             Mmu.NR52 -> {
                 enabled = value.getBit(7)
+
+                for (channel in allChannels) {
+                    channel.disable()
+                }
+
+                vinLeft = false
+                volumeLeft = 0
+                vinRight = false
+                volumeRight = 0
+
+                for (i in 0..3) {
+                    this.leftEnables[i] = false
+                    this.rightEnables[i] = false
+                }
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Sound")
         }

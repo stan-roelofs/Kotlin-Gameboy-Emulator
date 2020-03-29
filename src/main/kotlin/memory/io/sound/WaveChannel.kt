@@ -31,6 +31,16 @@ class WaveChannel : SoundChannel() {
         patternRam.fill(0)
     }
 
+    override fun disable() {
+        super.disable()
+        dac = false
+        volumeShift = 4
+        volumeCode = 0
+        frequency = 0
+        timer = 0
+        positionCounter = 0
+    }
+
     override fun tick(cycles: Int): Int {
         lengthCounter.tick()
         if (lengthCounter.enabled && lengthCounter.length == 0) {
