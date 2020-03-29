@@ -1,4 +1,4 @@
-# KGB (Kotlin-Gameboy-Emulator) [![Build Status](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator.svg?branch=master)](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator)
+# kGB (Kotlin-Gameboy-Emulator) [![Build Status](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator.svg?branch=master)](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator)
 A Gameboy emulator written in Kotlin.
 
 ## Can I use this emulator to play?
