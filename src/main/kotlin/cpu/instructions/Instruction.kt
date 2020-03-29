@@ -2,7 +2,6 @@ package cpu.instructions
 
 import cpu.Registers
 import memory.Mmu
-import utils.Log
 import utils.getFirstByte
 import utils.getSecondByte
 import utils.setSecondByte
@@ -55,10 +54,6 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
     }
 
     open fun isExecuting(): Boolean {
-        if (currentCycle > totalCycles) {
-            Log.e("CurrentCycle > totalCycles : $currentCycle $totalCycles") // TODO; remove this
-        }
-
         return this.currentCycle < totalCycles
     }
 }

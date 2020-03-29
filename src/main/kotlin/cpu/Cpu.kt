@@ -15,7 +15,10 @@ import cpu.instructions.returns.RET_cc
 import cpu.instructions.rotates.*
 import cpu.instructions.shifts.*
 import memory.Mmu
-import utils.*
+import utils.clearBit
+import utils.getBit
+import utils.getFirstByte
+import utils.getSecondByte
 
 class Cpu {
     val registers = Registers()
@@ -152,7 +155,6 @@ class Cpu {
      * @return an instruction that implements the opcode
      */
     private fun getInstruction(opcode: Int): Instruction {
-        //Log.d("${opcode.toHexString()}")
         return when(opcode) {
             // 8 bit loads
             // LD r, n
@@ -459,11 +461,7 @@ class Cpu {
             0x39 -> ADD_HL_rr(registers, mmu, RegisterID.SP.ordinal)
 
             // ADD SP, n
-            0xE8 -> {
-                Log.d(mmu.io.dma.getOamAccessible().toString())
-
-                ADD_SP_n(registers, mmu)
-            }
+            0xE8 -> ADD_SP_n(registers, mmu)
 
             // INC rr
             0x03 -> INC_rr(registers, mmu, RegisterID.BC.ordinal)
