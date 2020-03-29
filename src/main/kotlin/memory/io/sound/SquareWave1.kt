@@ -18,6 +18,11 @@ class SquareWave1 : SquareWave() {
         frequencySweep.reset()
     }
 
+    override fun tick(cycles: Int): Int {
+        frequencySweep.tick()
+        return super.tick(cycles)
+    }
+
     override fun readByte(address: Int): Int {
         return if (address == Mmu.NR10) {
             frequencySweep.getNr10()
@@ -38,5 +43,10 @@ class SquareWave1 : SquareWave() {
 
     override fun getFrequency(): Int {
         return 2048 - frequencySweep.getFrequency()
+    }
+
+    override fun trigger() {
+        frequencySweep.trigger()
+        super.trigger()
     }
 }
