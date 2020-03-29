@@ -57,7 +57,7 @@ class FrequencySweep {
     }
 
     fun getNr10(): Int {
-        var result = 0
+        var result = 0b10000000
         result = result or shift
         result = setBit(result, 3, negate)
         result = result or (period shl 4)
