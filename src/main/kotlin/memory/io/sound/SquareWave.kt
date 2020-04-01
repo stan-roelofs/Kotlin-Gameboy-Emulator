@@ -104,7 +104,7 @@ abstract class SquareWave : SoundChannel() {
             Mmu.NR24 -> {
                 frequency = (frequency and 0b11111111) or ((newVal and 0b111) shl 8)
 
-                lengthCounter.enabled = newVal.getBit(6)
+                lengthCounter.setNr4(newVal)
 
                 if (newVal.getBit(7)) {
                     trigger()

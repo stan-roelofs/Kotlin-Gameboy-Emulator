@@ -1,6 +1,7 @@
 package memory.io.sound
 
 import GameBoy
+import utils.getBit
 
 class LengthCounter(private val fullLength: Int) {
 
@@ -32,6 +33,20 @@ class LengthCounter(private val fullLength: Int) {
 
     fun setNr1(value: Int) {
         this.length = if (value == 0) fullLength else fullLength - value
+    }
+
+    fun setNr4(value: Int) {
+        val wasEnabled = enabled;
+        enabled = value.getBit(6)
+
+        /* Extra length clocking occurs when writing to NRx4 when the frame sequencer's next step is one that doesn't clock the length counter.
+         * In this case, if the length counter was PREVIOUSLY disabled and now enabled and the length counter is not zero, it is decremented.
+         */
+        if (!wasEnabled && enabled && length != 0) {
+            if (counter < DIVIDER / 2) {
+                length--
+            }
+        }
     }
 
     fun trigger() {

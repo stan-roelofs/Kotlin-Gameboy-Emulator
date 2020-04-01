@@ -84,7 +84,7 @@ class NoiseChannel : SoundChannel() {
                 polynomialCounter.setNr43(newVal)
             }
             Mmu.NR44 -> {
-                lengthCounter.enabled = newVal.getBit(6)
+                lengthCounter.setNr4(newVal)
 
                 if (newVal.getBit(7)) {
                     trigger()
