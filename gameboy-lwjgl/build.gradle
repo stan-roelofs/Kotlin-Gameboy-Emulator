@@ -1,0 +1,52 @@
+import org.gradle.internal.os.OperatingSystem
+
+plugins {
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.1'
+    id "org.jetbrains.kotlin.jvm"
+}
+
+project.ext.lwjglVersion = "3.2.3"
+
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = System.getProperty("os.arch").contains("64") ? "natives-windows" : "natives-windows-x86"
+        break
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':gameboy-core')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-opengl"
+    runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+
+    // junit for testing
+    testImplementation 'junit:junit:4.11'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+mainClassName = 'EngineKt'

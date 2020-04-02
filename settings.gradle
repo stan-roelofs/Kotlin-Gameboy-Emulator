@@ -1,3 +1,4 @@
 rootProject.name = 'gameboy'
 include 'gameboy-core'
 include 'gameboy-gui'
+include 'gameboy-lwjgl'
