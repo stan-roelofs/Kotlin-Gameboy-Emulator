@@ -8,6 +8,16 @@ This is a work in progress personal project with the aim for me to learn about e
 ## Downloads
 See [releases](https://github.com/stan-roelofs/Kotlin-Gameboy-Emulator/releases)
 
+## Building
+Make sure you have JDK8 installed.
+After cloning the repository, simply use the gradle wrapper.
+
+To build:
+`./gradlew build`
+
+To run:
+`./gradlew run`
+
 ## Tests status
 See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 
