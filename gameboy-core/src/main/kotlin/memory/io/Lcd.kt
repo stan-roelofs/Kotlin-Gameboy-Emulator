@@ -10,7 +10,7 @@ import java.util.*
 class Lcd : Memory, Observable() {
 
     // Internal screen buffer
-    val screenBuffer = Array(144) {IntArray(160)}
+    val screenBuffer = ByteArray(144 * 160)
     val backgroundBuffer = Array(144) {IntArray(160)}
     val windowBuffer = Array(144) {IntArray(160)}
     val spritesBuffer = Array(144) {IntArray(160)}
@@ -57,9 +57,9 @@ class Lcd : Memory, Observable() {
         OBP1 = 0xFF
 
         vram.fill(0)
+        screenBuffer.fill(0)
 
         for (i in 0 until 144) {
-            screenBuffer[i].fill(0)
             backgroundBuffer[i].fill(0)
             windowBuffer[i].fill(0)
             spritesBuffer[i].fill(0)
@@ -316,7 +316,7 @@ class Lcd : Memory, Observable() {
                 }
 
                 windowBuffer[LY][i] = newColor
-                screenBuffer[LY][i] = newColor
+                screenBuffer[LY * 160 + i] = newColor.toByte()
                 row[i] = color
 
                 x++
@@ -384,7 +384,7 @@ class Lcd : Memory, Observable() {
                 }
 
                 backgroundBuffer[LY][i] = newColor
-                screenBuffer[LY][i] = newColor
+                screenBuffer[LY * 160 + i] = newColor.toByte()
                 row[i] = color
 
                 x++
@@ -462,7 +462,7 @@ class Lcd : Memory, Observable() {
                             }
 
                             spritesBuffer[LY][obj.x + x] = newColor
-                            screenBuffer[LY][obj.x + x] = newColor
+                            screenBuffer[LY * 160 + obj.x + x] = newColor.toByte()
                         }
                     }
                 }

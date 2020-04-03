@@ -4,20 +4,57 @@ import org.lwjgl.glfw.GLFWKeyCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryUtil.NULL
+import java.io.File
+import java.util.*
 
-class Engine {
+class Engine : Observer {
+	override fun update(o: Observable?, arg: Any?) {
+		for (i in 0 until gb.mmu.io.lcd.screenBuffer.size) {
+			if (gb.mmu.io.lcd.screenBuffer[i] == 0.toByte()) {
+				buffer[i * 3] = 224
+				buffer[i * 3 + 1] = 248
+				buffer[i * 3 + 2] = 208
+			}
+			if (gb.mmu.io.lcd.screenBuffer[i] == 1.toByte()) {
+				buffer[i * 3] = 136
+				buffer[i * 3 + 1] = 192
+				buffer[i * 3 + 2] = 112
+			}
+			if (gb.mmu.io.lcd.screenBuffer[i] == 2.toByte()) {
+				buffer[i * 3] = 52
+				buffer[i * 3 + 1] = 104
+				buffer[i * 3+ 2] = 86
+			}
+			if (gb.mmu.io.lcd.screenBuffer[i] == 3.toByte()) {
+				buffer[i * 3] = 8
+				buffer[i * 3 + 1] = 24
+				buffer[i * 3 + 2] = 32
+			}
+		}
+		ready = true
+	}
+
 	companion object {
 
-		val WINDOW_SIZE = Pair(800, 600)
+		val WINDOW_SIZE = Pair(160, 144)
 
 	}
 
+	var ready = false
 	private var errorCallback : GLFWErrorCallback? = null
 	private var keyCallback : GLFWKeyCallback? = null
 
 	private var window : Long? = null
+	private val gb = GameBoy(null)
+
+	private val cart = File("E://Downloads/Legend of Zelda, The - Link's Awakening (U) (V1.2) [!].gb")
+	private val buffer = IntArray(160*144*3)
 
 	private fun init() {
+		gb.mmu.io.lcd.addObserver(this)
+		gb.loadCartridge(cart)
+		val gbThread = Thread(gb)
+		gbThread?.start()
 
 		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
@@ -93,12 +130,17 @@ class Engine {
 			// Clear the framebuffer
 			glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
+			if (ready) {
+				glDrawPixels(160, 144, GL_RGB, GL_UNSIGNED_BYTE, buffer)
+				ready = false
+			}
+
 			// Swap the color buffers
-			glfwSwapBuffers(window!!);
+			glfwSwapBuffers(window!!)
 
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
-			glfwPollEvents();
+			glfwPollEvents()
 		}
 
 	}
