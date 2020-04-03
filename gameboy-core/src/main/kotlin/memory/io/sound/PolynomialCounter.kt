@@ -53,4 +53,8 @@ class PolynomialCounter {
             false
         }
     }
+
+    fun trigger() {
+        counter = shiftedDivisor
+    }
 }
