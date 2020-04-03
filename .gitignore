@@ -27,6 +27,7 @@ out/
 src/test/resources/blargg/**/source
 src/test/resources/mooneye/**/*.sym
 build/
+!gradle/wrapper/gradle-wrapper.jar
 
 # Reference project
 src/test/kotlin/ReferenceTest.kt
