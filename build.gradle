@@ -1,7 +1,26 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.71' apply false
+}
+
 subprojects {
     version = '1.0'
 
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+
     repositories {
         mavenCentral()
+    }
+
+    dependencies {
+        // Kotlin stdlib
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+        implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.0"
+    }
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
     }
 }
