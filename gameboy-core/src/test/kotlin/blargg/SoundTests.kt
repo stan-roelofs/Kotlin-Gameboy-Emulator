@@ -21,4 +21,9 @@ class SoundTests : BlarggTest() {
     fun testTrigger() {
         runBlarggTest("03-trigger.gb")
     }
+
+    @Test
+    fun testRegsAfterPower() {
+        runBlarggTest("11-regs after power.gb")
+    }
 }

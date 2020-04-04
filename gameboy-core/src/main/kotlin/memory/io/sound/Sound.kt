@@ -78,10 +78,8 @@ class Sound : Memory {
         left /= 4
         right /= 4
 
-        // Bits 4..6 contain left volume
-        left *= volumeLeft// + 1
-        // Bits 0..2 contain right volume
-        right *= volumeRight// + 1
+        left *= volumeLeft + 1
+        right *= volumeRight + 1
 
         output?.play(left, right)
     }
@@ -169,7 +167,7 @@ class Sound : Memory {
          * unaffected by power and can still be written while off)
          */
         if (!enabled) {
-            if (address != Mmu.NR52) {
+            if (address != Mmu.NR52 && address != Mmu.NR41) {
                 return
             }
         }
