@@ -8,8 +8,11 @@ class LengthCounter(private val fullLength: Int) {
     private val DIVIDER = GameBoy.TICKS_PER_SEC / 256
 
     var length = 0
+        private set
+
     private var counter = 0
     var enabled = false
+        private set
 
     init {
         reset()
@@ -36,7 +39,7 @@ class LengthCounter(private val fullLength: Int) {
     }
 
     fun setNr4(value: Int) {
-        val wasEnabled = enabled;
+        val wasEnabled = enabled
         enabled = value.getBit(6)
 
         /* Extra length clocking occurs when writing to NRx4 when the frame sequencer's next step is one that doesn't clock the length counter.
@@ -47,11 +50,17 @@ class LengthCounter(private val fullLength: Int) {
                 length--
             }
         }
-    }
 
-    fun trigger() {
-        if (length == 0) {
+        if (value.getBit(7) && length == 0) {
             length = fullLength
+
+            /* If a channel is triggered when the frame sequencer's next step is one that doesn't clock the length counter and the
+             * length counter is now enabled and length is being set to 64 (256 for wave channel) because it was previously zero,
+             * it is set to 63 instead (255 for wave channel).
+             */
+            if (counter < DIVIDER / 2 && enabled) {
+                length--
+            }
         }
     }
 }
