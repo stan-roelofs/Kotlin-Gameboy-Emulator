@@ -1,4 +1,13 @@
+plugins {
+    id 'org.jetbrains.dokka' version '0.10.0'
+}
+
 dependencies {
     // junit for testing
     testImplementation 'junit:junit:4.11'
+}
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/dokka"
 }
