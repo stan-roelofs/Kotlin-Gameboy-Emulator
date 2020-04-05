@@ -6,67 +6,87 @@ import utils.getSecondByte
 import utils.setBit
 
 /**
- * Created by Stan on 19-Jan-18.
+ * Represents the registers of the gameboy CPU
+ *
+ * 8-bit registers: A, F, B, C, D, E, H, L
+ * 16-bit registers: SP, PC
+ *
+ * On construction [reset] is called to set the registers to the initial values
  */
-
 class Registers {
+
+    /** Register A (8-bit) */
     var A: Int = 0
-    set(value) {
+    internal set(value) {
         field = value and 0xFF
     }
+
+    /** Register F (8-bit) */
     var F: Int = 0
         set(value) {
             field = value and 0xF0
         }
+
+    /** Register B (8-bit) */
     var B: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFF
         }
+
+    /** Register C (8-bit) */
     var C: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFF
         }
+
+    /** Register D (8-bit) */
     var D: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFF
         }
+
+    /** Register E (8-bit) */
     var E: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFF
         }
+
+    /** Register H (8-bit) */
     var H: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFF
         }
+
+    /** Register L (8-bit) */
     var L: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFF
         }
+
+    /** Stack pointer (16-bit) */
     var SP: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFFFF
         }
+
+    /** Program counter (16-bit) */
     var PC: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xFFFF
         }
 
-    val ZFlag: Int = 7
-    val NFlag: Int = 6
-    val HFlag: Int = 5
-    val CFlag: Int = 4
-
-    var IME = false
-    var halt = false
-    var stop = false
-    var haltBug = false
-
-    var clock = 0
+    internal val ZFlag: Int = 7
+    private val NFlag: Int = 6
+    private val HFlag: Int = 5
+    internal val CFlag: Int = 4
 
     init {
         reset()
     }
 
+    /**
+     * Sets the registers to the values they should be after running the boot rom
+     */
     fun reset() {
         A = 0x01
         F = 0xB0
@@ -75,90 +95,93 @@ class Registers {
         setHL(0x014D)
         SP = 0xFFFE
         PC = 0x100
-        IME = true
-        halt = false
-        stop = false
-        haltBug = false
-        clock = 0
     }
 
-    fun setZFlag(state: Boolean) {
+    internal fun setZFlag(state: Boolean) {
         F = setBit(F, ZFlag, state)
     }
 
-    fun setNFlag(state: Boolean) {
+    internal fun setNFlag(state: Boolean) {
         F = setBit(F, NFlag, state)
     }
 
-    fun setHFlag(state: Boolean) {
+    internal fun setHFlag(state: Boolean) {
         F = setBit(F, HFlag, state)
     }
 
-    fun setCFlag(state: Boolean) {
+    internal fun setCFlag(state: Boolean) {
         F = setBit(F, CFlag, state)
     }
 
+    /** Returns the state of the Z flag the flags registers */
     fun getZFlag(): Boolean {
         return (F.getBit(ZFlag))
     }
 
+    /** Returns the state of the N flag the flags registers */
     fun getNFlag(): Boolean {
         return (F.getBit(NFlag))
     }
 
+    /** Returns the state of the H flag the flags registers */
     fun getHFlag(): Boolean {
         return (F.getBit(HFlag))
     }
 
+    /** Returns the state of the C flag the flags registers */
     fun getCFlag(): Boolean {
         return (F.getBit(CFlag))
     }
 
+    /** Returns the combined register AF (16 bit) */
     fun getAF(): Int {
         return (A shl 8) or F
     }
 
-    fun setAF(value: Int) {
+    internal fun setAF(value: Int) {
         A = value.getSecondByte()
         F = value.getFirstByte()
     }
 
-    fun setBC(value: Int) {
+    internal fun setBC(value: Int) {
         B = value.getSecondByte()
         C = value.getFirstByte()
     }
 
-    fun setDE(value: Int) {
+    internal fun setDE(value: Int) {
         D = value.getSecondByte()
         E = value.getFirstByte()
     }
 
-    fun setHL(value: Int) {
+    internal fun setHL(value: Int) {
         H = value.getSecondByte()
         L = value.getFirstByte()
     }
 
+    /** Returns the combined register BC (16 bit) */
     fun getBC(): Int {
         return (B shl 8) or C
     }
 
+    /** Returns the combined register DE (16 bit) */
     fun getDE(): Int {
         return (D shl 8) or E
     }
 
+    /** Returns the combined register HL (16 bit) */
     fun getHL(): Int {
         return (H shl 8) or L
     }
 
-    fun incPC() {
+    internal fun incPC() {
         PC = (PC + 1)
     }
 
-    fun incSP() {
+    internal fun incSP() {
         SP = (SP + 1)
     }
 
-    fun decSP() {
+    internal fun decSP() {
         SP = (SP - 1)
     }
 

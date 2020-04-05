@@ -26,7 +26,11 @@ class Cpu {
 
     var currentInstruction: Instruction? = null
 
-    var eiExecuted = false
+    private var haltBug = false
+    private var eiExecuted = false
+    private var IME = false
+    private var halt = false
+    private var stop = false
 
     init {
         reset()
@@ -36,6 +40,7 @@ class Cpu {
         registers.reset()
         currentInstruction = null
         eiExecuted = false
+        haltBug = false
     }
 
     fun step() {
@@ -47,13 +52,13 @@ class Cpu {
             processInterrupts()
 
             // Read next instruction
-            if (!registers.halt) {
+            if (!halt) {
                 val opcode = mmu.readByte(registers.PC)
 
-                if (!registers.haltBug) {
+                if (!haltBug) {
                     registers.incPC()
                 } else {
-                    registers.haltBug = false
+                    haltBug = false
                 }
 
                 currentInstruction = getInstruction(opcode)
@@ -66,7 +71,7 @@ class Cpu {
                 }
 
                 if (eiExecuted) {
-                    registers.IME = true
+                    IME = true
                     eiExecuted = false
                 }
             } else {
@@ -89,13 +94,13 @@ class Cpu {
 
         // Interrupt Service Routine
         if (interruptTriggered) {
-            if (registers.halt) {
-                registers.halt = false
+            if (halt) {
+                halt = false
                 increaseClock(4)
             }
 
-            if (registers.IME) {
-                registers.IME = false
+            if (IME) {
+                IME = false
 
                 // Execute two nops
                 increaseClock(4)
@@ -145,7 +150,6 @@ class Cpu {
         if (steps < 0) {
             throw IllegalArgumentException("Cannot increase clock by negative value")
         }
-        registers.clock += steps
         mmu.tick(steps)
     }
 
@@ -494,14 +498,20 @@ class Cpu {
             0x00 -> NOP(registers, mmu)
 
             // HALT
-            0x76 -> HALT(registers, mmu)
+            0x76 -> {
+                halt = true
+                HALT(registers, mmu)
+            }
 
             // STOP
-            0x10 -> STOP(registers, mmu)
+            0x10 -> {
+                stop = true
+                STOP(registers, mmu)
+            }
 
             // DI
             0xF3 -> {
-                registers.IME = false
+                IME = false
                 eiExecuted = false // Clear this flag in case EI was executed last cycle
                 return DI(registers, mmu)
             }
@@ -567,7 +577,7 @@ class Cpu {
 
             // RETI
             0xD9 -> {
-                registers.IME = true
+                IME = true
                 RETI(registers, mmu)
             }
 
