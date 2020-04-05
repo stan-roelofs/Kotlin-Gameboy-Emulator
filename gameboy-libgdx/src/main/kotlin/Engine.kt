@@ -1,5 +1,7 @@
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import com.badlogic.gdx.graphics.Color
@@ -7,13 +9,63 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import memory.io.Joypad
 import memory.io.sound.SoundOutput
 import java.io.File
-import java.util.*
 
-class Engine : ApplicationAdapter(), Observer {
-    override fun update(o: Observable?, arg: Any?) {
+class Engine : ApplicationAdapter(), InputProcessor {
+    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        return true
+    }
 
+    override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
+        return true
+    }
+
+    override fun keyTyped(character: Char): Boolean {
+        return true
+    }
+
+    override fun scrolled(amount: Int): Boolean {
+        return true
+    }
+
+    override fun keyUp(keycode: Int): Boolean {
+        when (keycode) {
+            Input.Keys.ENTER -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
+            Input.Keys.LEFT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.LEFT)
+            Input.Keys.RIGHT -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.RIGHT)
+            Input.Keys.UP -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.UP)
+            Input.Keys.DOWN -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.DOWN)
+            Input.Keys.Z -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.A)
+            Input.Keys.X -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.B)
+            Input.Keys.TAB -> gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.SELECT)
+            else -> {}
+        }
+        return true
+    }
+
+    override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
+        return true
+    }
+
+    override fun keyDown(keycode: Int): Boolean {
+        when (keycode) {
+            Input.Keys.ENTER -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
+            Input.Keys.LEFT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.LEFT)
+            Input.Keys.RIGHT -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.RIGHT)
+            Input.Keys.UP -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.UP)
+            Input.Keys.DOWN -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.DOWN)
+            Input.Keys.Z -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.A)
+            Input.Keys.X -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.B)
+            Input.Keys.TAB -> gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.SELECT)
+            else -> {}
+        }
+        return true
+    }
+
+    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        return true
     }
 
     val color0 = Color(224f / 255, 248f / 255, 208f / 255, 1.0f)
@@ -28,7 +80,7 @@ class Engine : ApplicationAdapter(), Observer {
 
     override fun create() {
         batch = SpriteBatch()
-        gb.mmu.io.lcd.addObserver(this)
+        Gdx.input.inputProcessor = this
         gb.mmu.io.sound.output = SoundOutput()
         gb.loadCartridge(cart)
         val gbThread = Thread(gb)
