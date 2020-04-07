@@ -20,25 +20,52 @@ import utils.getBit
 import utils.getFirstByte
 import utils.getSecondByte
 
+/**
+ * Represents the Gameboy CPU
+ *
+ * On initialization [reset] is called.
+ */
 class Cpu {
+    /** Cpu registers */
     val registers = Registers()
+
     private val mmu = Mmu.instance
+    private var currentInstruction: Instruction? = null
+    private var haltBug = false
+    private var eiExecuted = false
 
-    var currentInstruction: Instruction? = null
+    /** IME (Interrupt Master Enable) flag.
+     * Disables / enables all interrupts
+     */
+    var IME = false
+        internal set
 
-    var eiExecuted = false
+    /** Halt flag, enabled when the cpu is in the halt state */
+    var halt = false
+        internal set
+
+    /** Stop flag, enabled when the cpu is in the STOP state */
+    var stop = false
+        internal set
 
     init {
         reset()
     }
 
+    /**
+     * Resets the cpu to the initial state
+     */
     fun reset() {
         registers.reset()
         currentInstruction = null
         eiExecuted = false
+        haltBug = false
+        stop = false
+        halt = false
+        IME = false
     }
 
-    fun step() {
+    internal fun step() {
         if (currentInstruction != null && currentInstruction!!.isExecuting()) {
             currentInstruction!!.tick()
             increaseClock(4)
@@ -47,13 +74,13 @@ class Cpu {
             processInterrupts()
 
             // Read next instruction
-            if (!registers.halt) {
+            if (!halt) {
                 val opcode = mmu.readByte(registers.PC)
 
-                if (!registers.haltBug) {
+                if (!haltBug) {
                     registers.incPC()
                 } else {
-                    registers.haltBug = false
+                    haltBug = false
                 }
 
                 currentInstruction = getInstruction(opcode)
@@ -66,7 +93,7 @@ class Cpu {
                 }
 
                 if (eiExecuted) {
-                    registers.IME = true
+                    IME = true
                     eiExecuted = false
                 }
             } else {
@@ -89,13 +116,13 @@ class Cpu {
 
         // Interrupt Service Routine
         if (interruptTriggered) {
-            if (registers.halt) {
-                registers.halt = false
+            if (halt) {
+                halt = false
                 increaseClock(4)
             }
 
-            if (registers.IME) {
-                registers.IME = false
+            if (IME) {
+                IME = false
 
                 // Execute two nops
                 increaseClock(4)
@@ -145,7 +172,6 @@ class Cpu {
         if (steps < 0) {
             throw IllegalArgumentException("Cannot increase clock by negative value")
         }
-        registers.clock += steps
         mmu.tick(steps)
     }
 
@@ -494,14 +520,20 @@ class Cpu {
             0x00 -> NOP(registers, mmu)
 
             // HALT
-            0x76 -> HALT(registers, mmu)
+            0x76 -> {
+                halt = true
+                HALT(registers, mmu)
+            }
 
             // STOP
-            0x10 -> STOP(registers, mmu)
+            0x10 -> {
+                stop = true
+                STOP(registers, mmu)
+            }
 
             // DI
             0xF3 -> {
-                registers.IME = false
+                IME = false
                 eiExecuted = false // Clear this flag in case EI was executed last cycle
                 return DI(registers, mmu)
             }
@@ -567,7 +599,7 @@ class Cpu {
 
             // RETI
             0xD9 -> {
-                registers.IME = true
+                IME = true
                 RETI(registers, mmu)
             }
 

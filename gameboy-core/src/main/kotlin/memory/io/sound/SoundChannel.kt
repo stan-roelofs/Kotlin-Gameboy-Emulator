@@ -19,7 +19,6 @@ abstract class SoundChannel : Memory {
 
     protected open fun trigger() {
         enabled = true
-        lengthCounter.trigger()
         volumeEnvelope.trigger()
 
         if (!volumeEnvelope.getDac()) {

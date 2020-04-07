@@ -49,8 +49,9 @@ class NoiseChannel : SoundChannel() {
     }
 
     override fun trigger() {
-        super.trigger()
+        polynomialCounter.trigger()
         lfsr.reset()
+        super.trigger()
     }
 
     override fun readByte(address: Int): Int {

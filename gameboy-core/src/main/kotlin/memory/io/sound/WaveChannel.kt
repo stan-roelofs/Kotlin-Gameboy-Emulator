@@ -68,7 +68,6 @@ class WaveChannel : SoundChannel() {
 
     override fun trigger() {
         enabled = true
-        lengthCounter.trigger()
         timer = (2048 - frequency) / 2
         positionCounter = 0
 

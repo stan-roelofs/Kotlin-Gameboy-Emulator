@@ -12,7 +12,7 @@ class Mmu private constructor() : Memory {
     }
 
     companion object {
-        val instance: Mmu by lazy { Holder.INSTANCE }
+        internal val instance: Mmu by lazy { Holder.INSTANCE }
 
         // Constants
 

@@ -50,6 +50,8 @@ internal class CartridgeTest {
             val currentIndex = i % size
             assertEquals(bytes[i], cart.ram!![currentBank][currentIndex].toByte())
         }
+
+        file.delete()
     }
 
     @Test

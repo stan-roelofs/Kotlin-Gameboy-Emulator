@@ -2,6 +2,7 @@ package memory.io
 
 import memory.Memory
 import memory.Mmu
+import utils.Log
 import utils.toHexString
 
 class Dma : Memory {
@@ -13,7 +14,6 @@ class Dma : Memory {
     private var source = 0
     private var currentOffset = 0
     private var lastReadByte = 0
-    //private var kak = false
 
     private var DMA = 0
 
@@ -29,14 +29,12 @@ class Dma : Memory {
         lastReadByte = 0
         starting = false
         requested = false
-        //kak = false
     }
 
     fun tick(cycles: Int) {
-        //if (kak) {
-          //  inProgress = false
-            //kak = false
-        //}
+        if (cycles != 4) {
+            Log.w("Cycles != 4")
+        }
         if (inProgress || starting) {
             val mmu = Mmu.instance
 
@@ -58,7 +56,6 @@ class Dma : Memory {
 
             if (currentByte >= totalBytes) {
                 inProgress = false
-               // kak = true
             }
         }
         if (requested) {
@@ -87,7 +84,6 @@ class Dma : Memory {
         currentOffset = 0
         lastReadByte = 0
         starting = true
-        //kak = false
 
         val newVal = if (value >= 0xf0) value - 0x20 else value
         source = (newVal and 0xFF) * 0x100

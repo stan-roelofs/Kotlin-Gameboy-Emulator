@@ -12,7 +12,7 @@ class STOP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                registers.stop = true
+
             }
             else -> Log.e("Invalid state")
         }

@@ -1,6 +1,7 @@
 package gui
 
 import GameBoy
+import SoundOutputSimple
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.image.WritableImage
@@ -8,7 +9,6 @@ import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 import memory.io.Joypad
-import memory.io.sound.SoundOutput
 import tornadofx.*
 import java.io.File
 import java.util.*
@@ -162,7 +162,7 @@ class GameBoyView: View(), Observer {
         }
 
         gb.mmu.io.lcd.addObserver(this)
-        gb.mmu.io.sound.output = SoundOutput()
+        gb.mmu.io.sound.output = SoundOutputSimple()
         reset()
         registerKeyboard()
         forceRefresh = true
