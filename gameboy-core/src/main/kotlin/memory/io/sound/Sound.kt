@@ -81,7 +81,7 @@ class Sound : Memory {
         left *= volumeLeft + 1
         right *= volumeRight + 1
 
-        output?.play(left, right)
+        output?.play(left.toByte(), right.toByte())
     }
 
     override fun readByte(address: Int): Int {

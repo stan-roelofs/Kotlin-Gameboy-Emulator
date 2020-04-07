@@ -10,10 +10,9 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import memory.io.Joypad
-import memory.io.sound.SoundOutput
 import java.io.File
 
-class Engine : ApplicationAdapter(), InputProcessor {
+class Main : ApplicationAdapter(), InputProcessor {
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         return true
     }
@@ -81,10 +80,10 @@ class Engine : ApplicationAdapter(), InputProcessor {
     override fun create() {
         batch = SpriteBatch()
         Gdx.input.inputProcessor = this
-        gb.mmu.io.sound.output = SoundOutput()
+        gb.mmu.io.sound.output = SoundOutputGdx()
         gb.loadCartridge(cart)
         val gbThread = Thread(gb)
-        gbThread?.start()
+        gbThread.start()
     }
 
     override fun render() {
@@ -116,5 +115,5 @@ fun main(args: Array<String>) {
     cfg.title = "Gameboy"
     cfg.width = 320
     cfg.height = 288
-    LwjglApplication(Engine(), cfg)
+    LwjglApplication(Main(), cfg)
 }
