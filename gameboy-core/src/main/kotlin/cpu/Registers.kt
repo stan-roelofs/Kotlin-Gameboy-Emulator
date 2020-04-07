@@ -11,7 +11,7 @@ import utils.setBit
  * 8-bit registers: A, F, B, C, D, E, H, L
  * 16-bit registers: SP, PC
  *
- * On construction [reset] is called to set the registers to the initial values
+ * On construction [reset] is called to set the registers to the initial values.
  */
 class Registers {
 

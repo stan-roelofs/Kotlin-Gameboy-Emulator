@@ -20,30 +20,52 @@ import utils.getBit
 import utils.getFirstByte
 import utils.getSecondByte
 
+/**
+ * Represents the Gameboy CPU
+ *
+ * On initialization [reset] is called.
+ */
 class Cpu {
+    /** Cpu registers */
     val registers = Registers()
+
     private val mmu = Mmu.instance
-
-    var currentInstruction: Instruction? = null
-
+    private var currentInstruction: Instruction? = null
     private var haltBug = false
     private var eiExecuted = false
-    private var IME = false
-    private var halt = false
-    private var stop = false
+
+    /** IME (Interrupt Master Enable) flag.
+     * Disables / enables all interrupts
+     */
+    var IME = false
+        internal set
+
+    /** Halt flag, enabled when the cpu is in the halt state */
+    var halt = false
+        internal set
+
+    /** Stop flag, enabled when the cpu is in the STOP state */
+    var stop = false
+        internal set
 
     init {
         reset()
     }
 
+    /**
+     * Resets the cpu to the initial state
+     */
     fun reset() {
         registers.reset()
         currentInstruction = null
         eiExecuted = false
         haltBug = false
+        stop = false
+        halt = false
+        IME = false
     }
 
-    fun step() {
+    internal fun step() {
         if (currentInstruction != null && currentInstruction!!.isExecuting()) {
             currentInstruction!!.tick()
             increaseClock(4)
