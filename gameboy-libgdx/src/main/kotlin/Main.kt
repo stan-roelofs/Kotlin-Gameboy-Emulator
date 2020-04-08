@@ -103,6 +103,7 @@ class Main : ApplicationAdapter(), InputProcessor {
         batch?.begin()
         batch?.draw(img, 0f, 0f, 320f, 288f)
         batch?.end()
+        Gdx.graphics.setTitle("${Gdx.graphics.framesPerSecond}")
     }
 
     override fun dispose() {

@@ -75,11 +75,12 @@ class Sound : Memory {
                 right += samples[i]
             }
         }
-        left /= 4
-        right /= 4
 
         left *= volumeLeft + 1
         right *= volumeRight + 1
+
+        left /= 4
+        right /= 4
 
         output?.play(left.toByte(), right.toByte())
     }
