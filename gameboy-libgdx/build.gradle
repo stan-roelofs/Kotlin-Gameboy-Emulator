@@ -1,5 +1,4 @@
 plugins {
-    id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.1'
 }
 
@@ -15,5 +14,3 @@ dependencies {
     compile "com.badlogicgames.gdx:gdx-platform:1.9.10:natives-desktop"
     api "com.badlogicgames.gdx:gdx-controllers:1.9.10"
 }
-
-mainClassName = 'MainKt'

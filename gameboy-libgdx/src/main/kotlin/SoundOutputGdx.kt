@@ -5,8 +5,8 @@ import memory.io.sound.SoundOutput
 
 class SoundOutputGdx : SoundOutput {
 
-    private val SAMPLE_RATE = 44100
-    private val BUFFER_SIZE = 2048
+    private val SAMPLE_RATE = 22050
+    private val BUFFER_SIZE = 1024
 
     private val device : AudioDevice? = try {
         Gdx.audio.newAudioDevice(SAMPLE_RATE, false)
@@ -37,8 +37,14 @@ class SoundOutputGdx : SoundOutput {
         buffer[bufferIndex++] = (right * 255).toShort()
 
         if (bufferIndex >= BUFFER_SIZE) {
+            //val lol = System.currentTimeMillis()
             device.writeSamples(buffer, 0, buffer.size)
+            //Log.d("${System.currentTimeMillis() - lol}")
             bufferIndex = 0
         }
+    }
+
+    fun dispose() {
+        device?.dispose()
     }
 }

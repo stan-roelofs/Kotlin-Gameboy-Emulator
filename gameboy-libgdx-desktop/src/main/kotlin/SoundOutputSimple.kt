@@ -35,7 +35,7 @@ class SoundOutputSimple : SoundOutput {
         divider = GameBoy.TICKS_PER_SEC / AUDIO_FORMAT.sampleRate.toInt()
     }
 
-    override fun play(left: Int, right: Int) {
+    override fun play(left: Byte, right: Byte) {
         if (line == null) {
             return
         }
@@ -49,8 +49,8 @@ class SoundOutputSimple : SoundOutput {
             Log.e("Left or right not in range")
         }
 
-        buffer[bufferIndex++] = left.toByte()
-        buffer[bufferIndex++] = right.toByte()
+        buffer[bufferIndex++] = left
+        buffer[bufferIndex++] = right
 
         if (bufferIndex > BUFFER_SIZE / 2) {
             line?.write(buffer, 0, bufferIndex)
