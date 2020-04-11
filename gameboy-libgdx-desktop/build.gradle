@@ -4,8 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':gameboy-core')
-    implementation project(':gameboy-libgdx')
+    implementation project(':gameboy-libgdx-core')
 
     // TornadoFX for gui
     implementation 'no.tornado:tornadofx:1.7.16'

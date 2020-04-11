@@ -2,11 +2,9 @@ import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.utils.viewport.StretchViewport
 import memory.io.Joypad
 
 class GameboyLibgdx(private val gb: GameBoy) : ApplicationAdapter(), InputProcessor {
@@ -19,6 +17,8 @@ class GameboyLibgdx(private val gb: GameBoy) : ApplicationAdapter(), InputProces
     private var batch : SpriteBatch? = null
     private var output : SoundOutputGdx? = null
     private var gbThread = Thread(gb)
+    private val cam = OrthographicCamera()
+    private val viewport = StretchViewport(160f, 144f, cam)
 
     fun startgb() {
         gbThread = Thread(gb)
@@ -30,11 +30,16 @@ class GameboyLibgdx(private val gb: GameBoy) : ApplicationAdapter(), InputProces
         gbThread.join()
     }
 
+    override fun resize(width: Int, height: Int) {
+        viewport.update(width, height)
+    }
+
     override fun create() {
         batch = SpriteBatch()
         Gdx.input.inputProcessor = this
         output = SoundOutputGdx()
         gb.mmu.io.sound.output = output
+        cam.position.set(80f, 72f, 0f)
     }
 
     override fun render() {
@@ -51,8 +56,9 @@ class GameboyLibgdx(private val gb: GameBoy) : ApplicationAdapter(), InputProces
 
         val img = Texture(pixmap)
 
+        batch?.projectionMatrix = cam.combined
         batch?.begin()
-        batch?.draw(img, 0f, 0f, 320f, 288f)
+        batch?.draw(img, 0f, 0f, 160f, 144f)
         batch?.end()
         Gdx.graphics.setTitle("${Gdx.graphics.framesPerSecond}")
     }

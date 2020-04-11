@@ -1,3 +1,20 @@
+buildscript {
+    ext.kotlinVersion = "1.3.71"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.71' apply false
 }
@@ -5,23 +22,64 @@ plugins {
 subprojects {
     version = '1.0'
 
-    apply plugin: 'org.jetbrains.kotlin.jvm'
+    ext {
+        appName = "Kotlin Gameboy Emulator"
+        gdxVersion = '1.9.10'
+    }
+
+    if (project.name != "gameboy-libgdx-android") {
+        apply plugin: 'org.jetbrains.kotlin.jvm'
+
+        repositories {
+            mavenCentral()
+            jcenter()
+            google()
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+            maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        }
+
+        dependencies {
+            // Kotlin stdlib
+            implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+            implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.0"
+        }
+
+        compileKotlin {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+        compileTestKotlin {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+    }
+}
+
+
+project(":gameboy-libgdx-android") {
+    apply plugin: 'android'
+    apply plugin: 'kotlin-android'
+    apply plugin: 'kotlin-android-extensions'
+
+    configurations { natives }
 
     repositories {
         mavenCentral()
         jcenter()
+        google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 
     dependencies {
-        // Kotlin stdlib
+        implementation project(":gameboy-lib")
+        implementation project(":gameboy-libgdx-core")
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.0"
-    }
+        api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
 
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
     }
 }
