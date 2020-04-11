@@ -6,7 +6,7 @@ import memory.io.sound.SoundOutput
 class SoundOutputGdx : SoundOutput {
 
     private val SAMPLE_RATE = 22050
-    private val BUFFER_SIZE = 1024
+    private val BUFFER_SIZE = 512
 
     private val device : AudioDevice? = try {
         Gdx.audio.newAudioDevice(SAMPLE_RATE, false)

@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import memory.io.Joypad
 
-class GameboyLibgdx(private val gb: GameBoy) : ApplicationAdapter(), InputProcessor {
+open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), InputProcessor {
     val color0 = Color(224f / 255, 248f / 255, 208f / 255, 1.0f)
     val color1 = Color(136f / 255, 192f / 255, 112f / 255, 1.0f)
     val color2 = Color(52f / 255, 104f / 255, 86f / 255, 1f)

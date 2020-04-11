@@ -5,9 +5,22 @@ import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import GameboyLibgdx
 import GameBoy
+import memory.io.Joypad
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+
+class Androidlol(gb: GameBoy) : GameboyLibgdx(gb) {
+    override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        gb.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
+        return true
+    }
+
+    override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
+        gb.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
+        return true
+    }
+}
 
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,11 +28,11 @@ class AndroidLauncher : AndroidApplication() {
         val config = AndroidApplicationConfiguration()
 
         val am = assets
-        val input = am.open("Legend of Zelda, The - Link's Awakening (U) (V1.2) [!].gb")
+        val input = am.open("Pokemon Red.gb")
         val file = File.createTempFile("adadada", "b")
         copyStreamToFile(input, file)
         val gb = GameBoy(file)
-        val app = GameboyLibgdx(gb)
+        val app = Androidlol(gb)
         initialize(app, config)
         app.startgb()
     }
