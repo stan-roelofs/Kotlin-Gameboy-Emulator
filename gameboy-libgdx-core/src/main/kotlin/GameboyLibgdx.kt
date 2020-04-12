@@ -14,11 +14,11 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
     val color3 = Color(8f / 255, 24f / 255, 32f / 255, 1f)
     val colors = arrayOf(color0, color1, color2, color3)
 
-    private var batch : SpriteBatch? = null
-    private var output : SoundOutputGdx? = null
-    private var gbThread = Thread(gb)
-    private val cam = OrthographicCamera()
-    private val viewport = StretchViewport(160f, 144f, cam)
+    protected var batch : SpriteBatch? = null
+    protected var output : SoundOutputGdx? = null
+    protected var gbThread = Thread(gb)
+    protected val cam = OrthographicCamera()
+    protected val viewport = StretchViewport(160f, 144f, cam)
 
     fun startgb() {
         gbThread = Thread(gb)
