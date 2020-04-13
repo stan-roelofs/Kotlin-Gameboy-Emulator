@@ -1,6 +1,6 @@
 package memory.io.sound
 
-import GameBoy
+import gameboy.GameBoy
 import utils.getBit
 import utils.setBit
 

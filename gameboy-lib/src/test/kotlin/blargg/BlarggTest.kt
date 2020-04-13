@@ -1,6 +1,6 @@
 package blargg
 
-import GameBoy
+import gameboy.GameBoy
 import org.junit.Assert
 import utils.Log
 import java.io.File

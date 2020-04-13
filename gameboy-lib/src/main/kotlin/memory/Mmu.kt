@@ -79,7 +79,7 @@ class Mmu private constructor() : Memory {
         const val NR52 = 0xFF26
     }
 
-    var cartridge: Cartridge? = null
+    internal var cartridge: Cartridge? = null
     private val hram = HRam()
     private val oam = Oam()
     private val internalRam = InternalRam()
@@ -97,7 +97,7 @@ class Mmu private constructor() : Memory {
         cartridge?.reset()
     }
 
-    fun tick(cycles: Int) {
+    internal fun tick(cycles: Int) {
         if (cycles != 4) {
             Log.w("Cycles != 4, should not be possible")
         }
@@ -156,7 +156,7 @@ class Mmu private constructor() : Memory {
      * Used to read during DMA transfer, standard readByte prevents this as memory is not accessible
      * during DMA
      */
-    fun dmaReadByte(address: Int): Int {
+    internal fun dmaReadByte(address: Int): Int {
         return when(address) {
             in 0x0000 until 0x8000 -> cartridge!!.readByte(address)
             in 0x8000 until 0xA000 -> io.readByte(address)
@@ -176,7 +176,7 @@ class Mmu private constructor() : Memory {
      * Used to write DMA transfer, standard writeByte prevents this as memory is not accessible
      * during DMA
      */
-    fun dmaWriteByte(address: Int, value: Int) {
+    internal fun dmaWriteByte(address: Int, value: Int) {
         val newVal = value and 0xFF
         when (address) {
             in 0xFE00 until 0xFEA0 -> {

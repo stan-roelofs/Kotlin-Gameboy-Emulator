@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
+import gameboy.GameBoy
 import memory.io.Joypad
 
 open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), InputProcessor {

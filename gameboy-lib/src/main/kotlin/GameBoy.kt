@@ -1,3 +1,5 @@
+package gameboy
+
 import cpu.Cpu
 import memory.Mmu
 import memory.cartridge.Cartridge
