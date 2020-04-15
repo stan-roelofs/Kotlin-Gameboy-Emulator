@@ -3,6 +3,8 @@ language: android
 before_install:
   - chmod +x ./gradlew
   - yes | sdkmanager "platforms;android-29"
+  - sudo apt-get update
+  - sudo apt-get install openjfx -y
 install: true
 
 os: linux
