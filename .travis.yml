@@ -1,4 +1,7 @@
 language: java
+
+before_install:
+  - chmod +x ./gradlew
 install: true
 
 os: linux
@@ -11,4 +14,4 @@ jdk:
   - openjdk8
 
 script:
-  - chmod +x ./gradlew build
+  - ./gradlew build
