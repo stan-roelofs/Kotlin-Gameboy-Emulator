@@ -1,7 +1,12 @@
 before_install:
   - sudo apt-get install -y openjfx
 install:
-  - gradle wrapper --gradle-version 5.0
+  - gradle wrapper --gradle-version 5.1.1
 language: java
+dist: trusty
+android:
+  components:
+  - build-tools-29.0.2
+  - android-29
 jdk:
   - openjdk8
