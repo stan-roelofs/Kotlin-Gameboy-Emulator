@@ -1,5 +1,5 @@
 before_install:
-  - sudo apt update
+  - sudo apt-get update
   - sudo apt-get install -y openjfx
 install:
   - gradle wrapper --gradle-version 5.1.1
