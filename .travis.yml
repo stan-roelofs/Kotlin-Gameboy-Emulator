@@ -11,4 +11,4 @@ jdk:
   - openjdk8
 
 script:
-  - chmod +x ./gradlew build --scan -s
+  - chmod +x ./gradlew build
