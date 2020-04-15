@@ -31,7 +31,6 @@ build/
 local.properties
 gameboy-libgdx-android/local.properties
 
-
 # Reference project
 src/test/kotlin/ReferenceTest.kt
 src/main/kotlin/com/

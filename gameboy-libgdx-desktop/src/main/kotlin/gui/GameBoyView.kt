@@ -1,9 +1,9 @@
 package gui
 
-import GameBoy
 import GameboyLibgdx
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import gameboy.GameBoy
 import javafx.application.Platform
 import tornadofx.*
 import java.io.File
@@ -46,7 +46,7 @@ class GameBoyView: View() {
                 }
                 separator()
                 item("Load ").action {
-                    val cart = gb.mmu.cartridge
+                    val cart = gb.cartridge
                     val path = cart?.cartridgeFile?.parent
                     val fileName = cart?.cartridgeFile?.nameWithoutExtension
 
@@ -57,7 +57,7 @@ class GameBoyView: View() {
                     }
                 }
                 item("Save").action {
-                    val cart = gb.mmu.cartridge
+                    val cart = gb.cartridge
                     val path = cart?.cartridgeFile?.parent
                     val fileName = cart?.cartridgeFile?.nameWithoutExtension
 

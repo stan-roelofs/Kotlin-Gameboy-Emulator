@@ -1,3 +1,4 @@
+import gameboy.GameBoy
 import memory.io.sound.SoundOutput
 import utils.Log
 import javax.sound.sampled.AudioFormat

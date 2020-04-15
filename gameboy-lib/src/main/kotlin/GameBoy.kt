@@ -25,7 +25,7 @@ class GameBoy(cart: File? = null) : Runnable {
     val mmu = Mmu.instance
 
     /** The current cartridge / rom */
-    lateinit var cartridge: Cartridge
+    var cartridge: Cartridge? = null
 
     /** Indicates whether the gameboy is currently running or not */
     var running = false

@@ -1,6 +1,6 @@
 package gui
 
-import GameBoy
+import gameboy.GameBoy
 import javafx.scene.control.Label
 import tornadofx.*
 
@@ -58,14 +58,14 @@ class CartridgeView(private val gb: GameBoy): View() {
     }
 
     fun update() {
-        romTitle.text = gb.cartridge.title
-        romType.text = gb.cartridge.type.toString()
-        romLicensee.text = gb.cartridge.licensee
-        romGbc.text = gb.cartridge.isGbc.toString()
-        romSgb.text = gb.cartridge.isSgb.toString()
-        romDestination.text = "${gb.cartridge.destinationCode} ${gb.cartridge.destination}"
-        romOldLicensee.text = gb.cartridge.oldLicenseeCode.toString()
-        romVersion.text = gb.cartridge.versionNumber.toString()
-        romHeaderChecksum.text = gb.cartridge.headerChecksum.toString()
+        romTitle.text = gb.cartridge?.title
+        romType.text = gb.cartridge?.type.toString()
+        romLicensee.text = gb.cartridge?.licensee
+        romGbc.text = gb.cartridge?.isGbc.toString()
+        romSgb.text = gb.cartridge?.isSgb.toString()
+        romDestination.text = "${gb.cartridge?.destinationCode} ${gb.cartridge?.destination}"
+        romOldLicensee.text = gb.cartridge?.oldLicenseeCode.toString()
+        romVersion.text = gb.cartridge?.versionNumber.toString()
+        romHeaderChecksum.text = gb.cartridge?.headerChecksum.toString()
     }
 }
