@@ -28,6 +28,8 @@ src/test/resources/blargg/**/source
 src/test/resources/mooneye/**/*.sym
 build/
 !gradle/wrapper/gradle-wrapper.jar
+local.properties
+gameboy-libgdx-android/local.properties
 
 
 # Reference project
