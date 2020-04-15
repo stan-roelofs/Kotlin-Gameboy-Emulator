@@ -27,8 +27,11 @@ class GameBoy(cart: File? = null) : Runnable {
     /** The current cartridge / rom */
     lateinit var cartridge: Cartridge
 
+    /** Indicates whether the gameboy is currently running or not */
     var running = false
         private set
+
+    /** Indicates whether the gameboy is paused or not */
     var paused = false
         private set
 

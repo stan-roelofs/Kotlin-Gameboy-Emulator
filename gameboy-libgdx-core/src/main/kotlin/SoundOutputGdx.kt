@@ -21,7 +21,9 @@ class SoundOutputGdx : SoundOutput {
     private val buffer = ShortArray(BUFFER_SIZE)
 
     override fun reset() {
-
+        counter = 0
+        bufferIndex = 0
+        buffer.fill(0)
     }
 
     override fun play(left: Byte, right: Byte) {
@@ -38,9 +40,7 @@ class SoundOutputGdx : SoundOutput {
         buffer[bufferIndex++] = (right * 255).toShort()
 
         if (bufferIndex >= BUFFER_SIZE) {
-            //val lol = System.currentTimeMillis()
             device.writeSamples(buffer, 0, buffer.size)
-            //Log.d("${System.currentTimeMillis() - lol}")
             bufferIndex = 0
         }
     }
