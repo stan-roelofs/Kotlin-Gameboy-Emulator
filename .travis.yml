@@ -1,8 +1,7 @@
-before_install:
-  
-install:
-  - gradle wrapper --gradle-version 5.1.1
 language: java
+install: true
+
+os: linux
 dist: trusty
 android:
   components:
@@ -10,3 +9,6 @@ android:
   - android-29
 jdk:
   - openjdk8
+
+script:
+  - ./gradlew build --scan -s
