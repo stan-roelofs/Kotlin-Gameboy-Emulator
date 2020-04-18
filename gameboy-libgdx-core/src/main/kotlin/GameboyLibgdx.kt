@@ -15,11 +15,14 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
     val color3 = Color(8f / 255, 24f / 255, 32f / 255, 1f)
     val colors = arrayOf(color0, color1, color2, color3)
 
+    val width = 160
+    val height = 144
+
     protected var batch : SpriteBatch? = null
     protected var output : SoundOutputGdx? = null
     protected var gbThread = Thread(gb)
     protected val cam = OrthographicCamera()
-    protected val viewport = StretchViewport(160f, 144f, cam)
+    protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
 
     fun startgb() {
         gbThread = Thread(gb)
@@ -40,16 +43,16 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
         Gdx.input.inputProcessor = this
         output = SoundOutputGdx()
         gb.mmu.io.sound.output = output
-        cam.position.set(80f, 72f, 0f)
+        cam.position.set(width.toFloat() / 2f, height.toFloat() / 2f, 0f)
     }
 
     override fun render() {
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        val pixmap = Pixmap(160, 144, Pixmap.Format.RGB888)
-        for (y in 0 until 144) {
-            for (x in 0 until 160) {
+        val pixmap = Pixmap(width, height, Pixmap.Format.RGB888)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
                 pixmap.setColor(colors[gb.mmu.io.lcd.screenBuffer[y][x]])
                 pixmap.drawPixel(x, y)
             }
@@ -59,9 +62,9 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
 
         batch?.projectionMatrix = cam.combined
         batch?.begin()
-        batch?.draw(img, 0f, 0f, 160f, 144f)
+        batch?.draw(img, 0f, 0f, width.toFloat(), height.toFloat())
         batch?.end()
-        Gdx.graphics.setTitle("${Gdx.graphics.framesPerSecond}")
+        Gdx.graphics.setTitle("${output?.fps}")
     }
 
     override fun dispose() {
