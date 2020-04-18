@@ -11,9 +11,9 @@ class ADC_A_HL(registers: Registers, mmu: Mmu) : ADC(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
                 super.adc(value)
             }
             else -> Log.e("Invalid state")

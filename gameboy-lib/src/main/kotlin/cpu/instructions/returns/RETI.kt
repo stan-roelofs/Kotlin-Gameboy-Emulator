@@ -21,10 +21,9 @@ class RETI(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             }
             8 -> {
                 value = setSecondByte(value, popFromStack())
-                registers.PC = value
             }
             12 -> {
-
+                registers.PC = value
             }
             else -> Log.e("Invalid state")
         }

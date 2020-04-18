@@ -17,10 +17,9 @@ class LD_HL_n(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             }
             4 -> {
                 value = getImmediate()
-                mmu.writeByte(registers.getHL(), value)
             }
             8 -> {
-
+                mmu.writeByte(registers.getHL(), value)
             }
             else -> Log.e("Invalid state")
         }

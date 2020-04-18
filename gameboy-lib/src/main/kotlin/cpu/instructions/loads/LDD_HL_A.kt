@@ -12,12 +12,13 @@ class LDD_HL_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
+
+            }
+            4 -> {
                 val HL = registers.getHL()
                 registers.setHL(HL - 1)
 
                 mmu.writeByte(HL, registers.A)
-            }
-            4 -> {
             }
             else -> Log.e("Invalid state")
         }

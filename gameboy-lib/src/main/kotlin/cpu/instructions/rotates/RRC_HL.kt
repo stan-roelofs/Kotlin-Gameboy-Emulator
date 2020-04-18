@@ -14,14 +14,14 @@ class RRC_HL(registers: Registers, mmu: Mmu) : RRC(registers, mmu) {
 
             }
             4 -> {
+
+            }
+            8 -> {
                 address = registers.getHL()
                 value = mmu.readByte(address)
             }
-            8 -> {
-                mmu.writeByte(address, rrc(value))
-            }
             12 -> {
-
+                mmu.writeByte(address, rrc(value))
             }
             else -> Log.e("Invalid state")
         }

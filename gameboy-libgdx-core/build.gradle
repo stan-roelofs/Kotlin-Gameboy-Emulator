@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':gameboy-lib')
+    api project(':gameboy-lib')
 
     api "com.badlogicgames.gdx:gdx:1.9.10"
     compile "com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.10"

@@ -21,11 +21,9 @@ class LD_nn_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             }
             8 -> {
                 address = setSecondByte(address, getImmediate())
-                val value = registers.A
-                mmu.writeByte(address, value)
             }
             12 -> {
-
+                mmu.writeByte(address, registers.A)
             }
             else -> Log.e("Invalid state")
         }

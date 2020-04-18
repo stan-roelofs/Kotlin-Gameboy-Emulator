@@ -33,11 +33,12 @@ class RET_cc(registers: Registers, mmu: Mmu, private val flag: Int, private val 
             12 -> {
                 if (conditionHolds) {
                     value = setSecondByte(value, popFromStack())
-                    registers.PC = value
                 }
             }
             16 -> {
-
+                if (conditionHolds) {
+                    registers.PC = value
+                }
             }
             else -> Log.e("Invalid state")
         }

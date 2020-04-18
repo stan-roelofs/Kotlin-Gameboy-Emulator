@@ -12,9 +12,9 @@ class CP_A_HL(registers: Registers, mmu: Mmu) : CP(registers, mmu) {
 
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
                 cp(value)
             }
             else -> Log.e("Invalid state")

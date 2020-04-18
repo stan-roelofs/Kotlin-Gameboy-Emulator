@@ -21,10 +21,9 @@ class LD_A_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             }
             8 -> {
                 value = setSecondByte(value, getImmediate())
-                registers.A = mmu.readByte(value)
             }
             12 -> {
-
+                registers.A = mmu.readByte(value)
             }
             else -> Log.e("Invalid state")
         }

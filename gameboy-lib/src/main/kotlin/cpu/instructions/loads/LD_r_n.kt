@@ -14,9 +14,10 @@ class LD_r_n(registers: Registers, mmu: Mmu, private val register: Int) : Instru
     override fun tick() {
         when (currentCycle) {
             0 -> {
-                value = getImmediate()
             }
             4 -> {
+                value = getImmediate()
+
                 when(register) {
                     RegisterID.A.ordinal -> registers.A = value
                     RegisterID.B.ordinal -> registers.B = value

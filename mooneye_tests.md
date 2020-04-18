@@ -2,37 +2,37 @@
 
 ## Acceptance
 - [x] boot_regs_dmgABC
-- [ ] call_cc_timing2
+- [x] call_cc_timing2
 - [x] ei_timing
 - [x] div_timing
 - [x] rapid_di_ei
 - [ ] di_timing_GS
-- [ ] ret_timing
+- [x] ret_timing
 - [x] halt_ime0_ei
 - [x] halt_ime1_timing
 - [x] reti_intr_timing
-- [ ] rst_timing
-- [ ] reti_timing
-- [ ] intr_timing
-- [ ] jp_cc_timing
-- [ ] ld_hl_sp_e_timing
+- [x] rst_timing
+- [x] reti_timing
+- [x] intr_timing
+- [x] jp_cc_timing
+- [x] ld_hl_sp_e_timing
 - [x] if_ie_registers
-- [ ] call_timing
-- [ ] boot_div_dmgABC
-- [ ] push_timing
-- [ ] pop_timing
+- [x] call_timing
+- [x] boot_div_dmgABC
+- [x] push_timing
+- [x] pop_timing
 - [x] halt_ime0_nointr_timing
 - [x] oam_dma_restart
 - [x] oam_dma_timing
 - [x] oam_dma_start
-- [ ] call_timing2
+- [x] call_timing2
 - [ ] halt_ime1_timing2_GS
-- [ ] jp_timing
+- [x] jp_timing
 - [ ] ei_sequence
-- [ ] ret_cc_timing
+- [x] ret_cc_timing
 - [x] boot_hwio_dmgABC
-- [ ] call_cc_timing
-- [ ] add_sp_e_timing
+- [x] call_cc_timing
+- [x] add_sp_e_timing
 
 ### Bits
 - [x] mem_oam
@@ -51,9 +51,9 @@
 - [ ] hblank_ly_scx_timing-GS
 - [ ] intr_1_2_timing-GS
 - [ ] intr_2_0_timing - Fails, incorrect timing between STAT mode=1 and STAT mode=2 interrupt
-- [x] intr_2_mode0_timing
+- [ ] intr_2_mode0_timing
 - [ ] intr_2_mode0_timing_sprites
-- [x] intr_2_mode3_timing
+- [ ] intr_2_mode3_timing
 - [ ] intr_2_oam_ok_timing - E register value incorrect
 - [ ] lcdon_timing-dmgABCmgbS - Cycle: 00 Expected: 00 Actual: 90
 - [ ] lcdon_write_timing-GS - Cycle: 12 Expected: 00 Actual: 81

@@ -12,12 +12,12 @@ class LDI_HL_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                val HL = registers.getHL()
-                mmu.writeByte(HL, registers.A)
 
-                registers.setHL(HL + 1)
             }
             4 -> {
+                val HL = registers.getHL()
+                mmu.writeByte(HL, registers.A)
+                registers.setHL(HL + 1)
             }
             else -> Log.e("Invalid state")
         }

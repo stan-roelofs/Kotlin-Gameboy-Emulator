@@ -14,6 +14,9 @@ class LD_rr_r(registers: Registers, mmu: Mmu, private val register1: Int, privat
 
         when(currentCycle) {
             0 -> {
+
+            }
+            4 -> {
                 val value = when(register2) {
                     RegisterID.A.ordinal -> registers.A
                     RegisterID.B.ordinal -> registers.B
@@ -31,9 +34,6 @@ class LD_rr_r(registers: Registers, mmu: Mmu, private val register1: Int, privat
                     RegisterID.HL.ordinal -> mmu.writeByte(registers.getHL(), value)
                     else -> throw Exception("Invalid register: $register1")
                 }
-            }
-            4 -> {
-
             }
             else -> Log.e("Invalid state")
         }

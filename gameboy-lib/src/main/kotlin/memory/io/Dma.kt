@@ -42,10 +42,6 @@ class Dma : Memory {
 
             // Start writing after 1 setup cycle
             if (currentByte > 0) {
-                if (starting) {
-                    starting = false
-                    inProgress = true
-                }
                 val targetAddress = 0xFE00 + currentByte - 1
                 mmu.dmaWriteByte(targetAddress, lastReadByte)
             }
@@ -57,6 +53,10 @@ class Dma : Memory {
             if (currentByte >= totalBytes) {
                 inProgress = false
             }
+        }
+        if (starting) {
+            inProgress = true
+            starting = false
         }
         if (requested) {
             startTransfer(this.DMA)

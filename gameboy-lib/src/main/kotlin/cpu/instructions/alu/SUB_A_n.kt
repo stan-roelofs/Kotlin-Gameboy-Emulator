@@ -11,9 +11,10 @@ class SUB_A_n(registers: Registers, mmu: Mmu) : SUB(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = getImmediate()
+
             }
             4 -> {
+                value = getImmediate()
                 sub(value)
             }
             else -> Log.e("Invalid state")

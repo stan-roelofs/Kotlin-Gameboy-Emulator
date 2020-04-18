@@ -11,9 +11,9 @@ class SUB_A_HL(registers: Registers, mmu: Mmu) : SUB(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
                 sub(value)
             }
             else -> Log.e("Invalid state")

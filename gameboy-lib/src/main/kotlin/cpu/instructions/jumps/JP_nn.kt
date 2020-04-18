@@ -21,10 +21,9 @@ class JP_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             }
             8 -> {
                 value = setSecondByte(value, getImmediate())
-                registers.PC = value
             }
             12 -> {
-
+                registers.PC = value
             }
             else -> Log.e("Invalid state")
         }

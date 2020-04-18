@@ -13,14 +13,14 @@ class LDD_A_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
         when(currentCycle) {
             0 -> {
+
+            }
+            4 -> {
                 val HL = registers.getHL()
                 val value = mmu.readByte(HL)
                 registers.setHL(HL - 1)
 
                 registers.A = value
-            }
-            4 -> {
-
             }
             else -> Log.e("Invalid state")
         }

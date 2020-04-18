@@ -4,6 +4,8 @@ import cpu.Registers
 import cpu.instructions.Instruction
 import memory.Mmu
 import utils.Log
+import utils.getFirstByte
+import utils.getSecondByte
 import utils.setSecondByte
 
 class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
@@ -17,17 +19,16 @@ class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
             }
             4 -> {
-
-            }
-            8 -> {
                 address = getImmediate()
             }
-            12 -> {
+            8 -> {
                 address = setSecondByte(address, getImmediate())
             }
+            12 -> {
+                mmu.writeByte(address, registers.SP.getFirstByte())
+            }
             16 -> {
-                val value = registers.SP
-                mmu.writeWord(address, value)
+                mmu.writeByte(address + 1, registers.SP.getSecondByte())
             }
             else -> Log.e("Invalid state")
         }

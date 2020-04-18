@@ -283,10 +283,10 @@ class Cpu {
             0xEA -> LD_nn_A(registers, mmu)
 
             // LD A, (C)
-            0xF2 -> LD_A_C(registers, mmu)
+            0xF2 -> LDH_A_C(registers, mmu)
 
             // LD (C), A
-            0xE2 -> LD_C_A(registers, mmu)
+            0xE2 -> LDH_C_A(registers, mmu)
 
             // LDD A, (HL)
             0x3A -> LDD_A_HL(registers, mmu)

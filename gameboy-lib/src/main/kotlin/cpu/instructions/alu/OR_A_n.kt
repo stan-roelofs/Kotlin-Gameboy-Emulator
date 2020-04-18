@@ -11,9 +11,9 @@ class OR_A_n(registers: Registers, mmu: Mmu) : OR(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = getImmediate()
             }
             4 -> {
+                value = getImmediate()
                 or(value)
             }
             else -> Log.e("Invalid state")

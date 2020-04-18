@@ -15,14 +15,14 @@ class RL_HL(registers: Registers, mmu: Mmu) : RL(registers, mmu) {
 
             }
             4 -> {
+
+            }
+            8 -> {
                 address = registers.getHL()
                 value = mmu.readByte(address)
             }
-            8 -> {
-                mmu.writeByte(address, rl(value))
-            }
             12 -> {
-
+                mmu.writeByte(address, rl(value))
             }
             else -> Log.e("Invalid state")
         }

@@ -12,9 +12,9 @@ class CP_A_n(registers: Registers, mmu: Mmu) : CP(registers, mmu) {
 
         when(currentCycle) {
             0 -> {
-                value = getImmediate()
             }
             4 -> {
+                value = getImmediate()
                 cp(value)
             }
             else -> Log.e("Invalid state")

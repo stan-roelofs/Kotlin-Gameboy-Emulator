@@ -17,10 +17,9 @@ class LDH_n_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             }
             4 -> {
                 address = getImmediate() + 0xFF00
-                mmu.writeByte(address, registers.A)
             }
             8 -> {
-
+                mmu.writeByte(address, registers.A)
             }
             else -> Log.e("Invalid state")
         }

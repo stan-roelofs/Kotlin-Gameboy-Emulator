@@ -11,9 +11,9 @@ class AND_A_n(registers: Registers, mmu: Mmu) : AND(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = getImmediate()
             }
             4 -> {
+                value = getImmediate()
                 and(value)
             }
             else -> Log.e("Invalid state")

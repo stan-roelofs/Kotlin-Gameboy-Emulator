@@ -12,9 +12,9 @@ class AND_A_HL(registers: Registers, mmu: Mmu) : AND(registers, mmu) {
 
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
                 and(value)
             }
             else -> Log.e("Invalid state")

@@ -11,9 +11,9 @@ class OR_A_HL(registers: Registers, mmu: Mmu) : OR(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
                 or(value)
             }
             else -> Log.e("Invalid state")

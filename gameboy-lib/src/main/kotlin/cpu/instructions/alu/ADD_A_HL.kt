@@ -11,9 +11,9 @@ class ADD_A_HL(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
                 super.add8(value)
             }
             else -> Log.e("Invalid state")

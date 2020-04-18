@@ -12,6 +12,8 @@ class ADD_HL_rr(registers: Registers, mmu: Mmu, private val register: Int) : ADD
     override fun tick() {
         when(currentCycle) {
             0 -> {
+            }
+            4 -> {
                 value = when(register) {
                     RegisterID.BC.ordinal -> registers.getBC()
                     RegisterID.DE.ordinal -> registers.getDE()
@@ -19,8 +21,6 @@ class ADD_HL_rr(registers: Registers, mmu: Mmu, private val register: Int) : ADD
                     RegisterID.SP.ordinal -> registers.SP
                     else -> throw Exception("Invalid register: $register")
                 }
-            }
-            4 -> {
                 super.add16HL(value)
             }
             else -> Log.e("Invalid state")

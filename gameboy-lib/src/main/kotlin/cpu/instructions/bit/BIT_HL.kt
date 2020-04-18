@@ -15,12 +15,12 @@ class BIT_HL(registers: Registers, mmu: Mmu, private val index: Int) : BIT(regis
 
             }
             4 -> {
+
+            }
+            8 -> {
                 val address = registers.getHL()
                 state = mmu.readByte(address).getBit(index)
                 super.bit(state)
-            }
-            8 -> {
-
             }
             else -> Log.e("Invalid state")
         }

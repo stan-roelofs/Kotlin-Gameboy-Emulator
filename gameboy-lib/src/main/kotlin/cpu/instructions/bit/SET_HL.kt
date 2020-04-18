@@ -18,14 +18,13 @@ class SET_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instructi
 
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
             }
             8 -> {
-                value = setBit(value, index)
-                mmu.writeByte(registers.getHL(), value)
+                value = mmu.readByte(registers.getHL())
             }
             12 -> {
-
+                value = setBit(value, index)
+                mmu.writeByte(registers.getHL(), value)
             }
             else -> Log.e("Invalid state")
         }

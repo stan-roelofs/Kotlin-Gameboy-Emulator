@@ -7,17 +7,15 @@ class AcceptanceTests : MooneyeTest() {
 
     override val path = "acceptance"
 
-    /*
     @Test
     fun add_sp_e_timing() {
-        runMooneyeTest("add_sp_e_timing.gb", 0)
+        runMooneyeTest("add_sp_e_timing.gb", 1253675478)
     }
 
     @Test
     fun boot_div_dmgABC() {
-        val gb = GameBoy(File("${path}boot_div-dmgABCmgb.gb"))
-        runMooneyeTest(gb, 0)
-    }*/
+        runMooneyeTest("boot_div-dmgABCmgb.gb", 1228927159)
+    }
 
     @Test
     fun boot_hwio_dmgABC() {
@@ -29,35 +27,31 @@ class AcceptanceTests : MooneyeTest() {
         runMooneyeTest("boot_regs-dmgABC.gb", -1938941160)
     }
 
-    /*
     @Test
     fun call_cc_timing() {
-        val gb = GameBoy(File("${path}call_cc_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("call_cc_timing.gb", 1864719267)
     }
 
     @Test
     fun call_cc_timing2() {
-        val gb = GameBoy(File("${path}call_cc_timing2.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("call_cc_timing2.gb", -1274294891)
     }
 
     @Test
     fun call_timing() {
-        val gb = GameBoy(File("${path}call_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("call_timing.gb", 1864719267)
     }
 
     @Test
     fun call_timing2() {
-        val gb = GameBoy(File("${path}call_timing2.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("call_timing2.gb", -889195877)
     }
 
+    /*
     @Test
     fun di_timing_GS() {
-        val gb = GameBoy(File("${path}di_timing-GS.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("boot_regs-dmgABC.gb", -1938941160)
+
     }*/
 
     @Test
@@ -104,31 +98,27 @@ class AcceptanceTests : MooneyeTest() {
         runMooneyeTest("if_ie_registers.gb", 2073895254)
     }
 
-    /*
+
     @Test
     fun intr_timing() {
-        val gb = GameBoy(File("${path}intr_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("intr_timing.gb", 1412901067)
     }
 
     @Test
     fun jp_cc_timing() {
-        val gb = GameBoy(File("${path}jp_cc_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("jp_cc_timing.gb", 1864719267)
     }
 
     @Test
     fun jp_timing() {
-        val gb = GameBoy(File("${path}jp_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("jp_timing.gb", 1864719267)
     }
 
     @Test
     fun ld_hl_sp_e_timing() {
-        val gb = GameBoy(File("${path}ld_hl_sp_e_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("ld_hl_sp_e_timing.gb", -1593236683)
     }
-*/
+
     @Test
     fun oam_dma_restart() {
         runMooneyeTest("oam_dma_restart.gb", 1809143252)
@@ -144,52 +134,43 @@ class AcceptanceTests : MooneyeTest() {
         runMooneyeTest("oam_dma_timing.gb", 1809143252)
     }
 
-    /*
     @Test
     fun pop_timing() {
-        val gb = GameBoy(File("${path}pop_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("pop_timing.gb", 1938152555)
     }
 
     @Test
     fun push_timing() {
-        val gb = GameBoy(File("${path}push_timing.gb"))
-        runMooneyeTest(gb, 0)
-    }*/
+        runMooneyeTest("push_timing.gb", -1182071810)
+    }
 
     @Test
     fun rapid_di_ei() {
         runMooneyeTest("rapid_di_ei.gb", 1304528537)
     }
 
-    /*
     @Test
     fun ret_cc_timing() {
-        val gb = GameBoy(File("${path}ret_cc_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("ret_cc_timing.gb", 1864719267)
     }
 
     @Test
     fun ret_timing() {
-        val gb = GameBoy(File("${path}ret_timing.gb"))
-        runMooneyeTest(gb, 0)
-    }*/
+        runMooneyeTest("ret_timing.gb", 1864719267)
+    }
 
     @Test
     fun reti_intr_timing() {
         runMooneyeTest("reti_intr_timing.gb", 1828438669)
     }
 
-    /*
     @Test
     fun reti_timing() {
-        val gb = GameBoy(File("${path}reti_timing.gb"))
-        runMooneyeTest(gb, 0)
+        runMooneyeTest("reti_timing.gb", 1864719267)
     }
 
     @Test
     fun rst_timing() {
-        val gb = GameBoy(File("${path}rst_timing.gb"))
-        runMooneyeTest(gb, 0)
-    }*/
+        runMooneyeTest("rst_timing.gb", 892853141)
+    }
 }

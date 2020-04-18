@@ -20,6 +20,9 @@ class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instr
 
             }
             4 -> {
+
+            }
+            8 -> {
                 value = when (register) {
                     RegisterID.AF.ordinal -> {
                         registers.getAF()
@@ -35,8 +38,6 @@ class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instr
                     }
                     else -> throw Exception("Invalid register: $register")
                 }
-            }
-            8 -> {
                 pushToStack(value.getSecondByte())
             }
             12 -> {

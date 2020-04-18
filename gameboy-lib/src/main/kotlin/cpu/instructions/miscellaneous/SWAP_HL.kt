@@ -16,11 +16,14 @@ class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {
 
             }
             4 -> {
+
+            }
+            8 -> {
                 address = registers.getHL()
                 val value = mmu.readByte(address)
                 new = swap(value)
             }
-            8 -> {
+            12 -> {
                 mmu.writeByte(address, new)
 
                 val zFlag = new == 0
@@ -29,9 +32,6 @@ class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {
                 registers.setNFlag(false)
                 registers.setHFlag(false)
                 registers.setCFlag(false)
-            }
-            12 -> {
-
             }
             else -> Log.e("Invalid state")
         }

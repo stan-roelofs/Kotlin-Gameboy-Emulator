@@ -11,9 +11,9 @@ class SBC_A_n(registers: Registers, mmu: Mmu) : SBC(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = getImmediate()
             }
             4 -> {
+                value = getImmediate()
                 sbc(value)
             }
             else -> Log.e("Invalid state")

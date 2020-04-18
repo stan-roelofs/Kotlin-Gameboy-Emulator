@@ -13,6 +13,9 @@ class LD_A_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instr
     override fun tick() {
         when(currentCycle) {
             0 -> {
+
+            }
+            4 -> {
                 val address = when(register) {
                     RegisterID.BC.ordinal -> registers.getBC()
                     RegisterID.DE.ordinal -> registers.getDE()
@@ -21,9 +24,6 @@ class LD_A_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instr
                 }
 
                 registers.A = mmu.readByte(address)
-            }
-            4 -> {
-
             }
             else -> Log.e("Invalid state")
         }

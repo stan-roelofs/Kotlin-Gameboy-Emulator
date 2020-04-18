@@ -14,9 +14,10 @@ class LD_r_HL(registers: Registers, mmu: Mmu, private val register: Int) : Instr
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                value = mmu.readByte(registers.getHL())
             }
             4 -> {
+                value = mmu.readByte(registers.getHL())
+
                 when(register) {
                     RegisterID.A.ordinal -> registers.A = value
                     RegisterID.B.ordinal -> registers.B = value
