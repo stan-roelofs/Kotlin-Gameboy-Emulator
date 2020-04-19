@@ -8,10 +8,6 @@ class SoundOutputGdx : SoundOutput {
 
     private val SAMPLE_RATE = 22050
     private val BUFFER_SIZE = 512
-    var fps = 0
-        internal set
-    private var lastTime = 0L
-    private var fpsCounter = 0
 
     private val device : AudioDevice? = try {
         Gdx.audio.newAudioDevice(SAMPLE_RATE, false)
@@ -35,18 +31,11 @@ class SoundOutputGdx : SoundOutput {
             counter %= divider
             return
         }
-        
+
         buffer[bufferIndex++] = (left * 255).toShort()
         buffer[bufferIndex++] = (right * 255).toShort()
 
         if (bufferIndex >= BUFFER_SIZE) {
-            fpsCounter++
-            if (System.currentTimeMillis() - lastTime > 1000) {
-                fps = fpsCounter
-                fpsCounter = 0
-                lastTime = System.currentTimeMillis()
-            }
-
             device?.writeSamples(buffer, 0, buffer.size)
             bufferIndex = 0
         }

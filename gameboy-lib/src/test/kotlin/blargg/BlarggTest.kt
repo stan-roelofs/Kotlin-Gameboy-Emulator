@@ -11,13 +11,13 @@ abstract class BlarggTest {
     val MAX_ITERATIONS = 100000000
 
     enum class ValidateMethod {
-        SERIAL, MEMORY
+        SERIAL, MEMORY, SCREENHASH
     }
 
     abstract val path: String
     abstract val method: ValidateMethod
 
-    fun runBlarggTest(fileName: String) {
+    fun runBlarggTest(fileName: String, screenHash: Int? = null) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
         val romFile = File(url)
         val gb = GameBoy(romFile)
@@ -39,7 +39,7 @@ abstract class BlarggTest {
                         gb.mmu.io.serial.testOutput = false
                     }
                 }
-                println("Finished test with output: $output")
+                Log.i("Finished test with output: $output")
 
                 val result = output.toLowerCase().contains("passed")
                 Assert.assertEquals(true, result)
@@ -85,10 +85,34 @@ abstract class BlarggTest {
                     currentAddress++
                 }
 
-                println("Finished test with status code: $statusCode and output: $output")
+                Log.i("Finished test with status code: $statusCode and output: $output")
 
                 Assert.assertEquals(0, statusCode)
             }
+
+            ValidateMethod.SCREENHASH -> {
+                Assert.assertNotNull(screenHash)
+
+                Log.i("Using screen hash to validate")
+                Log.i("Provided hash: $screenHash")
+
+                for (i in 0..MAX_ITERATIONS) {
+                    gb.step()
+                }
+                val hash = getScreenHash(gb.mmu.io.lcd.screenBuffer)
+                Log.i("Hash: $hash")
+                Assert.assertEquals(screenHash, hash)
+            }
         }
+    }
+
+    private fun getScreenHash(screen: Array<IntArray>): Int {
+        var s = ""
+        for (i in screen) {
+            for (j in i) {
+                s += j.toString()
+            }
+        }
+        return s.hashCode()
     }
 }

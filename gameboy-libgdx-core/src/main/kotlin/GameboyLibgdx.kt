@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
 import memory.io.Joypad
+import java.util.*
 
-open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), InputProcessor {
+open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), InputProcessor, Observer {
     val color0 = Color(224f / 255, 248f / 255, 208f / 255, 1.0f)
     val color1 = Color(136f / 255, 192f / 255, 112f / 255, 1.0f)
     val color2 = Color(52f / 255, 104f / 255, 86f / 255, 1f)
@@ -23,6 +24,9 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
     protected var gbThread = Thread(gb)
     protected val cam = OrthographicCamera()
     protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
+    private var fps = 0
+    private var framesCounter = 0
+    private var lastTime = 0L
 
     fun startgb() {
         gbThread = Thread(gb)
@@ -34,6 +38,15 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
         gbThread.join()
     }
 
+    override fun update(o: Observable?, arg: Any?) {
+        framesCounter++
+        if (System.currentTimeMillis() - lastTime > 1000) {
+            lastTime = System.currentTimeMillis()
+            fps = framesCounter
+            framesCounter = 0
+        }
+    }
+
     override fun resize(width: Int, height: Int) {
         viewport.update(width, height)
     }
@@ -43,6 +56,7 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
         Gdx.input.inputProcessor = this
         output = SoundOutputGdx()
         gb.mmu.io.sound.output = output
+        gb.mmu.io.lcd.addObserver(this)
         cam.position.set(width.toFloat() / 2f, height.toFloat() / 2f, 0f)
     }
 
@@ -64,7 +78,7 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
         batch?.begin()
         batch?.draw(img, 0f, 0f, width.toFloat(), height.toFloat())
         batch?.end()
-        Gdx.graphics.setTitle("${output?.fps}")
+        Gdx.graphics.setTitle("$fps")
     }
 
     override fun dispose() {

@@ -2,12 +2,17 @@ package memory.io
 
 import memory.Memory
 import memory.Mmu
+import utils.getBit
+import utils.setBit
 import utils.toHexString
 
 class Serial : Memory {
 
     private var SB = 0
     private var SC = 0
+
+    private var inProgress = false
+    private var shiftClock = false
 
     var testOutput = false
 
@@ -23,7 +28,12 @@ class Serial : Memory {
     override fun readByte(address: Int): Int {
         return when(address) {
             Mmu.SB -> this.SB
-            Mmu.SC -> this.SC or 0b01111110
+            Mmu.SC -> {
+                var result = 0b01111110
+                result = setBit(result, 7, inProgress)
+                result = setBit(result, 0, shiftClock)
+                result
+            }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Serial")
         }
     }
@@ -37,7 +47,10 @@ class Serial : Memory {
 
         when(address) {
             Mmu.SB -> this.SB = newVal
-            Mmu.SC -> this.SC = newVal
+            Mmu.SC -> {
+                inProgress = newVal.getBit(7)
+                shiftClock = newVal.getBit(0)
+            }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Serial")
         }
     }

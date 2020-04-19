@@ -39,3 +39,11 @@
 - [ ] 10-wave trigger while on
 - [x] 11-regs after power
 - [ ] 12-wave write while on
+
+## halt_bug
+- [x] halt_bug
+
+## interrupt_time
+- [ ] interrupt_time
+
+## oam_bug
