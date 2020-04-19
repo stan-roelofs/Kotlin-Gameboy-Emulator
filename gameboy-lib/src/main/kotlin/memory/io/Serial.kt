@@ -22,7 +22,8 @@ class Serial : Memory {
 
     override fun reset() {
         SB = 0
-        SC = 0
+        inProgress = false
+        shiftClock = false
     }
 
     override fun readByte(address: Int): Int {
