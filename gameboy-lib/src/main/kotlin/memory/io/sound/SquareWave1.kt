@@ -19,34 +19,45 @@ class SquareWave1 : SquareWave() {
     }
 
     override fun tick(cycles: Int): Int {
+        val wasEnabled = frequencySweep.enabled
         frequencySweep.tick()
+        if (wasEnabled && !frequencySweep.enabled) {
+            enabled = false
+        }
         return super.tick(cycles)
     }
 
     override fun readByte(address: Int): Int {
-        return if (address == Mmu.NR10) {
-            frequencySweep.getNr10()
-        } else {
-            super.readByte(address)
+        return when (address) {
+            Mmu.NR10 -> frequencySweep.getNr10()
+            else -> super.readByte(address)
         }
     }
 
     override fun writeByte(address: Int, value: Int) {
         val newVal = value and 0xFF
 
-        if (address == Mmu.NR10) {
-            frequencySweep.setNr10(newVal)
-        } else {
-            super.writeByte(address, value)
+        when (address) {
+            Mmu.NR10 -> frequencySweep.setNr10(newVal)
+            Mmu.NR13 -> frequencySweep.setNr13(newVal)
+            Mmu.NR14 -> {
+                frequencySweep.setNr14(newVal)
+                super.writeByte(address, newVal)
+            }
+            else -> super.writeByte(address, newVal)
         }
     }
 
     override fun getFrequency(): Int {
-        return 2048 - frequencySweep.getFrequency()
+        return frequencySweep.getFrequency()
     }
 
     override fun trigger() {
-        frequencySweep.trigger()
         super.trigger()
+
+        frequencySweep.trigger()
+        if (!frequencySweep.enabled) {
+            enabled = false
+        }
     }
 }

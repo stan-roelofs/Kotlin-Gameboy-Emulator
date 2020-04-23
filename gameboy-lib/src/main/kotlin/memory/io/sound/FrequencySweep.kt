@@ -9,7 +9,7 @@ class FrequencySweep {
     private val DIVIDER = GameBoy.TICKS_PER_SEC / 128
 
     private var timer = 0
-    private var enabled = false
+    var enabled = false
     private var shift = 0
     private var shadowRegister = 0
     private var frequency = 0
@@ -40,7 +40,7 @@ class FrequencySweep {
             if (enabled && period != 0) {
                 val freq = calculate()
 
-                if (freq <= 2047 && shift != 0) {
+                if (shift != 0) {
                     frequency = freq
                     shadowRegister = freq
 
@@ -54,6 +54,14 @@ class FrequencySweep {
         period = (value shr 4) and 0b111 // Bits 654 period
         negate = value.getBit(3)    // Bit 3 negate
         shift = value and 0b111          // Bits 210 shift
+    }
+
+    fun setNr13(value: Int) {
+        frequency = (frequency and 0b11100000000) or value
+    }
+
+    fun setNr14(value: Int) {
+        frequency = (frequency and 0b11111111) or ((value and 0b111) shl 8)
     }
 
     fun getNr10(): Int {
@@ -75,7 +83,7 @@ class FrequencySweep {
     }
 
     fun getFrequency(): Int {
-        return frequency
+        return 2048 - frequency
     }
 
     private fun calculate() : Int {

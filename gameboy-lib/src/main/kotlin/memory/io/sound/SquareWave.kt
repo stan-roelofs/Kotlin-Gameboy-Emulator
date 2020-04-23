@@ -14,8 +14,6 @@ abstract class SquareWave : SoundChannel() {
     // Current bit in duty
     private var dutyCounter = 0
 
-    private var frequency = 0
-
     protected var timer = 0
     override val lengthCounter = LengthCounter(64)
 
@@ -23,7 +21,6 @@ abstract class SquareWave : SoundChannel() {
         super.reset()
         dutyCounter = 0
         timer = 0
-        frequency = 0
     }
 
     override fun powerOff() {
@@ -31,12 +28,11 @@ abstract class SquareWave : SoundChannel() {
 
         super.powerOff()
         duty = 0
-        frequency = 0
     }
 
     override fun trigger() {
         super.trigger()
-        timer = 2048 - frequency
+        timer = getFrequency()
     }
 
     override fun tick(cycles: Int): Int {
@@ -49,7 +45,7 @@ abstract class SquareWave : SoundChannel() {
 
         timer--
         if (timer == 0) {
-            timer = 2048 - frequency
+            timer = getFrequency()
             lastOutput = if (dutyCycles[duty].getBit(dutyCounter)) 1 else 0
             dutyCounter = (dutyCounter + 1) % 8
         }
@@ -96,14 +92,8 @@ abstract class SquareWave : SoundChannel() {
                     enabled = false
                 }
             }
-            Mmu.NR13,
-            Mmu.NR23 -> {
-                frequency = (frequency and 0b11100000000) or newVal
-            }
             Mmu.NR14,
             Mmu.NR24 -> {
-                frequency = (frequency and 0b11111111) or ((newVal and 0b111) shl 8)
-
                 lengthCounter.setNr4(newVal)
 
                 if (newVal.getBit(7)) {
@@ -114,7 +104,5 @@ abstract class SquareWave : SoundChannel() {
         }
     }
 
-    protected open fun getFrequency(): Int {
-        return 2048 - frequency
-    }
+    abstract fun getFrequency(): Int
 }
