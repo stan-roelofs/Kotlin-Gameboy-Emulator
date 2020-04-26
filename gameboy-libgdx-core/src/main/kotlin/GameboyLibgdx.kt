@@ -28,6 +28,8 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
     private var framesCounter = 0
     private var lastTime = 0L
 
+    private var lastFrame = Array(144) {IntArray(160)}
+
     fun startgb() {
         gbThread = Thread(gb)
         gbThread.start()
@@ -45,6 +47,7 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
             fps = framesCounter
             framesCounter = 0
         }
+        lastFrame = arg as Array<IntArray>
     }
 
     override fun resize(width: Int, height: Int) {
@@ -67,7 +70,7 @@ open class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Inpu
         val pixmap = Pixmap(width, height, Pixmap.Format.RGB888)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                pixmap.setColor(colors[gb.mmu.io.lcd.screenBuffer[y][x]])
+                pixmap.setColor(colors[lastFrame!![y][x]])
                 pixmap.drawPixel(x, y)
             }
         }

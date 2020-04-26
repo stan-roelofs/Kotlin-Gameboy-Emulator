@@ -15,6 +15,8 @@ class Lcd : Memory, Observable() {
     val windowBuffer = Array(144) {IntArray(160)}
     val spritesBuffer = Array(144) {IntArray(160)}
 
+    var lastFrame = Array(144) {IntArray(160)}
+
     // Video RAM memory
     private val vram = IntArray(0x2000)
 
@@ -36,8 +38,8 @@ class Lcd : Memory, Observable() {
     private var OBP0 = 0
     private var OBP1 = 0
 
+    private var cycleCounter = 0
     private var isAnyStat = false
-    var cycleCounter = 0
 
     init {
         reset()
@@ -78,6 +80,7 @@ class Lcd : Memory, Observable() {
         }
 
         cycleCounter = 0
+        isAnyStat = false
     }
 
     fun tick(cyclesElapsed: Int) {
@@ -114,7 +117,10 @@ class Lcd : Memory, Observable() {
                         requestInterrupt(0)
 
                         setChanged()
-                        notifyObservers(screenBuffer)
+                        lastFrame = Array(144) {
+                            screenBuffer[it].clone()
+                        }
+                        notifyObservers(lastFrame)
 
                     } else {
                         setMode(Mode.OAM_SEARCH)
@@ -179,11 +185,11 @@ class Lcd : Memory, Observable() {
             }
             Mmu.LYC -> this.LYC
             Mmu.STAT -> {
-                if (lcdEnabled()) {
+                //if (lcdEnabled()) {
                     this.STAT or 0b10000000 // Bit 7 is always 1
-                } else {
-                    (this.STAT or 0b10000000) and 0b11111000 // Bits 0-2 return 0 when LCD is off
-                }
+                //} else {
+                  //  (this.STAT or 0b10000000) and 0b11111000 // Bits 0-2 return 0 when LCD is off
+                //}
             }
             Mmu.SCY -> this.SCY
             Mmu.SCX -> this.SCX

@@ -633,7 +633,7 @@ class Cpu {
 
             0xCB -> getExtendedInstruction()
 
-            else -> throw Exception("Instruction not implemented: " + Integer.toHexString(opcode))
+            else -> NOP(registers, mmu) //throw Exception("Instruction not implemented: " + Integer.toHexString(opcode))
         }
     }
 

@@ -37,14 +37,23 @@ class FrequencySweep {
         if (counter == DIVIDER) {
             counter = 0
 
-            if (enabled && period != 0) {
-                val freq = calculate()
+            if (!enabled)
+                return
 
-                if (shift != 0) {
-                    frequency = freq
-                    shadowRegister = freq
+            timer--
+            if (timer == 0) {
+                timer = if (period == 0) 8 else period
 
-                    calculate()
+                if (period != 0) {
+                    val freq = calculate()
+
+                    // If overflow enabled will be false
+                    if (enabled && shift != 0) {
+                        frequency = freq
+                        shadowRegister = freq
+
+                        calculate()
+                    }
                 }
             }
         }
@@ -74,10 +83,10 @@ class FrequencySweep {
 
     fun trigger() {
         shadowRegister = frequency
-        timer = period
+        timer = if (period == 0) 8 else period
         enabled = period != 0 || shift != 0
 
-        if (shift != 0) {
+        if (shift > 0) {
             frequency = calculate()
         }
     }
