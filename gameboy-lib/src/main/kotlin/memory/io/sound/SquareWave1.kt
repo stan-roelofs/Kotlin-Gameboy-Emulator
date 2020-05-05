@@ -57,7 +57,7 @@ class SquareWave1 : SquareWave() {
 
         frequencySweep.trigger()
         if (!frequencySweep.enabled) {
-            enabled = false
+           // enabled = false
         }
     }
 }
