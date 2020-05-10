@@ -15,7 +15,7 @@ class WaveChannel : SoundChannel() {
     private var timer = 0
     private var positionCounter = 0
 
-    override val lengthCounter = LengthCounter(256)
+    override val lengthCounter = LengthCounter(256, this)
 
     init {
         reset()
@@ -43,9 +43,6 @@ class WaveChannel : SoundChannel() {
 
     override fun tick(cycles: Int): Int {
         lengthCounter.tick()
-        if (lengthCounter.enabled && lengthCounter.length == 0) {
-            enabled = false
-        }
 
         timer--
         if (timer == 0) {
@@ -88,7 +85,7 @@ class WaveChannel : SoundChannel() {
             Mmu.NR33 -> 0b11111111
             Mmu.NR34 -> {
                 var result = 0b10111111
-                result = setBit(result, 6, lengthCounter.enabled)
+                result = setBit(result, 6, lengthCounter.lengthEnabled)
                 result
             }
             in 0xFF30..0xFF3F -> this.patternRam[address - 0xFF30]

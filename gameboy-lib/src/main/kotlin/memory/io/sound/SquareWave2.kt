@@ -4,6 +4,7 @@ import memory.Mmu
 
 class SquareWave2 : SquareWave() {
 
+    override val lengthCounter = LengthCounter(64, this)
     private var frequency = 0
 
     init {

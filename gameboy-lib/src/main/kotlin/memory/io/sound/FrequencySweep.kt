@@ -3,13 +3,14 @@ package memory.io.sound
 import gameboy.GameBoy
 import utils.getBit
 import utils.setBit
+import utils.toHexString
 
-class FrequencySweep {
+class FrequencySweep(private val soundChannel : SoundChannel) {
 
     private val DIVIDER = GameBoy.TICKS_PER_SEC / 128
 
     private var timer = 0
-    var enabled = false
+    private var sweepEnabled = false
     private var shift = 0
     private var shadowRegister = 0
     private var frequency = 0
@@ -23,7 +24,7 @@ class FrequencySweep {
 
     fun reset() {
         timer = 0
-        enabled = false
+        sweepEnabled = false
         shift = 0
         shadowRegister = 0
         frequency = 0
@@ -37,7 +38,7 @@ class FrequencySweep {
         if (counter == DIVIDER) {
             counter = 0
 
-            if (!enabled)
+            if (!sweepEnabled)
                 return
 
             timer--
@@ -48,7 +49,7 @@ class FrequencySweep {
                     val freq = calculate()
 
                     // If overflow enabled will be false
-                    if (enabled && shift != 0) {
+                    if (sweepEnabled && shift != 0) {
                         frequency = freq
                         shadowRegister = freq
 
@@ -84,7 +85,7 @@ class FrequencySweep {
     fun trigger() {
         shadowRegister = frequency
         timer = if (period == 0) 8 else period
-        enabled = period != 0 || shift != 0
+        sweepEnabled = period != 0 || shift != 0
 
         if (shift > 0) {
             frequency = calculate()
@@ -104,7 +105,8 @@ class FrequencySweep {
         }
 
         if (freq > 2047) {
-            enabled = false
+            sweepEnabled = false
+            soundChannel.enabled = false
         }
 
         return freq

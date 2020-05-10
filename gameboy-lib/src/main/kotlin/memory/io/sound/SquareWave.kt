@@ -15,7 +15,6 @@ abstract class SquareWave : SoundChannel() {
     private var dutyCounter = 0
 
     protected var timer = 0
-    override val lengthCounter = LengthCounter(64)
 
     override fun reset() {
         super.reset()
@@ -37,11 +36,7 @@ abstract class SquareWave : SoundChannel() {
 
     override fun tick(cycles: Int): Int {
         volumeEnvelope.tick()
-
         lengthCounter.tick()
-        if (lengthCounter.enabled && lengthCounter.length == 0) {
-            enabled = false
-        }
 
         timer--
         if (timer == 0) {
@@ -69,7 +64,7 @@ abstract class SquareWave : SoundChannel() {
             Mmu.NR14,
             Mmu.NR24 -> {
                 var result = 0b10111111
-                result = setBit(result, 6, lengthCounter.enabled)
+                result = setBit(result, 6, lengthCounter.lengthEnabled)
                 result
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to SquareWave")

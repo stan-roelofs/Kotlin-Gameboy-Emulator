@@ -4,7 +4,8 @@ import memory.Mmu
 
 class SquareWave1 : SquareWave() {
 
-    private val frequencySweep = FrequencySweep()
+    private val frequencySweep = FrequencySweep(this)
+    override val lengthCounter = LengthCounter(64, this)
 
     init {
         reset()
@@ -19,11 +20,7 @@ class SquareWave1 : SquareWave() {
     }
 
     override fun tick(cycles: Int): Int {
-        val wasEnabled = frequencySweep.enabled
         frequencySweep.tick()
-        if (wasEnabled && !frequencySweep.enabled) {
-            enabled = false
-        }
         return super.tick(cycles)
     }
 
@@ -54,10 +51,6 @@ class SquareWave1 : SquareWave() {
 
     override fun trigger() {
         super.trigger()
-
         frequencySweep.trigger()
-        if (!frequencySweep.enabled) {
-           // enabled = false
-        }
     }
 }

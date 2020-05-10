@@ -9,7 +9,7 @@ class NoiseChannel : SoundChannel() {
 
     private val lfsr = Lfsr()
     private val polynomialCounter = PolynomialCounter()
-    override val lengthCounter = LengthCounter(64)
+    override val lengthCounter = LengthCounter(64, this)
 
     init {
         reset()
@@ -32,9 +32,6 @@ class NoiseChannel : SoundChannel() {
         volumeEnvelope.tick()
 
         lengthCounter.tick()
-        if (lengthCounter.enabled && lengthCounter.length == 0) {
-            enabled = false
-        }
 
         if (polynomialCounter.tick()) {
             lastOutput = lfsr.nextBit(polynomialCounter.width7)
@@ -61,7 +58,7 @@ class NoiseChannel : SoundChannel() {
             Mmu.NR43 -> polynomialCounter.getNr43()
             Mmu.NR44 -> {
                 var result = 0b10111111
-                result = setBit(result, 6, lengthCounter.enabled)
+                result = setBit(result, 6, lengthCounter.lengthEnabled)
                 result
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to NoiseChannel")

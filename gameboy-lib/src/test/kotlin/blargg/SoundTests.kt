@@ -23,6 +23,13 @@ class SoundTests : BlarggTest() {
     }
 
     @Test
+    fun testSweep() {
+        runBlarggTest("04-sweep.gb")
+    }
+
+
+
+    @Test
     fun testRegsAfterPower() {
         runBlarggTest("11-regs after power.gb")
     }
