@@ -1,5 +1,6 @@
 package gui
 
+import GameboyDesktop
 import GameboyLibgdx
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
@@ -22,7 +23,7 @@ class GameBoyView: View() {
     private val vramView = VRamView(gb)
     private val debugView = DebugView(gb)
     private val cartridgeView = CartridgeView(gb)
-    private var gbapp = GameboyLibgdx(gb)
+    private var gbapp = GameboyDesktop(gb)
 
     override val root = vbox {
         menubar {

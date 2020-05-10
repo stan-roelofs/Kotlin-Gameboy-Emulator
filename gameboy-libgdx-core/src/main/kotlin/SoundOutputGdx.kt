@@ -9,16 +9,19 @@ class SoundOutputGdx : SoundOutput {
     private val SAMPLE_RATE = 22050
     private val BUFFER_SIZE = 512
 
-    private val device : AudioDevice? = try {
-        Gdx.audio.newAudioDevice(SAMPLE_RATE, false)
-    } catch (e: GdxRuntimeException) {
-        null
-    }
-
+    private var device : AudioDevice? = null
     private var counter = 0
     private var divider = GameBoy.TICKS_PER_SEC / SAMPLE_RATE
     private var bufferIndex = 0
     private val buffer = ShortArray(BUFFER_SIZE)
+
+    override fun initialize() {
+        device = try {
+            Gdx.audio.newAudioDevice(SAMPLE_RATE, false)
+        } catch (e: GdxRuntimeException) {
+            null
+        }
+    }
 
     override fun reset() {
         counter = 0
@@ -41,7 +44,7 @@ class SoundOutputGdx : SoundOutput {
         }
     }
 
-    fun dispose() {
+    override fun dispose() {
         device?.dispose()
     }
 }

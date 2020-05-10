@@ -16,7 +16,7 @@ To build:
 `./gradlew build`
 
 To run:
-./gradlew gameboy-libgdx-desktop:run
+`./gradlew gameboy-libgdx-desktop:run`
 
 ## Tests status
 See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
