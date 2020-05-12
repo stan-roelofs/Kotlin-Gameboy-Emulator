@@ -14,7 +14,7 @@ android:
     - build-tools-29.0.2
     - android-29
 jdk:
-  - oraclejdk8
+  - openjdk11
 
 script:
   - ./gradlew build
