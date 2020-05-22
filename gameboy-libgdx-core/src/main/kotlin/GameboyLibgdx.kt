@@ -10,6 +10,10 @@ import memory.io.Joypad
 import memory.io.sound.SoundOutput
 import java.util.*
 
+/** Base libgdx gameboy class
+ *
+ * Contains main rendering logic and platform independent functionality
+ */
 abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), InputProcessor, Observer {
     private val color0 = Color(224f / 255, 248f / 255, 208f / 255, 1.0f)
     private val color1 = Color(136f / 255, 192f / 255, 112f / 255, 1.0f)
@@ -79,7 +83,6 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
         batch?.begin()
         batch?.draw(img, 0f, 0f, width.toFloat(), height.toFloat())
         batch?.end()
-        Gdx.graphics.setTitle("${fpsCounter.FPS}")
     }
 
     override fun dispose() {

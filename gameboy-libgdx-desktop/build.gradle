@@ -5,9 +5,6 @@ plugins {
 
 dependencies {
     implementation project(':gameboy-libgdx-core')
-
-    // TornadoFX for gui
-    implementation 'no.tornado:tornadofx:1.7.16'
 }
 
-mainClassName = 'Main'
+mainClassName = 'MainKt'

@@ -1,31 +1,33 @@
 package gui
 
-import javafx.stage.FileChooser
-import javafx.stage.Window
 import utils.Log
+import java.awt.Window
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.zip.ZipFile
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
 
 class RomChooser {
     private val extensionsList = listOf("*.gb", "*.zip")
     private var lastLocation: File? = null
-    private val fileChooser = FileChooser()
+    private val fileChooser = JFileChooser()
 
     init {
-        fileChooser.title = "Choose rom"
-        fileChooser.extensionFilters.add(FileChooser.ExtensionFilter("Roms", extensionsList))
+        fileChooser.dialogTitle = "Choose rom"
+        fileChooser.addChoosableFileFilter(FileNameExtensionFilter("Roms", "gb", "zip"))
     }
 
     fun chooseRom(parentWindow: Window?): File? {
         if (lastLocation != null) {
-            fileChooser.initialDirectory = lastLocation
+            fileChooser.currentDirectory = lastLocation
         }
 
-        var file = fileChooser.showOpenDialog(parentWindow)
-        if (file != null) {
+        val result = fileChooser.showOpenDialog(parentWindow)
+        if (result == JFileChooser.APPROVE_OPTION) {
+            var file = fileChooser.selectedFile
             lastLocation = file.parentFile
 
             when (file.extension) {

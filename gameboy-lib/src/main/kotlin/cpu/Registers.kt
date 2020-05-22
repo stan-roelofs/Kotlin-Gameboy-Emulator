@@ -17,13 +17,13 @@ class Registers {
 
     /** Register A (8-bit) */
     var A: Int = 0
-    internal set(value) {
+        internal set(value) {
         field = value and 0xFF
     }
 
     /** Register F (8-bit) */
     var F: Int = 0
-        set(value) {
+        internal set(value) {
             field = value and 0xF0
         }
 

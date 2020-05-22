@@ -86,3 +86,12 @@ class Androidlol(gb: GameBoy) : GameboyLibgdx(gb), InputProcessor {
         }
     }
 }
+
+class Button(val x: Float, val y: Float, val key: Joypad.JoypadKey) {
+    var width = 15f
+    var height = 15f
+
+    fun Pressed(x: Float, y: Float): Boolean {
+        return (x >= this.x && x <= this.x + width) && (y >= this.y && y <= this.y + width)
+    }
+}
