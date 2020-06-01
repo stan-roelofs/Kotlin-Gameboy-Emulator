@@ -16,6 +16,8 @@ dependencies {
     implementation project(":gameboy-libgdx-core")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.0"
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation "androidx.multidex:multidex:2.0.1"
     api "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
@@ -27,6 +29,7 @@ dependencies {
 
 android {
     buildToolsVersion "29.0.2"
+    ndkVersion = "21.1.6352462"
     compileSdkVersion 29
     sourceSets {
         main {
@@ -45,7 +48,8 @@ android {
     }
     defaultConfig {
         applicationId "nl.stanroelofs.gameboy"
-        minSdkVersion 14
+        multiDexEnabled true
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"

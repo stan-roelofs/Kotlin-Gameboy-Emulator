@@ -7,9 +7,8 @@ interface GameboyMenu {
     /**
      * Loads [file] as a ROM into the gameboy, and starts the emulator
      * @param file The ROM file
-     * @return true if loading succeeds, false otherwise
      */
-    fun loadRom(file: File): Boolean
+    fun loadRom(file: File)
 
     /**
      * Pauses / unpauses the emulator
@@ -20,4 +19,11 @@ interface GameboyMenu {
      * Resets the emulator. Equivalent to turning the gameboy on and off.
      */
     fun reset()
+
+
+    fun save()
+    fun load()
+    
+    fun saveState()
+    fun loadState()
 }

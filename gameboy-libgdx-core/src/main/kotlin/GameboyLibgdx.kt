@@ -1,12 +1,9 @@
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.*
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
-import memory.io.Joypad
 import memory.io.sound.SoundOutput
 import java.util.*
 
@@ -14,7 +11,8 @@ import java.util.*
  *
  * Contains main rendering logic and platform independent functionality
  */
-abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), InputProcessor, Observer {
+abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Observer {
+
     private val color0 = Color(224f / 255, 248f / 255, 208f / 255, 1.0f)
     private val color1 = Color(136f / 255, 192f / 255, 112f / 255, 1.0f)
     private val color2 = Color(52f / 255, 104f / 255, 86f / 255, 1f)
@@ -58,7 +56,6 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
 
     override fun create() {
         batch = SpriteBatch()
-        Gdx.input.inputProcessor = this
         output.initialize()
         gb.mmu.io.sound.output = output
         gb.mmu.io.lcd.addObserver(this)

@@ -1,16 +1,19 @@
 package gui
 
 import GameboyDesktop
+import GameboyMenu
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import gameboy.GameBoy
+import utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.event.KeyEvent
+import java.io.File
 import javax.swing.*
 
 
-class GameboyFrame : JFrame() {
+class GameboyFrame : JFrame(), GameboyMenu {
 
     private val gb = GameBoy(null)
     private val gbapp = GameboyDesktop(gb)
@@ -35,13 +38,23 @@ class GameboyFrame : JFrame() {
         load.addActionListener {
             val rom = RomChooser().chooseRom(this)
             if (rom != null) {
-                gbapp.stopgb()
-                gb.loadCartridge(rom)
-                gbapp.startgb()
-
-                pack()
+                loadRom(rom)
             }
         }
+
+        val screenHash = JMenuItem("Screen hash")
+        screenHash.addActionListener {
+            var s = ""
+            for (i in gb.mmu.io.lcd.screenBuffer) {
+                for (j in i) {
+                    s += j.toString()
+                }
+            }
+
+            Log.d(s.hashCode().toString())
+        }
+
+        menu.add(screenHash)
 
         menu.add(load)
         menuBar.add(menu)
@@ -51,5 +64,35 @@ class GameboyFrame : JFrame() {
         container.preferredSize = Dimension(cfg.width, cfg.height)
         pack()
         isVisible = true
+    }
+
+    override fun loadRom(file: File) {
+        gbapp.stopgb()
+        gb.loadCartridge(file)
+        gbapp.startgb()
+    }
+
+    override fun togglePause() {
+        gb.togglePause()
+    }
+
+    override fun reset() {
+        gb.reset()
+    }
+
+    override fun save() {
+        TODO("Not yet implemented")
+    }
+
+    override fun load() {
+        TODO("Not yet implemented")
+    }
+
+    override fun saveState() {
+        TODO("Not yet implemented")
+    }
+
+    override fun loadState() {
+        TODO("Not yet implemented")
     }
 }
