@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import gameboy.GameBoy
 import memory.io.Joypad
+import javax.microedition.khronos.opengles.GL10
 
 class Controller(private val gb: GameBoy, private val activity: Activity) {
     private val camera: Camera = OrthographicCamera()
@@ -47,14 +48,14 @@ class Controller(private val gb: GameBoy, private val activity: Activity) {
     init {
         Gdx.input.inputProcessor = inputProcessor
 
-        controls.add(ControllerButton(80f, 50f, gb, Joypad.JoypadKey.A))
-        controls.add(ControllerButton(70f, 20f, gb, Joypad.JoypadKey.B))
-        controls.add(ControllerButton(15f, 50f, gb, Joypad.JoypadKey.UP))
-        controls.add(ControllerButton(0f, 35f, gb, Joypad.JoypadKey.LEFT))
-        controls.add(ControllerButton(30f, 35f, gb, Joypad.JoypadKey.RIGHT))
-        controls.add(ControllerButton(15f, 20f, gb, Joypad.JoypadKey.DOWN))
-        controls.add(ControllerButton(50f, 35f, gb, Joypad.JoypadKey.START))
-        controls.add(ControllerButton(50f, 50f, gb, Joypad.JoypadKey.SELECT))
+        controls.add(ControllerButton(80f, 30f, gb, Joypad.JoypadKey.A))
+        controls.add(ControllerButton(70f, 10f, gb, Joypad.JoypadKey.B))
+        controls.add(ControllerButton(15f, 25f, gb, Joypad.JoypadKey.UP))
+        controls.add(ControllerButton(5f, 15f, gb, Joypad.JoypadKey.LEFT))
+        controls.add(ControllerButton(25f, 15f, gb, Joypad.JoypadKey.RIGHT))
+        controls.add(ControllerButton(15f, 5f, gb, Joypad.JoypadKey.DOWN))
+        controls.add(ControllerButton(50f, 10f, gb, Joypad.JoypadKey.SELECT))
+        controls.add(ControllerButton(50f, 10f, gb, Joypad.JoypadKey.START))
         controls.add(MenuButton(50f, 50f, gb, activity))
 
         positionControls()
@@ -76,7 +77,9 @@ class Controller(private val gb: GameBoy, private val activity: Activity) {
 
     private fun positionControls() {
         controls[0].x = viewPort.worldWidth - 20
-
+        controls[1].x = viewPort.worldWidth - 40
+        controls[6].x = (viewPort.worldWidth / 2) - 15
+        controls[7].x = (viewPort.worldWidth / 2) + 5
     }
 }
 
@@ -88,8 +91,8 @@ abstract class Button(var x: Float, var y: Float, protected val gb: GameBoy) {
 }
 
 class ControllerButton(x: Float, y: Float, gb: GameBoy, private val key: Joypad.JoypadKey) : Button(x, y, gb) {
-    private val width = 15f
-    private val height = 15f
+    private val width = 10f
+    private val height = 10f
 
     override fun isPressed(x: Float, y: Float): Boolean {
         return (x >= this.x && x <= this.x + width) && (y >= this.y && y <= this.y + width)
@@ -104,6 +107,7 @@ class ControllerButton(x: Float, y: Float, gb: GameBoy, private val key: Joypad.
     }
 
     override fun draw(shapeRenderer: ShapeRenderer) {
+        Gdx.gl.glEnable(GL10.GL_BLEND);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
         shapeRenderer.color = Color(0f, 0f, 0f, 0.3f)
         shapeRenderer.rect(x, y, width, height)

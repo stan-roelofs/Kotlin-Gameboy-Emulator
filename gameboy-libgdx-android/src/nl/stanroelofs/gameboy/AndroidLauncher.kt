@@ -7,6 +7,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import gameboy.GameBoy
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class AndroidLauncher : AndroidApplication() {
 
@@ -17,11 +19,30 @@ class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val config = AndroidApplicationConfiguration()
-        gb = GameBoy()
+        val am = assets
+        val input = am.open("zelda.gb")
+        val file = File.createTempFile("adadada", "b")
+        copyStreamToFile(input, file)
+        gb = GameBoy(file)
         app = Androidlol(gb!!, this)
         initialize(app, config)
-
+        app!!.startgb()
         requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1)
+    }
+
+    fun copyStreamToFile(inputStream: InputStream, outputFile: File) {
+        inputStream.use { input ->
+            val outputStream = FileOutputStream(outputFile)
+            outputStream.use { output ->
+                val buffer = ByteArray(4 * 1024) // buffer size
+                while (true) {
+                    val byteCount = input.read(buffer)
+                    if (byteCount < 0) break
+                    output.write(buffer, 0, byteCount)
+                }
+                output.flush()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

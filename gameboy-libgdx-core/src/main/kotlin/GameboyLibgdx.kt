@@ -22,14 +22,14 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
     val width = 160
     val height = 144
 
-    private var batch : SpriteBatch? = null
+    protected var batch : SpriteBatch? = null
 
     /** Sound output object, required by gameboy */
     abstract var output : SoundOutput
     private var gbThread = Thread(gb)
     protected val cam = OrthographicCamera()
     protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
-    private var fpsCounter = FpsCounter()
+    protected var fpsCounter = FpsCounter()
     private var framesCounter = 0
     private var lastTime = 0L
 
