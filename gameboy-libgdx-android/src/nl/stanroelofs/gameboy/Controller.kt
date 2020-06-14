@@ -15,6 +15,9 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import gameboy.GameBoy
 import memory.io.Joypad
+import utils.Log
+import java.io.File
+import java.io.FileNotFoundException
 import javax.microedition.khronos.opengles.GL10
 
 class Controller(private val gb: GameBoy, private val activity: Activity) {
@@ -128,14 +131,50 @@ class MenuButton(x: Float, y: Float, gb: GameBoy, private val context: Activity)
             val alertDialog = AlertDialog.Builder(context)
             alertDialog.setTitle("Menu")
 
-            val items: Array<CharSequence> = arrayOf("test")
+            val items: Array<CharSequence> = arrayOf("Load rom", "Pause", "Save", "Load")
             alertDialog.setItems(items) {
-                _, _ ->
+                _, i ->
                 run {
-                    var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
-                    chooseFile.type = "*/*"
-                    chooseFile = Intent.createChooser(chooseFile, "Choose a file")
-                    context.startActivityForResult(chooseFile, 0)
+                    when (i) {
+                        0 -> {
+                            var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+                            chooseFile.type = "*/*"
+                            chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+                            context.startActivityForResult(chooseFile, 0)
+                        }
+                        1 -> {
+                            gb.togglePause()
+                        }
+                        2 -> {
+                            val root = File(context.filesDir, "Saves")
+                            if (!root.exists()) {
+                                if (!root.mkdirs())
+                                    Log.e("Could not create directory")
+                            }
+
+                            if (root.exists()) {
+                                val saveFile = File(root, "${gb.cartridge?.cartridgeFile?.nameWithoutExtension}.sav")
+                                if (!saveFile.exists())
+                                    saveFile.createNewFile()
+
+                                try {
+                                    gb.cartridge?.saveRam(saveFile)
+                                } catch (e: FileNotFoundException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+                        3 -> {
+                            val root = File(context.filesDir, "Saves")
+                            val saveFile = File(root, "${gb.cartridge?.cartridgeFile?.nameWithoutExtension}.sav")
+                            if (saveFile.exists())
+                                gb.cartridge?.loadRam(saveFile)
+                        }
+                        else -> {
+
+                        }
+                    }
+
                 }
             }
             alertDialog.show()

@@ -1,6 +1,7 @@
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.*
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
@@ -22,11 +23,12 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
     val width = 160
     val height = 144
 
-    protected var batch : SpriteBatch? = null
+    private lateinit var font: BitmapFont
+    private lateinit var batch : SpriteBatch
 
     /** Sound output object, required by gameboy */
     abstract var output : SoundOutput
-    private var gbThread = Thread(gb)
+    protected var gbThread = Thread(gb)
     protected val cam = OrthographicCamera()
     protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
     protected var fpsCounter = FpsCounter()
@@ -35,7 +37,7 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
 
     private var lastFrame = Array(144) {IntArray(160)}
 
-    fun startgb() {
+    open fun startgb() {
         gbThread = Thread(gb)
         gbThread.start()
     }
@@ -55,6 +57,9 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
     }
 
     override fun create() {
+        font = BitmapFont()
+        font.data.scale(-0.8f)
+
         batch = SpriteBatch()
         output.initialize()
         gb.mmu.io.sound.output = output
@@ -76,15 +81,18 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
 
         val img = Texture(pixmap)
 
-        batch?.projectionMatrix = cam.combined
-        batch?.begin()
-        batch?.draw(img, 0f, 0f, width.toFloat(), height.toFloat())
-        batch?.end()
+        batch.projectionMatrix = cam.combined
+        batch.begin()
+        batch.draw(img, 0f, 0f, width.toFloat(), height.toFloat())
+        font.draw(batch, "${fpsCounter.FPS}", 10f, 20f)
+        batch.end()
     }
 
     override fun dispose() {
-        batch?.dispose()
+        batch.dispose()
         output.dispose()
+        font.dispose()
+
         gb.stop()
         gbThread.join()
     }

@@ -33,7 +33,6 @@ class GameBoy(cart: File? = null) : Runnable {
 
     /** Indicates whether the gameboy is paused or not */
     var paused = false
-        private set
 
     init {
         reset()
