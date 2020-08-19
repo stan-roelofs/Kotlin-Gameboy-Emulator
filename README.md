@@ -34,5 +34,7 @@ This emulator is for the original Game Boy (DMG) and the versions A,B,C of the C
 
 ## Getting started
 gameboy-lib contains the gameboy emulator library.
+
 gameboy-libgdx-core contains common rendering code.
+
 gameboy-libgdx-desktop and gameboy-libgdx-android contain code specific to different platforms. 
