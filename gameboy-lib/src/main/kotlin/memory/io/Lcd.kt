@@ -7,7 +7,7 @@ import utils.setBit
 import utils.toHexString
 import java.util.*
 
-class Lcd : Memory, Observable() {
+class Lcd(private val mmu: Mmu) : Memory, Observable() {
 
     // Internal screen buffer
     val screenBuffer = Array(144) {IntArray(160)}
@@ -114,7 +114,7 @@ class Lcd : Memory, Observable() {
                     if (LY == 144) {
                         setMode(Mode.VBLANK)
 
-                        requestInterrupt(0)
+                        mmu.requestInterrupt(0)
 
                         setChanged()
                         lastFrame = Array(144) {
@@ -156,7 +156,7 @@ class Lcd : Memory, Observable() {
         ) {
             if (!isAnyStat) {
                 isAnyStat = true
-                requestInterrupt(1)
+                mmu.requestInterrupt(1)
             }
         } else {
             isAnyStat = false

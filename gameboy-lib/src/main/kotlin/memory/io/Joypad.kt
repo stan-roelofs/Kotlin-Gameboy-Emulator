@@ -7,7 +7,7 @@ import utils.getBit
 import utils.toHexString
 import java.util.*
 
-class Joypad : Memory {
+class Joypad(private val mmu: Mmu) : Memory {
 
     private var P1 = 0
     private val pressedKeys = EnumSet.noneOf(JoypadKey::class.java)!!
@@ -50,7 +50,7 @@ class Joypad : Memory {
         pressedKeys.add(key)
         updateData()
         if (P1.getBit(key.selectBit)) {
-            requestInterrupt(4)
+            mmu.requestInterrupt(4)
         }
     }
 

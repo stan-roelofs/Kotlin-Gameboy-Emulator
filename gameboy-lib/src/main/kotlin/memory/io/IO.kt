@@ -4,17 +4,17 @@ import memory.Memory
 import memory.Mmu
 import memory.io.sound.Sound
 
-class IO : Memory {
+class IO(mmu : Mmu) : Memory {
 
     // These are public such that gui can read the LCD data to render,
     // and can send key presses/releases to the Joypad
-    val lcd = Lcd()
-    val joypad = Joypad()
+    val lcd = Lcd(mmu)
+    val joypad = Joypad(mmu)
     val serial = Serial()
 
     val sound = Sound()
-    val dma = Dma()
-    private val timer = Timer()
+    val dma = Dma(mmu)
+    private val timer = Timer(mmu)
 
     private var IF = 0
 

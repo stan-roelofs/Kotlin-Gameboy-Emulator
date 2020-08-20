@@ -5,7 +5,7 @@ import memory.Mmu
 import utils.Log
 import utils.toHexString
 
-class Dma : Memory {
+class Dma(private val mmu: Mmu) : Memory {
 
     private var requested = false
     private var starting = false
@@ -36,8 +36,6 @@ class Dma : Memory {
             Log.w("Cycles != 4")
         }
         if (inProgress || starting) {
-            val mmu = Mmu.instance
-
             val currentByte = currentOffset
 
             // Start writing after 1 setup cycle

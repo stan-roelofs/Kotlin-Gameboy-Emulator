@@ -3,17 +3,12 @@ package memory
 import memory.cartridge.Cartridge
 import memory.io.IO
 import utils.Log
+import utils.setBit
 import utils.toHexString
 
-class Mmu private constructor() : Memory {
-
-    private object Holder {
-        val INSTANCE = Mmu()
-    }
+class Mmu : Memory {
 
     companion object {
-        internal val instance: Mmu by lazy { Holder.INSTANCE }
-
         // Constants
 
         // LCD
@@ -83,7 +78,7 @@ class Mmu private constructor() : Memory {
     private val hram = HRam()
     private val oam = Oam()
     private val internalRam = InternalRam()
-    val io = IO()
+    val io = IO(this)
 
     init {
         reset()
@@ -102,6 +97,16 @@ class Mmu private constructor() : Memory {
             Log.w("Cycles != 4, should not be possible")
         }
         io.tick(cycles)
+    }
+
+
+    /**
+     * Sets the bit at [pos] to true in the Interrupt Flags register
+     */
+    fun requestInterrupt(pos: Int) {
+        var interruptFlags = readByte(IF)
+        interruptFlags = setBit(interruptFlags, pos)
+        writeByte(IF, interruptFlags)
     }
 
     override fun readByte(address: Int): Int {

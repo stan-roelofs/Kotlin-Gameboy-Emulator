@@ -25,11 +25,10 @@ import utils.getSecondByte
  *
  * On initialization [reset] is called.
  */
-class Cpu {
+class Cpu(private val mmu : Mmu) {
     /** Cpu registers */
     val registers = Registers()
 
-    private val mmu = Mmu.instance
     private var currentInstruction: Instruction? = null
     private var haltBug = false
     private var eiExecuted = false

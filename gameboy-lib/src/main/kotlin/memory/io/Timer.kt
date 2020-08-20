@@ -6,7 +6,7 @@ import utils.getBit
 import utils.getSecondByte
 import utils.toHexString
 
-class Timer : Memory {
+class Timer(private val mmu: Mmu) : Memory {
     private var internalCounter = 0
 
     private var TIMA = 0
@@ -45,7 +45,7 @@ class Timer : Memory {
 
             if (reload <= 4) {
                 TIMA = TMA
-                requestInterrupt(2)
+                mmu.requestInterrupt(2)
             }
         }
         // Set new value of the counter
@@ -88,7 +88,7 @@ class Timer : Memory {
 
                     if (TIMA > 0xFF) {
                         TIMA = TMA
-                        requestInterrupt(2)
+                        mmu.requestInterrupt(2)
                     }
                 }
 
@@ -114,7 +114,7 @@ class Timer : Memory {
 
                     if (TIMA > 0xFF) {
                         TIMA = TMA
-                        requestInterrupt(2)
+                        mmu.requestInterrupt(2)
                     }
                 }
 

@@ -44,7 +44,7 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
 
     private val screenBufferArray = ByteArray(width * height * 3)
     private val buffer = ByteBuffer.allocateDirect(width * height * 3)
-
+    
     open fun startgb() {
         gbThread = Thread(gb)
         gbThread.start()

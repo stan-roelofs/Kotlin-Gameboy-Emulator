@@ -18,11 +18,11 @@ class GameBoy(cart: File? = null) : Runnable {
         const val TICKS_PER_SEC = 4194304 / 4
     }
 
-    /** The Gameboy's CPU instance */
-    val cpu = Cpu()
-
     /** The Gameboy's MMU instance */
-    val mmu = Mmu.instance
+    val mmu = Mmu()
+
+    /** The Gameboy's CPU instance */
+    val cpu = Cpu(mmu)
 
     /** The current cartridge / rom */
     var cartridge: Cartridge? = null
