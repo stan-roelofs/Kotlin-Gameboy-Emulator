@@ -30,9 +30,9 @@
 - [x] 01-registers
 - [x] 02-len ctr
 - [x] 03-trigger
-- [ ] 04-sweep
-- [ ] 05-sweep details
-- [ ] 06-overflow on trigger
+- [x] 04-sweep
+- [x] 05-sweep details
+- [x] 06-overflow on trigger
 - [ ] 07-len sweep period sync
 - [ ] 08-len ctr during power
 - [ ] 09-wave read while on

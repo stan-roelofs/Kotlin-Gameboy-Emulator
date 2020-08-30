@@ -28,6 +28,11 @@ class SoundTests : BlarggTest() {
     }
 
     @Test
+    fun testSweepDetails() {
+        runBlarggTest("05-sweep details.gb")
+    }
+
+    @Test
     fun testOverflowOnTrigger() {
         runBlarggTest("06-overflow on trigger.gb")
     }

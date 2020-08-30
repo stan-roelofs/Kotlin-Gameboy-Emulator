@@ -3,7 +3,6 @@ package memory.io.sound
 import gameboy.GameBoy
 import utils.getBit
 import utils.setBit
-import utils.toHexString
 
 class FrequencySweep(private val soundChannel : SoundChannel) {
 
@@ -18,6 +17,11 @@ class FrequencySweep(private val soundChannel : SoundChannel) {
     private var negate = false
     private var counter = 0
 
+    /* Clearing the sweep negate mode bit in NR10 after at least one sweep calculation has been made
+     * using the negate mode since the last trigger causes the channel to be immediately disabled.
+     */
+    private var calculationMade = false
+
     init {
         reset()
     }
@@ -31,6 +35,7 @@ class FrequencySweep(private val soundChannel : SoundChannel) {
         period = 0
         negate = false
         counter = 0
+        calculationMade = false
     }
 
     fun tick() {
@@ -62,8 +67,19 @@ class FrequencySweep(private val soundChannel : SoundChannel) {
 
     fun setNr10(value : Int) {
         period = (value shr 4) and 0b111 // Bits 654 period
-        negate = value.getBit(3)    // Bit 3 negate
+        val newNegate = value.getBit(3)    // Bit 3 negate
         shift = value and 0b111          // Bits 210 shift
+
+        if (newNegate && !negate) {
+            calculationMade = false
+        }
+
+        if (calculationMade && negate && !newNegate) {
+            sweepEnabled = false
+            soundChannel.enabled = false
+        }
+
+        negate = newNegate
     }
 
     fun setNr13(value: Int) {
@@ -86,6 +102,7 @@ class FrequencySweep(private val soundChannel : SoundChannel) {
         shadowRegister = frequency
         timer = if (period == 0) 8 else period
         sweepEnabled = period != 0 || shift != 0
+        calculationMade = false
 
         if (shift > 0) {
             frequency = calculate()
@@ -97,6 +114,8 @@ class FrequencySweep(private val soundChannel : SoundChannel) {
     }
 
     private fun calculate() : Int {
+        calculationMade = true
+
         var freq = shadowRegister shr shift
         freq = if (negate) {
             shadowRegister - freq
