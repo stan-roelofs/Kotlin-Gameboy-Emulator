@@ -8,6 +8,11 @@ abstract class AND(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun and(value: Int) {
         registers.A = registers.A and value
 

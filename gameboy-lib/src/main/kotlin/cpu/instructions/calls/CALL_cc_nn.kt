@@ -14,6 +14,12 @@ class CALL_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private 
     private var address = 0
     override val totalCycles = 24
 
+    override fun reset() {
+        super.reset()
+        conditionHolds = true
+        address = 0
+    }
+
     override fun tick() {
 
         when(currentCycle) {

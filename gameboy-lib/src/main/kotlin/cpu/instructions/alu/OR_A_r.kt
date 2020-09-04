@@ -10,7 +10,6 @@ class OR_A_r(registers: Registers, mmu: Mmu, private val register: Int) : OR(reg
     override val totalCycles = 4
 
     override fun tick() {
-
         when(currentCycle) {
             0 -> {
                 value = when(register) {

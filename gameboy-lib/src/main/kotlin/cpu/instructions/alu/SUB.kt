@@ -8,6 +8,11 @@ abstract class SUB(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun sub(value: Int) {
         val oldA = registers.A
         registers.A = registers.A - value

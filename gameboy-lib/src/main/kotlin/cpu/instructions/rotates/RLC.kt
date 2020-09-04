@@ -9,6 +9,11 @@ abstract class RLC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun rlc(value: Int): Int {
         val cFlag = value.getBit(7)
         registers.setCFlag(cFlag)

@@ -8,6 +8,11 @@ class RRC_HL(registers: Registers, mmu: Mmu) : RRC(registers, mmu) {
     private var address = 0
     override val totalCycles = 16
 
+    override fun reset() {
+        super.reset()
+        address = 0
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

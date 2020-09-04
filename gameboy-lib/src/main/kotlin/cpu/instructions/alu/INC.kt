@@ -8,6 +8,11 @@ abstract class INC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun inc(value: Int) {
         registers.setNFlag(false)
 

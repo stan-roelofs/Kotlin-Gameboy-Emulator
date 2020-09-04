@@ -10,7 +10,6 @@ class SBC_A_r(registers: Registers, mmu: Mmu, private val register: Int) : SBC(r
     override val totalCycles = 4
 
     override fun tick() {
-
         when(currentCycle) {
             0 -> {
                 value = when(register) {

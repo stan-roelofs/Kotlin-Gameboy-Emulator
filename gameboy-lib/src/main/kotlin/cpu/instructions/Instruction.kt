@@ -11,6 +11,10 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
     abstract val totalCycles: Int
     protected var currentCycle: Int = 0
 
+    open fun reset() {
+        currentCycle = 0
+    }
+
     abstract fun tick()
 
     protected fun getSignedImmediate(): Int {

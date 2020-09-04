@@ -8,6 +8,11 @@ abstract class CP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) 
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun cp(value: Int) {
         val zFlag = registers.A == value
         registers.setZFlag(zFlag)

@@ -11,6 +11,12 @@ class JR_cc_n(registers: Registers, mmu: Mmu, private val flag: Int, private val
     private var conditionHolds = true
     override val totalCycles = 12
 
+    override fun reset() {
+        super.reset()
+        value = 0
+        conditionHolds = true
+    }
+
     override fun tick() {
 
         when(currentCycle) {

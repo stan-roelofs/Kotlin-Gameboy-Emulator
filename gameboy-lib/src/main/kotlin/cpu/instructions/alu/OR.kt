@@ -8,6 +8,11 @@ abstract class OR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) 
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun or(value: Int) {
         registers.A = registers.A or value
 

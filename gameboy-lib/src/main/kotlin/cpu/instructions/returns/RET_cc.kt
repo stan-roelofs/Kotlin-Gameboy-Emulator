@@ -12,6 +12,12 @@ class RET_cc(registers: Registers, mmu: Mmu, private val flag: Int, private val 
     private var conditionHolds = true
     override val totalCycles = 20
 
+    override fun reset() {
+        super.reset()
+        value = 0
+        conditionHolds = true
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

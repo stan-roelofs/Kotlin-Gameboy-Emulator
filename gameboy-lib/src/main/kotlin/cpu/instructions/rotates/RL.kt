@@ -9,6 +9,11 @@ abstract class RL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) 
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun rl(value: Int): Int {
         val carry = registers.getCFlag()
 

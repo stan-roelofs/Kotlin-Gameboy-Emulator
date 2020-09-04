@@ -13,6 +13,11 @@ class CALL_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     private var address = 0
     override val totalCycles = 24
 
+    override fun reset() {
+        super.reset()
+        address = 0
+    }
+
     override fun tick() {
 
         when(currentCycle) {

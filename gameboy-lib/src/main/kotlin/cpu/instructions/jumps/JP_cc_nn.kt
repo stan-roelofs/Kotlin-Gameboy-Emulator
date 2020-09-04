@@ -12,6 +12,12 @@ class JP_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private va
     private var conditionHolds = true
     override val totalCycles = 16
 
+    override fun reset() {
+        super.reset()
+        conditionHolds = true
+        value = 0
+    }
+
     override fun tick() {
 
         when(currentCycle) {

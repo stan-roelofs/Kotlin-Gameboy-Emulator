@@ -10,6 +10,11 @@ class INC_HL(registers: Registers, mmu: Mmu) : INC(registers, mmu) {
 
     private var address = 0
 
+    override fun reset() {
+        super.reset()
+        address = 0
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

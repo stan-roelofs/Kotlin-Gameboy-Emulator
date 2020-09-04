@@ -10,7 +10,6 @@ class AND_A_r(registers: Registers, mmu: Mmu, private val register: Int) : AND(r
     override val totalCycles = 4
 
     override fun tick() {
-
         when(currentCycle) {
             0 -> {
                 value = when(register) {

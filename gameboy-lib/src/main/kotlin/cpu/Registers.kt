@@ -80,6 +80,26 @@ class Registers {
     private val HFlag: Int = 5
     internal val CFlag: Int = 4
 
+    /** IME (Interrupt Master Enable) flag.
+     * Disables / enables all interrupts
+     */
+    var IME = false
+        internal set
+
+    /** Halt flag, enabled when the cpu is in the halt state */
+    var halt = false
+        internal set
+
+    /** Stop flag, enabled when the cpu is in the STOP state */
+    var stop = false
+        internal set
+
+    var haltBug = false
+        internal set
+
+    var eiExecuted = false
+        internal set
+
     init {
         reset()
     }
@@ -95,6 +115,9 @@ class Registers {
         setHL(0x014D)
         SP = 0xFFFE
         PC = 0x100
+        stop = false
+        halt = false
+        IME = false
     }
 
     internal fun setZFlag(state: Boolean) {

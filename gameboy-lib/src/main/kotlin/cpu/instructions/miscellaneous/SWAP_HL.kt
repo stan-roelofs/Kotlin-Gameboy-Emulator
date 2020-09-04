@@ -10,6 +10,12 @@ class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {
     private var address = 0
     override val totalCycles = 16
 
+    override fun reset() {
+        super.reset()
+        new = 0
+        address = 0
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

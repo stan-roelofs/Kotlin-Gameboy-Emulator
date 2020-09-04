@@ -8,6 +8,11 @@ abstract class ADC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun adc(value: Int) {
         val carry = if (registers.getCFlag()) 1 else 0
         val temp = registers.A + value + carry

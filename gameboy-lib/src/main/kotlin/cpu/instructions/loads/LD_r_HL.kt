@@ -11,6 +11,11 @@ class LD_r_HL(registers: Registers, mmu: Mmu, private val register: Int) : Instr
     private var value = 0
     override val totalCycles = 8
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

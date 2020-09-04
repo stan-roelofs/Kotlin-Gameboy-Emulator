@@ -13,6 +13,11 @@ class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     private var address = 0
     override val totalCycles = 20
 
+    override fun reset() {
+        super.reset()
+        address = 0
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

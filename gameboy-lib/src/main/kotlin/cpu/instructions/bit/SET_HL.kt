@@ -12,6 +12,11 @@ class SET_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instructi
 
     override val totalCycles = 16
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     override fun tick() {
         when(currentCycle) {
             0 -> {

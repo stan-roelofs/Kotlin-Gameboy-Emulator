@@ -10,6 +10,11 @@ abstract class RR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) 
 
     protected var value = 0
 
+    override fun reset() {
+        super.reset()
+        value = 0
+    }
+
     protected fun rr(value: Int): Int {
         val carry = value.getBit(0)
         val cFlag = registers.getCFlag()
