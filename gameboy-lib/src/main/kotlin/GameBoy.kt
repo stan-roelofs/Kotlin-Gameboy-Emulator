@@ -44,8 +44,6 @@ class GameBoy(cart: File? = null) : Runnable {
 
     /** Resets all registers and memory addresses */
     fun reset() {
-        running = false
-        paused = false
         mmu.reset()
         cpu.reset()
     }

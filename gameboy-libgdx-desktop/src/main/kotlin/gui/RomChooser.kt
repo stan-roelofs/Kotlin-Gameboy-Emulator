@@ -11,13 +11,12 @@ import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
 class RomChooser {
-    private val extensionsList = listOf("*.gb", "*.zip")
     private var lastLocation: File? = null
     private val fileChooser = JFileChooser()
 
     init {
         fileChooser.dialogTitle = "Choose rom"
-        fileChooser.addChoosableFileFilter(FileNameExtensionFilter("Roms", "gb", "zip"))
+        fileChooser.addChoosableFileFilter(FileNameExtensionFilter("Roms", "gb", "gbc", "zip"))
     }
 
     fun chooseRom(parentWindow: Window?): File? {
@@ -47,6 +46,7 @@ class RomChooser {
                         }
                     }
                 }
+                "gbc",
                 "gb" -> {
                     return file
                 }

@@ -1,26 +1,27 @@
 package gui
 
 import GameboyDesktop
-import GameboyMenu
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import gameboy.GameBoy
 import utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
-import java.awt.event.KeyEvent
 import java.io.File
 import javax.swing.*
 
 
-class GameboyFrame : JFrame(), GameboyMenu {
+class GameboyFrame : JFrame() {
 
     private val gb = GameBoy(null)
     private val gbapp = GameboyDesktop(gb)
+    private val romChooser: RomChooser
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+        romChooser = RomChooser()
+
         val container = contentPane
         container.layout = BorderLayout()
 
@@ -32,32 +33,33 @@ class GameboyFrame : JFrame(), GameboyMenu {
         container.add(canvas.canvas, BorderLayout.CENTER)
 
         val menuBar = JMenuBar()
-        val menu = JMenu("File")
-        menu.mnemonic = KeyEvent.VK_ALT
-        val load = JMenuItem("Load rom")
-        load.addActionListener {
-            val rom = RomChooser().chooseRom(this)
-            if (rom != null) {
-                loadRom(rom)
-            }
-        }
+        val fileMenu = JMenu("File")
+        //fileMenu.mnemonic = KeyEvent.VK_ALT
+        val loadRom = JMenuItem("Load rom")
+        loadRom.addActionListener {loadRom() }
+        fileMenu.add(loadRom)
+        menuBar.add(fileMenu)
 
+        val gameMenu = JMenu("Game")
+        val reset = JMenuItem("Reset")
+        reset.addActionListener { reset() }
+        gameMenu.add(reset)
+        val pause = JMenuItem("Toggle pause")
+        pause.addActionListener { togglePause() }
+        gameMenu.add(pause)
+        val save = JMenuItem("Save")
+        save.addActionListener { save() }
+        gameMenu.add(save)
+        val load = JMenuItem("Load")
+        load.addActionListener { load() }
+        gameMenu.add(load)
+        menuBar.add(gameMenu)
+
+        val debugMenu = JMenu("Debug")
         val screenHash = JMenuItem("Screen hash")
-        screenHash.addActionListener {
-            var s = ""
-            for (i in gb.mmu.io.lcd.screenBuffer) {
-                for (j in i) {
-                    s += j.toString()
-                }
-            }
-
-            Log.d(s.hashCode().toString())
-        }
-
-        menu.add(screenHash)
-
-        menu.add(load)
-        menuBar.add(menu)
+        screenHash.addActionListener {screenHash() }
+        debugMenu.add(screenHash)
+        menuBar.add(debugMenu)
 
         jMenuBar = menuBar
 
@@ -66,33 +68,51 @@ class GameboyFrame : JFrame(), GameboyMenu {
         isVisible = true
     }
 
-    override fun loadRom(file: File) {
-        gbapp.stopgb()
-        gb.loadCartridge(file)
-        gbapp.startgb()
+    fun loadRom() {
+        val rom = romChooser.chooseRom(this)
+        if (rom != null) {
+            gbapp.stopgb()
+            gb.loadCartridge(rom)
+            gbapp.startgb()
+        }
     }
 
-    override fun togglePause() {
+    fun togglePause() {
         gb.togglePause()
     }
 
-    override fun reset() {
+    fun reset() {
         gb.reset()
     }
 
-    override fun save() {
+    fun save() {
+        val fileName = gb.cartridge?.cartridgeFile?.nameWithoutExtension
+        if (fileName != null)
+            gb.cartridge?.saveRam(File("$fileName.sav"))
+    }
+
+    fun load() {
+        val fileName = gb.cartridge?.cartridgeFile?.nameWithoutExtension
+        if (fileName != null)
+            gb.cartridge?.loadRam(File("$fileName.sav"))
+    }
+
+    fun saveState() {
         TODO("Not yet implemented")
     }
 
-    override fun load() {
+    fun loadState() {
         TODO("Not yet implemented")
     }
 
-    override fun saveState() {
-        TODO("Not yet implemented")
-    }
+    fun screenHash() {
+        var s = ""
+        for (i in gb.mmu.io.lcd.screenBuffer) {
+            for (j in i) {
+                s += j.toString()
+            }
+        }
 
-    override fun loadState() {
-        TODO("Not yet implemented")
+        Log.d(s.hashCode().toString())
     }
 }
