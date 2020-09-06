@@ -1,4 +1,4 @@
-package memory.io
+package memory.io.graphics
 
 import memory.Memory
 import memory.Mmu
@@ -21,7 +21,7 @@ class Lcd(private val mmu: Mmu) : Memory, Observable() {
     private val vram = IntArray(0x2000)
 
     // List of sprites
-    private val sprites = Array(40) {Sprite()}
+    private val sprites = Array(40) { Sprite() }
 
     // List of tiles in the video ram
     private val tiles = Array(384) {Array(16) {IntArray(8)}}
@@ -509,22 +509,5 @@ class Lcd(private val mmu: Mmu) : Memory, Observable() {
 
     private fun lcdEnabled(): Boolean {
         return LCDC.getBit(7)
-    }
-
-    enum class Mode(val mode: Int, val cycles: Int) {
-        HBLANK(0, 204),
-        VBLANK(1, 456),
-        OAM_SEARCH(2, 80),
-        LCD_TRANSFER(3, 172),
-    }
-
-    private class Sprite {
-        var y = 0
-        var x = 0
-        var tileNumber = 0
-        var priority = false
-        var isYFlip = false
-        var isXFlip = false
-        var isPalette1 = false
     }
 }
