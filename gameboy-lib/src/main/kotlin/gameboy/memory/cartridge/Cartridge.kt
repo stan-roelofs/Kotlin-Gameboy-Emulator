@@ -68,7 +68,7 @@ class Cartridge(file: File) : Memory {
             Log.i("Scrolling Nintendo Graphic bytes match")
         }
 
-        isGbc = data[0x143].toInt() == 0x80
+        isGbc = data[0x143] == 0x80.toByte()
         Log.i("Is Color GB: $isGbc")
 
         title = String(data.copyOfRange(0x134, 0x143), Charsets.US_ASCII)
@@ -77,10 +77,10 @@ class Cartridge(file: File) : Memory {
         licensee = String(data.copyOfRange(0x144, 0x146), Charsets.US_ASCII)
         Log.i("New Licensee Code: $licensee")
 
-        isSgb = data[0x146].toInt() == 0x03
+        isSgb = data[0x146] == 0x03.toByte()
         Log.i("Supports SGB functions: $isSgb")
 
-        val romBanks = when(data[0x148].toInt()) {
+        val romBanks = when(data[0x148].toUByte().toInt()) {
             0x00 -> 2
             0x01 -> 4
             0x02 -> 8
@@ -97,7 +97,7 @@ class Cartridge(file: File) : Memory {
         }
         Log.i("Number of ROM banks: $romBanks")
 
-        val ramSize = when(data[0x149].toInt()) {
+        val ramSize = when(data[0x149].toUByte().toInt()) {
             0x00 -> 0
             0x01 -> 2048
             0x02 -> 8192
@@ -108,7 +108,7 @@ class Cartridge(file: File) : Memory {
         }
         Log.i("RAM size: $ramSize bytes")
 
-        when (data[0x147].toInt()) {
+        when (data[0x147].toUByte().toInt()) {
             0x00 -> {
                 Log.i("ROM ONLY")
                 type = ROMONLY()
@@ -179,17 +179,17 @@ class Cartridge(file: File) : Memory {
             0xFF -> Log.i("Hudson HuC-1")
         }
 
-        destinationCode = data[0x14A].toInt()
+        destinationCode = data[0x14A].toUByte().toInt()
         destination = if (destinationCode == 0x00) "Japanese" else "Non-Japanese"
         Log.i("Destination Code: $destination")
 
-        oldLicenseeCode = data[0x14B].toInt()
+        oldLicenseeCode = data[0x14B].toUByte().toInt()
         if (isSgb) {
             Log.w("SGB Functions require old licensee code to be 0x33")
         }
         Log.i("Old Licensee Code: $oldLicenseeCode")
 
-        versionNumber = data[0x14C].toInt()
+        versionNumber = data[0x14C].toUByte().toInt()
         Log.i("ROM version: $versionNumber")
 
         var sum = 0

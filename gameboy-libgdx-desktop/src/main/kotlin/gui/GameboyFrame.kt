@@ -96,14 +96,6 @@ class GameboyFrame : JFrame() {
         gb.mmu.cartridge.loadRam(File("$fileName.sav"))
     }
 
-    fun saveState() {
-        TODO("Not yet implemented")
-    }
-
-    fun loadState() {
-        TODO("Not yet implemented")
-    }
-
     private fun screenHash() {
         var s = ""
         for (i in gb.mmu.io.lcd.screenBuffer) {
