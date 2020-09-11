@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import gameboy.GameBoy
+import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
 import java.io.File
 
@@ -44,7 +44,7 @@ class AndroidLauncher : AndroidApplication() {
                 if (!file.exists() || !file.canRead())
                     return
 
-                val gb = GameBoy(Cartridge(file))
+                val gb = GameBoyDMG(Cartridge(file))
                 app.startgb(gb)
             }
         }

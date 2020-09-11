@@ -1,6 +1,6 @@
 package blargg
 
-import gameboy.GameBoy
+import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
 import gameboy.utils.Log
 import org.junit.Assert
@@ -21,7 +21,7 @@ abstract class BlarggTest {
     fun runBlarggTest(fileName: String, screenHash: Int? = null) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
         val romFile = File(url)
-        val gb = GameBoy(Cartridge(romFile))
+        val gb = GameBoyDMG(Cartridge(romFile))
 
         Log.i("")
         Log.i("Running Blargg Test: $fileName")

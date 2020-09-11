@@ -12,7 +12,7 @@ import gameboy.utils.getSecondByte
  *
  * On initialization [reset] is called.
  */
-class Cpu(private val mmu : Mmu) {
+abstract class Cpu(private val mmu : Mmu) {
     /** Cpu registers */
     val registers = Registers()
 

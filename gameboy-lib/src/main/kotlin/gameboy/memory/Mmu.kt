@@ -6,7 +6,7 @@ import gameboy.utils.Log
 import gameboy.utils.setBit
 import gameboy.utils.toHexString
 
-class Mmu(val cartridge: Cartridge) : Memory {
+abstract class Mmu(val cartridge: Cartridge) : Memory {
 
     companion object {
         // Constants
@@ -83,7 +83,7 @@ class Mmu(val cartridge: Cartridge) : Memory {
         reset()
     }
 
-    override fun reset() {
+    final override fun reset() {
         hram.reset()
         oam.reset()
         internalRam.reset()

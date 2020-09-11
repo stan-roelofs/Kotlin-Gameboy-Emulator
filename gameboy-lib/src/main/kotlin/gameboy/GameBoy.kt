@@ -2,14 +2,13 @@ package gameboy
 
 import gameboy.cpu.Cpu
 import gameboy.memory.Mmu
-import gameboy.memory.cartridge.Cartridge
 
 /**
  * Main Gameboy class
  *
  * Implements the Runnable interface such that it can be ran in a thread
  */
-class GameBoy(cartridge: Cartridge) : Runnable {
+abstract class GameBoy : Runnable {
 
     companion object {
         /** The number of ticks per second the CPU is supposed to execute */
@@ -17,10 +16,10 @@ class GameBoy(cartridge: Cartridge) : Runnable {
     }
 
     /** The Gameboy's MMU instance */
-    val mmu = Mmu(cartridge)
+    abstract val mmu: Mmu
 
     /** The Gameboy's CPU instance */
-    val cpu = Cpu(mmu)
+    abstract val cpu: Cpu
 
     /** Indicates whether the gameboy is currently running or not */
     var running = false
@@ -28,10 +27,6 @@ class GameBoy(cartridge: Cartridge) : Runnable {
 
     /** Indicates whether the gameboy is paused or not */
     var paused = false
-
-    init {
-        reset()
-    }
 
     /** Resets all registers and memory addresses */
     fun reset() {
