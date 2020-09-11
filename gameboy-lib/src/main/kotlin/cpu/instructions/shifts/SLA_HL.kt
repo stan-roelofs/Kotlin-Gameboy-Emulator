@@ -1,8 +1,8 @@
-package cpu.instructions.shifts
+package gameboy.cpu.instructions.shifts
 
-import cpu.Registers
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class SLA_HL(registers: Registers, mmu: Mmu) : SLA(registers, mmu) {
 

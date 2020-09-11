@@ -1,10 +1,10 @@
-package memory.io
+package gameboy.memory.io
 
-import memory.Memory
-import memory.Mmu
-import utils.getBit
-import utils.setBit
-import utils.toHexString
+import gameboy.memory.Memory
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
+import gameboy.utils.setBit
+import gameboy.utils.toHexString
 
 class Serial : Memory {
 

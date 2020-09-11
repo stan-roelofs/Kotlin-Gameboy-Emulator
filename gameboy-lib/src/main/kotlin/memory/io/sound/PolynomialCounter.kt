@@ -1,7 +1,7 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
-import utils.getBit
-import utils.setBit
+import gameboy.utils.getBit
+import gameboy.utils.setBit
 
 class PolynomialCounter {
 

@@ -1,17 +1,15 @@
 package gameboy
 
-import cpu.Cpu
-import memory.Mmu
-import memory.cartridge.Cartridge
-import java.io.File
+import gameboy.cpu.Cpu
+import gameboy.memory.Mmu
+import gameboy.memory.cartridge.Cartridge
 
 /**
  * Main Gameboy class
  *
  * Implements the Runnable interface such that it can be ran in a thread
- * Optionally a file is passed which will be loaded as a cartridge
  */
-class GameBoy(cart: File? = null) : Runnable {
+class GameBoy(cartridge: Cartridge) : Runnable {
 
     companion object {
         /** The number of ticks per second the CPU is supposed to execute */
@@ -19,13 +17,10 @@ class GameBoy(cart: File? = null) : Runnable {
     }
 
     /** The Gameboy's MMU instance */
-    val mmu = Mmu()
+    val mmu = Mmu(cartridge)
 
     /** The Gameboy's CPU instance */
     val cpu = Cpu(mmu)
-
-    /** The current cartridge / rom */
-    var cartridge: Cartridge? = null
 
     /** Indicates whether the gameboy is currently running or not */
     var running = false
@@ -36,10 +31,6 @@ class GameBoy(cart: File? = null) : Runnable {
 
     init {
         reset()
-
-        if (cart != null) {
-            loadCartridge(cart)
-        }
     }
 
     /** Resets all registers and memory addresses */
@@ -70,15 +61,5 @@ class GameBoy(cart: File? = null) : Runnable {
                 step()
             }
         }
-    }
-
-    /**
-     * Loads a rom into the gameboy
-     * @param cart A .gb file which should be loaded
-     */
-    fun loadCartridge(cart: File) {
-        cartridge = Cartridge(cart)
-        mmu.cartridge = cartridge
-        reset()
     }
 }

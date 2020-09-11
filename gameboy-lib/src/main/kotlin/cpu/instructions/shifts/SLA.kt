@@ -1,9 +1,9 @@
-package cpu.instructions.shifts
+package gameboy.cpu.instructions.shifts
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.getBit
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
 
 abstract class SLA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import gameboy.GameBoy
-import memory.io.Joypad
-import utils.Log
+import gameboy.memory.io.Joypad
+import gameboy.utils.Log
 import java.io.File
 import java.io.FileNotFoundException
 import javax.microedition.khronos.opengles.GL10
@@ -153,12 +153,12 @@ class MenuButton(x: Float, y: Float, gb: GameBoy, private val context: Activity)
                             }
 
                             if (root.exists()) {
-                                val saveFile = File(root, "${gb.cartridge?.cartridgeFile?.nameWithoutExtension}.sav")
+                                val saveFile = File(root, "${gb.mmu.cartridge.cartridgeFile.nameWithoutExtension}.sav")
                                 if (!saveFile.exists())
                                     saveFile.createNewFile()
 
                                 try {
-                                    gb.cartridge?.saveRam(saveFile)
+                                    gb.mmu.cartridge.saveRam(saveFile)
                                 } catch (e: FileNotFoundException) {
                                     e.printStackTrace()
                                 }
@@ -166,9 +166,9 @@ class MenuButton(x: Float, y: Float, gb: GameBoy, private val context: Activity)
                         }
                         3 -> {
                             val root = File(context.filesDir, "Saves")
-                            val saveFile = File(root, "${gb.cartridge?.cartridgeFile?.nameWithoutExtension}.sav")
+                            val saveFile = File(root, "${gb.mmu.cartridge.cartridgeFile.nameWithoutExtension}.sav")
                             if (saveFile.exists())
-                                gb.cartridge?.loadRam(saveFile)
+                                gb.mmu.cartridge.loadRam(saveFile)
                         }
                         else -> {
 

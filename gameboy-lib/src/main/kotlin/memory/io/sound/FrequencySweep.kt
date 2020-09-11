@@ -1,8 +1,8 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
 import gameboy.GameBoy
-import utils.getBit
-import utils.setBit
+import gameboy.utils.getBit
+import gameboy.utils.setBit
 
 class FrequencySweep(private val soundChannel : SoundChannel) {
 

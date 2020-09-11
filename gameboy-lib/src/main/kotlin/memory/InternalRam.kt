@@ -1,6 +1,6 @@
-package memory
+package gameboy.memory
 
-import utils.toHexString
+import gameboy.utils.toHexString
 
 class InternalRam : Memory {
 

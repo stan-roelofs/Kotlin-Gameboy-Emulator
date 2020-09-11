@@ -1,8 +1,8 @@
-package cpu.instructions.alu
+package gameboy.cpu.instructions.alu
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
 
 abstract class SUB(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

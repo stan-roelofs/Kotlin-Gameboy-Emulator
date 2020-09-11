@@ -1,12 +1,12 @@
-package cpu.instructions.calls
+package gameboy.cpu.instructions.calls
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.getFirstByte
-import utils.getSecondByte
-import utils.setSecondByte
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
+import gameboy.utils.setSecondByte
 
 class CALL_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private val state: Boolean) : Instruction(registers, mmu) {
 

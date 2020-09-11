@@ -1,12 +1,12 @@
-package memory
+package gameboy.memory
 
-import memory.cartridge.Cartridge
-import memory.io.IO
-import utils.Log
-import utils.setBit
-import utils.toHexString
+import gameboy.memory.cartridge.Cartridge
+import gameboy.memory.io.IO
+import gameboy.utils.Log
+import gameboy.utils.setBit
+import gameboy.utils.toHexString
 
-class Mmu : Memory {
+class Mmu(val cartridge: Cartridge) : Memory {
 
     companion object {
         // Constants
@@ -74,7 +74,6 @@ class Mmu : Memory {
         const val NR52 = 0xFF26
     }
 
-    internal var cartridge: Cartridge? = null
     private val hram = HRam()
     private val oam = Oam()
     private val internalRam = InternalRam()
@@ -89,7 +88,7 @@ class Mmu : Memory {
         oam.reset()
         internalRam.reset()
         io.reset()
-        cartridge?.reset()
+        cartridge.reset()
     }
 
     internal fun tick(cycles: Int) {
@@ -117,9 +116,9 @@ class Mmu : Memory {
         }
 
         return when(address) {
-            in 0x0000 until 0x8000 -> cartridge!!.readByte(address)
+            in 0x0000 until 0x8000 -> cartridge.readByte(address)
             in 0x8000 until 0xA000 -> io.readByte(address)
-            in 0xA000 until 0xC000 -> cartridge!!.readByte(address)
+            in 0xA000 until 0xC000 -> cartridge.readByte(address)
             in 0xC000 until 0xE000 -> internalRam.readByte(address)
             in 0xE000 until 0xFE00 -> internalRam.readByte(address)
             in 0xFE00 until 0xFEA0 -> oam.readByte(address)
@@ -140,9 +139,9 @@ class Mmu : Memory {
 
         val newVal = value and 0xFF
         when (address) {
-            in 0x0000 until 0x8000 -> cartridge!!.writeByte(address, newVal)
+            in 0x0000 until 0x8000 -> cartridge.writeByte(address, newVal)
             in 0x8000 until 0xA000 -> io.writeByte(address, newVal)
-            in 0xA000 until 0xC000 -> cartridge!!.writeByte(address, newVal)
+            in 0xA000 until 0xC000 -> cartridge.writeByte(address, newVal)
             in 0xC000 until 0xE000 -> internalRam.writeByte(address, newVal)
             in 0xE000 until 0xFE00 -> internalRam.writeByte(address, newVal)
             in 0xFE00 until 0xFEA0 -> {
@@ -163,9 +162,9 @@ class Mmu : Memory {
      */
     internal fun dmaReadByte(address: Int): Int {
         return when(address) {
-            in 0x0000 until 0x8000 -> cartridge!!.readByte(address)
+            in 0x0000 until 0x8000 -> cartridge.readByte(address)
             in 0x8000 until 0xA000 -> io.readByte(address)
-            in 0xA000 until 0xC000 -> cartridge!!.readByte(address)
+            in 0xA000 until 0xC000 -> cartridge.readByte(address)
             in 0xC000 until 0xE000 -> internalRam.readByte(address)
             in 0xE000 until 0xFE00 -> internalRam.readByte(address)
             in 0xFE00 until 0xFEA0 -> oam.readByte(address)

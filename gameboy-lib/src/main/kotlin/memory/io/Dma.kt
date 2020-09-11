@@ -1,9 +1,9 @@
-package memory.io
+package gameboy.memory.io
 
-import memory.Memory
-import memory.Mmu
-import utils.Log
-import utils.toHexString
+import gameboy.memory.Memory
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.toHexString
 
 class Dma(private val mmu: Mmu) : Memory {
 

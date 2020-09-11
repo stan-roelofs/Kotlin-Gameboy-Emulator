@@ -1,10 +1,10 @@
-package memory.io.graphics
+package gameboy.memory.io.graphics
 
-import memory.Memory
-import memory.Mmu
-import utils.getBit
-import utils.setBit
-import utils.toHexString
+import gameboy.memory.Memory
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
+import gameboy.utils.setBit
+import gameboy.utils.toHexString
 import java.util.*
 
 class Lcd(private val mmu: Mmu) : Memory, Observable() {

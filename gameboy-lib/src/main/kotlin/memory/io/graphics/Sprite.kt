@@ -1,4 +1,4 @@
-package memory.io.graphics
+package gameboy.memory.io.graphics
 
 internal class Sprite {
     var y = 0

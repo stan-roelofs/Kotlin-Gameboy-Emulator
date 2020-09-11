@@ -1,10 +1,10 @@
-package cpu.instructions.bit
+package gameboy.cpu.instructions.bit
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.clearBit
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.clearBit
 
 class RES_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instruction(registers, mmu) {
 

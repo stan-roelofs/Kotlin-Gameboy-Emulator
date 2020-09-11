@@ -7,22 +7,22 @@ import android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY
 import android.os.Process.setThreadPriority
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import gameboy.GameBoy
-import memory.io.sound.SoundOutput
+import gameboy.memory.io.sound.SoundOutput
 
-class GameboyAndroid(gb: GameBoy, private val context: Activity) : GameboyLibgdx(gb) {
+class GameboyAndroid(private val context: Activity) : GameboyLibgdx() {
 
     override var output: SoundOutput = SoundOutputGdx()
     private lateinit var controller: Controller
     private lateinit var shape: ShapeRenderer
 
-    override fun startgb() {
+    override fun startgb(gb: GameBoy) {
         gbThread = GameboyThread(gb)
         gbThread.start()
     }
 
     override fun create() {
         super.create()
-        controller = Controller(gb, context)
+        controller = Controller(gameboy, context)
         shape = ShapeRenderer()
     }
 

@@ -1,6 +1,6 @@
 package gui
 
-import utils.Log
+import gameboy.utils.Log
 import java.awt.Window
 import java.io.File
 import java.nio.file.Files

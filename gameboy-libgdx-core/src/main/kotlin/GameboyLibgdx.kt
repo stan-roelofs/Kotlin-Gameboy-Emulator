@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
-import memory.io.sound.SoundOutput
+import gameboy.memory.io.sound.SoundOutput
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -16,7 +16,7 @@ import java.util.*
  *
  * Contains main rendering logic and platform independent functionality
  */
-abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), Observer {
+abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
 
     class Color(val r: Byte, val g: Byte, val b: Byte)
 
@@ -35,23 +35,30 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
 
     /** Sound output object, required by gameboy */
     abstract var output : SoundOutput
-    protected var gbThread = Thread(gb)
+    lateinit var gameboy: GameBoy
+        private set
+
+    protected lateinit var gbThread: Thread
     protected val cam = OrthographicCamera()
     protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
     protected var fpsCounter = FpsCounter()
-    private var framesCounter = 0
-    private var lastTime = 0L
 
     private val screenBufferArray = ByteArray(width * height * 3)
     private val buffer = ByteBuffer.allocateDirect(width * height * 3)
     
-    open fun startgb() {
-        gbThread = Thread(gb)
+    open fun startgb(gb: GameBoy) {
+        if (this::gameboy.isInitialized && gameboy.running)
+            stopgb()
+
+        gameboy = gb
+        gb.mmu.io.sound.output = output
+        gb.mmu.io.lcd.addObserver(this)
+        gbThread = Thread(gameboy)
         gbThread.start()
     }
 
-    fun stopgb() {
-        gb.stop()
+    protected fun stopgb() {
+        gameboy.stop()
         gbThread.join()
     }
 
@@ -82,8 +89,7 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
         screenTexture = Texture(width, height, Pixmap.Format.RGB888)
         batch = SpriteBatch()
         output.initialize()
-        gb.mmu.io.sound.output = output
-        gb.mmu.io.lcd.addObserver(this)
+
         cam.position.set(width.toFloat() / 2f, height.toFloat() / 2f, 0f)
     }
 
@@ -105,7 +111,6 @@ abstract class GameboyLibgdx(protected val gb: GameBoy) : ApplicationAdapter(), 
         font.dispose()
         screenTexture.dispose()
 
-        gb.stop()
-        gbThread.join()
+        stopgb()
     }
 }

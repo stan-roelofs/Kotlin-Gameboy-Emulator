@@ -1,9 +1,9 @@
-package cpu.instructions.rotates
+package gameboy.cpu.instructions.rotates
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.getBit
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
 
 abstract class RLC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

@@ -1,11 +1,11 @@
-package cpu
+package gameboy.cpu
 
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.clearBit
-import utils.getBit
-import utils.getFirstByte
-import utils.getSecondByte
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.clearBit
+import gameboy.utils.getBit
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
 
 /**
  * Represents the Gameboy CPU

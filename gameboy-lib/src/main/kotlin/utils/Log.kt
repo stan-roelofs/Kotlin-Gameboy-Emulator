@@ -1,4 +1,4 @@
-package utils
+package gameboy.utils
 
 object Log {
     var LOG = true

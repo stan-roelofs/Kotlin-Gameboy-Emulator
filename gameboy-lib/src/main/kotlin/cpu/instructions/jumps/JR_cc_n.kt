@@ -1,9 +1,9 @@
-package cpu.instructions.jumps
+package gameboy.cpu.instructions.jumps
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class JR_cc_n(registers: Registers, mmu: Mmu, private val flag: Int, private val state: Boolean) : Instruction(registers, mmu) {
 

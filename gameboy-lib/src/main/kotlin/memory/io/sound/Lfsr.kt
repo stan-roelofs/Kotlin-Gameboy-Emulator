@@ -1,4 +1,4 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
 class Lfsr {
     private var lfsr = 0

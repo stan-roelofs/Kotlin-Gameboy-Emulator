@@ -1,9 +1,9 @@
-package cpu.instructions.miscellaneous
+package gameboy.cpu.instructions.miscellaneous
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class EI(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

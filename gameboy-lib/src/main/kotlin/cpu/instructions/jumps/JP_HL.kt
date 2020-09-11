@@ -1,9 +1,9 @@
-package cpu.instructions.jumps
+package gameboy.cpu.instructions.jumps
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class JP_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

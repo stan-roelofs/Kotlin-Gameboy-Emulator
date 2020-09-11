@@ -1,8 +1,8 @@
-package cpu.instructions.alu
+package gameboy.cpu.instructions.alu
 
-import cpu.Registers
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class AND_A_n(registers: Registers, mmu: Mmu) : AND(registers, mmu) {
 

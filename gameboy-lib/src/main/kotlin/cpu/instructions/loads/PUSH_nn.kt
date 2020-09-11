@@ -1,12 +1,12 @@
-package cpu.instructions.loads
+package gameboy.cpu.instructions.loads
 
-import cpu.RegisterID
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.getFirstByte
-import utils.getSecondByte
+import gameboy.cpu.RegisterID
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
 
 class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 

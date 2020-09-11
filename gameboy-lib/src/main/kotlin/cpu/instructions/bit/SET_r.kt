@@ -1,11 +1,11 @@
-package cpu.instructions.bit
+package gameboy.cpu.instructions.bit
 
-import cpu.RegisterID
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.setBit
+import gameboy.cpu.RegisterID
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.setBit
 
 class SET_r(registers: Registers, mmu: Mmu, private val register: Int, private val index: Int) : Instruction(registers, mmu) {
 

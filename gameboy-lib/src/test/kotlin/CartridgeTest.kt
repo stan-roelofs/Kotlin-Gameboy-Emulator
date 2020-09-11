@@ -1,4 +1,4 @@
-import memory.cartridge.MBC1
+import gameboy.memory.cartridge.MBC1
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File

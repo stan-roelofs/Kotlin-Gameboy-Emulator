@@ -1,8 +1,9 @@
 package mooneye
 
 import gameboy.GameBoy
+import gameboy.memory.cartridge.Cartridge
+import gameboy.utils.Log
 import org.junit.Assert
-import utils.Log
 import java.io.File
 import java.net.URI
 
@@ -16,7 +17,7 @@ abstract class MooneyeTest {
     fun runMooneyeTest(fileName: String, hashCode: Int) {
         val url: URI = MooneyeTest::class.java.classLoader.getResource("mooneye/$path/$fileName")!!.toURI()
         val romFile = File(url)
-        val gb = GameBoy(romFile)
+        val gb = GameBoy(Cartridge(romFile))
 
         Log.i("")
         Log.i("Running Mooneye Test: $fileName")

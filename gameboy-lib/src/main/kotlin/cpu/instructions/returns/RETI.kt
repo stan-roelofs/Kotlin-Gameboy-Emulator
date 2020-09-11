@@ -1,10 +1,10 @@
-package cpu.instructions.returns
+package gameboy.cpu.instructions.returns
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.setSecondByte
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.setSecondByte
 
 class RETI(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

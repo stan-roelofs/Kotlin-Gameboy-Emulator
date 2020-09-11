@@ -1,12 +1,12 @@
-package cpu.instructions.loads
+package gameboy.cpu.instructions.loads
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.getFirstByte
-import utils.getSecondByte
-import utils.setSecondByte
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
+import gameboy.utils.setSecondByte
 
 class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

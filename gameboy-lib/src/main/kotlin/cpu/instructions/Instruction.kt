@@ -1,10 +1,10 @@
-package cpu.instructions
+package gameboy.cpu.instructions
 
-import cpu.Registers
-import memory.Mmu
-import utils.getFirstByte
-import utils.getSecondByte
-import utils.setSecondByte
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
+import gameboy.utils.setSecondByte
 
 abstract class Instruction(val registers: Registers, val mmu: Mmu) {
 

@@ -1,10 +1,10 @@
-package cpu.instructions.rotates
+package gameboy.cpu.instructions.rotates
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.getBit
-import utils.setBit
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
+import gameboy.utils.setBit
 
 abstract class RR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

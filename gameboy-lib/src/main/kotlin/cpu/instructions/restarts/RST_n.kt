@@ -1,11 +1,11 @@
-package cpu.instructions.restarts
+package gameboy.cpu.instructions.restarts
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.getFirstByte
-import utils.getSecondByte
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
 
 class RST_n(registers: Registers, mmu: Mmu, private val address: Int) : Instruction(registers, mmu) {
 

@@ -1,9 +1,9 @@
-package memory.cartridge
+package gameboy.memory.cartridge
 
-import memory.Memory
-import utils.getBit
-import utils.getSecondByte
-import utils.toHexString
+import gameboy.memory.Memory
+import gameboy.utils.getBit
+import gameboy.utils.getSecondByte
+import gameboy.utils.toHexString
 
 class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MBC {
 

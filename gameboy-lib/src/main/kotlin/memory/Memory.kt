@@ -1,6 +1,6 @@
-package memory
+package gameboy.memory
 
-import utils.setSecondByte
+import gameboy.utils.setSecondByte
 
 interface Memory {
 

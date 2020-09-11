@@ -1,10 +1,10 @@
-package cpu.instructions.bit
+package gameboy.cpu.instructions.bit
 
-import cpu.RegisterID
-import cpu.Registers
-import memory.Mmu
-import utils.Log
-import utils.getBit
+import gameboy.cpu.RegisterID
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.getBit
 
 class BIT_r(registers: Registers, mmu: Mmu, private val register: Int, private val index: Int) : BIT(registers, mmu) {
 

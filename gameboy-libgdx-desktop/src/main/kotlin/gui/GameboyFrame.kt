@@ -4,17 +4,17 @@ import GameboyDesktop
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import gameboy.GameBoy
-import utils.Log
+import gameboy.memory.cartridge.Cartridge
+import gameboy.utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
 import javax.swing.*
 
-
 class GameboyFrame : JFrame() {
 
-    private val gb = GameBoy(null)
-    private val gbapp = GameboyDesktop(gb)
+    private lateinit var gb: GameBoy
+    private val gbapp = GameboyDesktop()
     private val romChooser: RomChooser
 
     init {
@@ -68,33 +68,31 @@ class GameboyFrame : JFrame() {
         isVisible = true
     }
 
-    fun loadRom() {
-        val rom = romChooser.chooseRom(this)
-        if (rom != null) {
-            gbapp.stopgb()
-            gb.loadCartridge(rom)
-            gbapp.startgb()
+    private fun loadRom() {
+        val romFile = romChooser.chooseRom(this)
+        if (romFile != null) {
+            val cartridge = Cartridge(romFile)
+            gb = GameBoy(cartridge)
+            gbapp.startgb(gb)
         }
     }
 
-    fun togglePause() {
+    private fun togglePause() {
         gb.togglePause()
     }
 
-    fun reset() {
+    private fun reset() {
         gb.reset()
     }
 
-    fun save() {
-        val fileName = gb.cartridge?.cartridgeFile?.nameWithoutExtension
-        if (fileName != null)
-            gb.cartridge?.saveRam(File("$fileName.sav"))
+    private fun save() {
+        val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
+        gb.mmu.cartridge.saveRam(File("$fileName.sav"))
     }
 
-    fun load() {
-        val fileName = gb.cartridge?.cartridgeFile?.nameWithoutExtension
-        if (fileName != null)
-            gb.cartridge?.loadRam(File("$fileName.sav"))
+    private fun load() {
+        val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
+        gb.mmu.cartridge.loadRam(File("$fileName.sav"))
     }
 
     fun saveState() {
@@ -105,7 +103,7 @@ class GameboyFrame : JFrame() {
         TODO("Not yet implemented")
     }
 
-    fun screenHash() {
+    private fun screenHash() {
         var s = ""
         for (i in gb.mmu.io.lcd.screenBuffer) {
             for (j in i) {

@@ -1,4 +1,4 @@
-import cpu.Registers
+import gameboy.cpu.Registers
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

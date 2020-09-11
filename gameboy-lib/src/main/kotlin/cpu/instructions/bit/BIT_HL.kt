@@ -1,9 +1,9 @@
-package cpu.instructions.bit
+package gameboy.cpu.instructions.bit
 
-import cpu.Registers
-import memory.Mmu
-import utils.Log
-import utils.getBit
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.getBit
 
 class BIT_HL(registers: Registers, mmu: Mmu, private val index: Int) : BIT(registers, mmu) {
 

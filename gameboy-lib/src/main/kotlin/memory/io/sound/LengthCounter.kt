@@ -1,7 +1,7 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
 import gameboy.GameBoy
-import utils.getBit
+import gameboy.utils.getBit
 
 class LengthCounter(private val fullLength: Int, private val soundChannel: SoundChannel) {
 

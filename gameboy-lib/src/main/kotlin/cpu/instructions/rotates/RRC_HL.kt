@@ -1,7 +1,7 @@
-package cpu.instructions.rotates
-import cpu.Registers
-import memory.Mmu
-import utils.Log
+package gameboy.cpu.instructions.rotates
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class RRC_HL(registers: Registers, mmu: Mmu) : RRC(registers, mmu) {
 

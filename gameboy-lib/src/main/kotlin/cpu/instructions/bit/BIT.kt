@@ -1,8 +1,8 @@
-package cpu.instructions.bit
+package gameboy.cpu.instructions.bit
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
 
 abstract class BIT(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

@@ -1,4 +1,4 @@
-package memory.cartridge
+package gameboy.memory.cartridge
 
 import java.io.File
 import java.nio.file.Files

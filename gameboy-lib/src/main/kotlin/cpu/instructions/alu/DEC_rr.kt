@@ -1,10 +1,10 @@
-package cpu.instructions.alu
+package gameboy.cpu.instructions.alu
 
-import cpu.RegisterID
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.RegisterID
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class DEC_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 

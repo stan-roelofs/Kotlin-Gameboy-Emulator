@@ -1,4 +1,4 @@
-package utils
+package gameboy.utils
 
 fun Int.getFirstByte(): Int {
     return (this and 0xff)

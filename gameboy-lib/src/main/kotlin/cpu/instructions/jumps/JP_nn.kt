@@ -1,10 +1,10 @@
-package cpu.instructions.jumps
+package gameboy.cpu.instructions.jumps
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.setSecondByte
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.setSecondByte
 
 class JP_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

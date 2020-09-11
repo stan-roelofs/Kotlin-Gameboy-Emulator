@@ -1,6 +1,6 @@
-package cpu
+package gameboy.cpu
 
-import cpu.instructions.Instruction
+import gameboy.cpu.instructions.Instruction
 
 interface InstructionsPool {
     fun getInstruction(opcode : Int): Instruction

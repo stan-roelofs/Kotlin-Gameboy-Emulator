@@ -1,9 +1,9 @@
-package cpu.instructions.shifts
+package gameboy.cpu.instructions.shifts
 
-import cpu.RegisterID
-import cpu.Registers
-import memory.Mmu
-import utils.Log
+import gameboy.cpu.RegisterID
+import gameboy.cpu.Registers
+import gameboy.memory.Mmu
+import gameboy.utils.Log
 
 class SLA_r(registers: Registers, mmu: Mmu, private val register: Int) : SLA(registers, mmu) {
 

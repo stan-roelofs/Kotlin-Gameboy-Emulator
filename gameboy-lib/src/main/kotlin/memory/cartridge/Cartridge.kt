@@ -1,7 +1,7 @@
-package memory.cartridge
+package gameboy.memory.cartridge
 
-import memory.Memory
-import utils.Log
+import gameboy.memory.Memory
+import gameboy.utils.Log
 import java.io.File
 import java.nio.file.Files
 

@@ -1,4 +1,4 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
 /** Interface for a class which outputs audio */
 interface SoundOutput {

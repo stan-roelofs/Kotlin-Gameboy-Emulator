@@ -1,6 +1,6 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
-import memory.Memory
+import gameboy.memory.Memory
 
 abstract class SoundChannel : Memory {
 

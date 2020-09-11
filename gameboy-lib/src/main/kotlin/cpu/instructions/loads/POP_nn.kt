@@ -1,11 +1,11 @@
-package cpu.instructions.loads
+package gameboy.cpu.instructions.loads
 
-import cpu.RegisterID
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.Log
-import utils.setSecondByte
+import gameboy.cpu.RegisterID
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.Log
+import gameboy.utils.setSecondByte
 
 class POP_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 

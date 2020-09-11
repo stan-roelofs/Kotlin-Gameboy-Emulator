@@ -1,9 +1,9 @@
-package memory.io
+package gameboy.memory.io
 
-import memory.Memory
-import memory.Mmu
-import memory.io.graphics.Lcd
-import memory.io.sound.Sound
+import gameboy.memory.Memory
+import gameboy.memory.Mmu
+import gameboy.memory.io.graphics.Lcd
+import gameboy.memory.io.sound.Sound
 
 class IO(mmu : Mmu) : Memory {
 

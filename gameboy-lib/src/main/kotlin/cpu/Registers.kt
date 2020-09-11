@@ -1,9 +1,9 @@
-package cpu
+package gameboy.cpu
 
-import utils.getBit
-import utils.getFirstByte
-import utils.getSecondByte
-import utils.setBit
+import gameboy.utils.getBit
+import gameboy.utils.getFirstByte
+import gameboy.utils.getSecondByte
+import gameboy.utils.setBit
 
 /**
  * Represents the registers of the gameboy CPU

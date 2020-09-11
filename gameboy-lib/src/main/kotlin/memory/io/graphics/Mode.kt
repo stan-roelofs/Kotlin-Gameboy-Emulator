@@ -1,4 +1,4 @@
-package memory.io.graphics
+package gameboy.memory.io.graphics
 
 internal enum class Mode(val mode: Int, val cycles: Int) {
     HBLANK(0, 204),

@@ -1,20 +1,20 @@
-package cpu
+package gameboy.cpu
 
-import cpu.instructions.Instruction
-import cpu.instructions.alu.*
-import cpu.instructions.bit.*
-import cpu.instructions.calls.CALL_cc_nn
-import cpu.instructions.calls.CALL_nn
-import cpu.instructions.jumps.*
-import cpu.instructions.loads.*
-import cpu.instructions.miscellaneous.*
-import cpu.instructions.restarts.RST_n
-import cpu.instructions.returns.RET
-import cpu.instructions.returns.RETI
-import cpu.instructions.returns.RET_cc
-import cpu.instructions.rotates.*
-import cpu.instructions.shifts.*
-import memory.Mmu
+import gameboy.cpu.instructions.Instruction
+import gameboy.cpu.instructions.alu.*
+import gameboy.cpu.instructions.bit.*
+import gameboy.cpu.instructions.calls.CALL_cc_nn
+import gameboy.cpu.instructions.calls.CALL_nn
+import gameboy.cpu.instructions.jumps.*
+import gameboy.cpu.instructions.loads.*
+import gameboy.cpu.instructions.miscellaneous.*
+import gameboy.cpu.instructions.restarts.RST_n
+import gameboy.cpu.instructions.returns.RET
+import gameboy.cpu.instructions.returns.RETI
+import gameboy.cpu.instructions.returns.RET_cc
+import gameboy.cpu.instructions.rotates.*
+import gameboy.cpu.instructions.shifts.*
+import gameboy.memory.Mmu
 
 class InstructionsPoolImpl(private val registers: Registers, private val mmu: Mmu) : InstructionsPool {
     private val instructions = Array(256) {

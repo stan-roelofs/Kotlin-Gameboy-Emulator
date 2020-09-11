@@ -1,8 +1,8 @@
-package cpu.instructions.miscellaneous
+package gameboy.cpu.instructions.miscellaneous
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
 
 abstract class SWAP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

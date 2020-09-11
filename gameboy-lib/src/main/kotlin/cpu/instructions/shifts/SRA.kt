@@ -1,10 +1,10 @@
-package cpu.instructions.shifts
+package gameboy.cpu.instructions.shifts
 
-import cpu.Registers
-import cpu.instructions.Instruction
-import memory.Mmu
-import utils.getBit
-import utils.setBit
+import gameboy.cpu.Registers
+import gameboy.cpu.instructions.Instruction
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
+import gameboy.utils.setBit
 
 abstract class SRA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 

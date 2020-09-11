@@ -1,6 +1,6 @@
-package memory.io.sound
+package gameboy.memory.io.sound
 
-import memory.Mmu
+import gameboy.memory.Mmu
 
 class SquareWave2 : SquareWave() {
 

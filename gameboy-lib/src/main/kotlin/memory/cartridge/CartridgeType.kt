@@ -1,7 +1,7 @@
-package memory.cartridge
+package gameboy.memory.cartridge
 
-import memory.Memory
-import utils.toHexString
+import gameboy.memory.Memory
+import gameboy.utils.toHexString
 import java.io.File
 
 interface CartridgeType : Memory {

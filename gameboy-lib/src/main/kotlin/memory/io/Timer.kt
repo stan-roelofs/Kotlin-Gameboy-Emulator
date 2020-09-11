@@ -1,10 +1,10 @@
-package memory.io
+package gameboy.memory.io
 
-import memory.Memory
-import memory.Mmu
-import utils.getBit
-import utils.getSecondByte
-import utils.toHexString
+import gameboy.memory.Memory
+import gameboy.memory.Mmu
+import gameboy.utils.getBit
+import gameboy.utils.getSecondByte
+import gameboy.utils.toHexString
 
 class Timer(private val mmu: Mmu) : Memory {
     private var internalCounter = 0
