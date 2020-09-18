@@ -13,7 +13,7 @@ import gameboy.utils.setBit
  *
  * On construction [reset] is called to set the registers to the initial values.
  */
-class Registers {
+abstract class Registers {
 
     /** Register A (8-bit) */
     var A: Int = 0
@@ -100,25 +100,10 @@ class Registers {
     var eiExecuted = false
         internal set
 
-    init {
-        reset()
-    }
-
     /**
      * Sets the registers to the values they should be after running the boot rom
      */
-    fun reset() {
-        A = 0x01
-        F = 0xB0
-        setBC(0x0013)
-        setDE(0x00D8)
-        setHL(0x014D)
-        SP = 0xFFFE
-        PC = 0x100
-        stop = false
-        halt = false
-        IME = false
-    }
+    abstract fun reset()
 
     internal fun setZFlag(state: Boolean) {
         F = setBit(F, ZFlag, state)

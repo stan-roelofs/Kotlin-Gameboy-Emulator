@@ -12,9 +12,7 @@ import gameboy.utils.getSecondByte
  *
  * On initialization [reset] is called.
  */
-abstract class Cpu(private val mmu : Mmu) {
-    /** Cpu registers */
-    val registers = Registers()
+class Cpu(private val mmu : Mmu, private val registers : Registers) {
 
     private var instructionsPool: InstructionsPool = InstructionsPoolImpl(registers, mmu)
     private var currentInstruction: Instruction? = null

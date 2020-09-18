@@ -4,6 +4,7 @@ import GameboyDesktop
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import gameboy.GameBoy
+import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
 import gameboy.utils.Log
@@ -73,7 +74,7 @@ class GameboyFrame : JFrame() {
         val romFile = romChooser.chooseRom(this)
         if (romFile != null) {
             val cartridge = Cartridge(romFile)
-            gb = GameBoyDMG(cartridge)
+            gb = if (cartridge.isGbc) GameBoyDMG(cartridge) else GameBoyCGB(cartridge)
             gbapp.startgb(gb)
         }
     }
