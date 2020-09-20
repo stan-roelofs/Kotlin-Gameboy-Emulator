@@ -24,6 +24,10 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
         const val BGP = 0xFF47
         const val OBP0 = 0xFF48
         const val OBP1 = 0xFF49
+        const val BCPS = 0xFF68
+        const val BCPD = 0xFF69
+        const val OCPS = 0xFF6A
+        const val OCPD = 0xFF6B
 
         // Interrupts
         const val IF = 0xFF0F
@@ -77,10 +81,6 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
     internal abstract val internalRam : InternalRam
     internal abstract val oam : Oam
     abstract val io : IO
-
-    init {
-        reset()
-    }
 
     final override fun reset() {
         hram.reset()

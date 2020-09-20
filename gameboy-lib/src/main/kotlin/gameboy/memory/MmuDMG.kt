@@ -1,14 +1,19 @@
 package gameboy.memory
 
 import gameboy.memory.cartridge.Cartridge
-import gameboy.memory.io.IO
+import gameboy.memory.io.IODMG
 import gameboy.utils.toHexString
 
 class MmuDMG(cartridge: Cartridge) : Mmu(cartridge) {
+
     override val hram = HRam()
     override val oam = Oam()
-    override val internalRam = InternalRam()
-    override val io = IO(this)
+    override val internalRam = InternalRamDMG()
+    override val io = IODMG(this)
+
+    init {
+        reset()
+    }
 
     override fun readByte(address: Int): Int {
         if (!io.dma.getOamAccessible()) {

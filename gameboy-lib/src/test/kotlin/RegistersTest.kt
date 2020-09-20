@@ -1,4 +1,4 @@
-import gameboy.cpu.Registers
+import gameboy.cpu.RegistersDMG
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -6,7 +6,7 @@ internal class RegistersTest {
 
     @Test
     fun testSet8BitRegister() {
-        val r = Registers()
+        val r = RegistersDMG()
 
         // Normal test
         r.A = 5
@@ -19,7 +19,7 @@ internal class RegistersTest {
 
     @Test
     fun testSet16BitRegister() {
-        val r = Registers()
+        val r = RegistersDMG()
 
         // Normal test
         r.setAF(0x1032)
@@ -52,7 +52,7 @@ internal class RegistersTest {
 
     @Test
     fun testSetFlags() {
-        val r = Registers()
+        val r = RegistersDMG()
         r.setCFlag(true)
         r.setHFlag(true)
         r.setNFlag(true)
@@ -76,7 +76,7 @@ internal class RegistersTest {
 
     @Test
     fun testIncSP() {
-        val r = Registers()
+        val r = RegistersDMG()
         r.SP = 0
 
         // Normal test
@@ -91,7 +91,7 @@ internal class RegistersTest {
 
     @Test
     fun testDecSP() {
-        val r = Registers()
+        val r = RegistersDMG()
 
         // Normal test
         r.SP = 16
@@ -106,7 +106,7 @@ internal class RegistersTest {
 
     @Test
     fun testIncPC() {
-        val r = Registers()
+        val r = RegistersDMG()
 
         r.PC = 0
 
