@@ -20,14 +20,8 @@ abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
 
     class Color(val r: Byte, val g: Byte, val b: Byte)
 
-    private val color0 = Color(224.toByte(), 248f.toByte(), 208f.toByte())
-    private val color1 = Color(136.toByte(), 192.toByte(), 112f.toByte())
-    private val color2 = Color(52.toByte(), 104.toByte(), 86.toByte())
-    private val color3 = Color(8.toByte(), 24.toByte(), 32.toByte())
-    private val colors = arrayOf(color0, color1, color2, color3)
-
-    val width = 160
-    val height = 144
+    val width = GameBoy.SCREEN_WIDTH
+    val height = GameBoy.SCREEN_HEIGHT
 
     private lateinit var font: BitmapFont
     private lateinit var batch : SpriteBatch
@@ -68,10 +62,13 @@ abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
         val screenBuffer = arg as Array<IntArray>
         for (i in 0 until height) {
             for (j in 0 until width) {
-                val tmp = colors[screenBuffer[i][j]]
-                screenBufferArray[i * width * 3 + j * 3] = tmp.r
-                screenBufferArray[i * width * 3 + j * 3 + 1] = tmp.g
-                screenBufferArray[i * width * 3 + j * 3 + 2] = tmp.b
+                val red = screenBuffer[i][j * 3] * 255 / 31
+                val green = screenBuffer[i][j * 3 + 1] * 255 / 31
+                val blue = screenBuffer[i][j * 3 + 2] * 255 / 31
+
+                screenBufferArray[i * width * 3 + j * 3] = red.toByte()
+                screenBufferArray[i * width * 3 + j * 3 + 1] = green.toByte()
+                screenBufferArray[i * width * 3 + j * 3 + 2] = blue.toByte()
             }
         }
 

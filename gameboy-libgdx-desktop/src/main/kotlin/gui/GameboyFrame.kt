@@ -74,7 +74,7 @@ class GameboyFrame : JFrame() {
         val romFile = romChooser.chooseRom(this)
         if (romFile != null) {
             val cartridge = Cartridge(romFile)
-            gb = if (cartridge.isGbc) GameBoyDMG(cartridge) else GameBoyCGB(cartridge)
+            gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
             gbapp.startgb(gb)
         }
     }

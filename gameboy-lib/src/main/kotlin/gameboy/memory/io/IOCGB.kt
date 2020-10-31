@@ -1,12 +1,12 @@
 package gameboy.memory.io
 
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.Lcd
+import gameboy.memory.io.graphics.LcdCGB
 import gameboy.memory.io.sound.Sound
 
 class IOCGB(mmu : Mmu) : IO(mmu) {
 
-    override val lcd = Lcd(mmu)
+    override val lcd = LcdCGB(mmu)
 
     override val sound = Sound()
     override val dma = Dma(mmu)

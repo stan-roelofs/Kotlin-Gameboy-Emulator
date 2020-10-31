@@ -1,14 +1,14 @@
 package gameboy.memory.io
 
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.Lcd
+import gameboy.memory.io.graphics.LcdDMG
 import gameboy.memory.io.sound.Sound
 
 class IODMG(mmu : Mmu) : IO(mmu) {
 
     // These are public such that gui can read the LCD data to render,
     // and can send key presses/releases to the Joypad
-    override val lcd = Lcd(mmu)
+    override val lcd = LcdDMG(mmu)
 
     override val sound = Sound()
     override val dma = Dma(mmu)

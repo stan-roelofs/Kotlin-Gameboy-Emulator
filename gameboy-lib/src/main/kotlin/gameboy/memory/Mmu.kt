@@ -11,7 +11,7 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
         // Constants
 
         // LCD
-        const val SVBK = 0xFF80
+        const val SVBK = 0xFF70
         const val VBK = 0xFF4F
         const val LCDC = 0xFF40
         const val LY = 0xFF44
