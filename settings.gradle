@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+    }
+}
+
 rootProject.name = 'gameboy'
 include 'gameboy-lib'
 include 'gameboy-libgdx-core'

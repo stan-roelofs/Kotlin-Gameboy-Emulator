@@ -31,3 +31,4 @@ build/
 local.properties
 gameboy-libgdx-android/local.properties
 *.iml
+testoutput/
