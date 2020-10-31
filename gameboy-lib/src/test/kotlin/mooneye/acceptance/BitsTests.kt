@@ -8,16 +8,16 @@ class BitsTests : MooneyeTest() {
 
     @Test
     fun mem_oam() {
-        runMooneyeTest("mem_oam.gb", 1864719267)
+        runMooneyeTest("mem_oam.gb")
     }
 
     @Test
     fun reg_f() {
-        runMooneyeTest("reg_f.gb", -996931178)
+        runMooneyeTest("reg_f.gb")
     }
 
     @Test
     fun unused_hwio_GS() {
-        runMooneyeTest("unused_hwio-GS.gb", 1864719267)
+        runMooneyeTest("unused_hwio-GS.gb")
     }
 }

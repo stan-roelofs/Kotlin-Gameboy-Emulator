@@ -2,10 +2,9 @@ package blargg
 
 import org.junit.Test
 
-internal class MemTiming2Tests : BlarggTest() {
+internal class MemTiming2Tests : BlarggTestMemory() {
 
     override val path = "mem_timing-2/rom_singles"
-    override val method = ValidateMethod.MEMORY
 
     @Test
     fun test1() {

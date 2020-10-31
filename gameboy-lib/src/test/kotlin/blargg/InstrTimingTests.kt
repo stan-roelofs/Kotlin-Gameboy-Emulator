@@ -2,10 +2,9 @@ package blargg
 
 import org.junit.Test
 
-class InstrTimingTests : BlarggTest() {
+class InstrTimingTests : BlarggTestSerial() {
 
     override val path = "instr_timing"
-    override val method = ValidateMethod.SERIAL
 
     @Test
     fun testInstrTiming() {

@@ -1,4 +1,14 @@
 # Mooneye tests
+Each test rom has a corresponding unit test.
+These test roms print their result to the screen.
+The unit runs the test rom in the emulator, and compares a hash of the screen against
+a hash of the screen which is known to be correct.
+The input hash can be found in the resources/testhashes directory.
+A screenshot is made after the test is finished, and can be found in the testoutput directory.
+The hash is also written to a text file in this directory.
+This is convenient when the input hashes need to be updated.
+You can view the screenshots to verify the tests succeeded, and then copy the
+text files to the input directory.
 
 ## Acceptance
 - [x] boot_regs_dmgABC

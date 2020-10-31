@@ -9,42 +9,42 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun add_sp_e_timing() {
-        runMooneyeTest("add_sp_e_timing.gb", 1253675478)
+        runMooneyeTest("add_sp_e_timing.gb")
     }
 
     @Test
     fun boot_div_dmgABC() {
-        runMooneyeTest("boot_div-dmgABCmgb.gb", 1228927159)
+        runMooneyeTest("boot_div-dmgABCmgb.gb")
     }
 
     @Test
     fun boot_hwio_dmgABC() {
-        runMooneyeTest("boot_hwio-dmgABCmgb.gb", 1864719267)
+        runMooneyeTest("boot_hwio-dmgABCmgb.gb")
     }
 
     @Test
     fun boot_regs_dmgABC() {
-        runMooneyeTest("boot_regs-dmgABC.gb", -1938941160)
+        runMooneyeTest("boot_regs-dmgABC.gb")
     }
 
     @Test
     fun call_cc_timing() {
-        runMooneyeTest("call_cc_timing.gb", 1864719267)
+        runMooneyeTest("call_cc_timing.gb")
     }
 
     @Test
     fun call_cc_timing2() {
-        runMooneyeTest("call_cc_timing2.gb", -1274294891)
+        runMooneyeTest("call_cc_timing2.gb")
     }
 
     @Test
     fun call_timing() {
-        runMooneyeTest("call_timing.gb", 1864719267)
+        runMooneyeTest("call_timing.gb")
     }
 
     @Test
     fun call_timing2() {
-        runMooneyeTest("call_timing2.gb", -889195877)
+        runMooneyeTest("call_timing2.gb")
     }
 
     /*
@@ -56,7 +56,7 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun div_timing() {
-        runMooneyeTest("div_timing.gb", 944462996)
+        runMooneyeTest("div_timing.gb")
     }
 
     /*
@@ -68,22 +68,22 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun ei_timing() {
-        runMooneyeTest("ei_timing.gb", -1771872351)
+        runMooneyeTest("ei_timing.gb")
     }
 
     @Test
     fun halt_ime0_ei() {
-        runMooneyeTest("halt_ime0_ei.gb", 1864719267)
+        runMooneyeTest("halt_ime0_ei.gb")
     }
 
     @Test
     fun halt_ime0_nointr_timing() {
-        runMooneyeTest("halt_ime0_nointr_timing.gb", -1918004250)
+        runMooneyeTest("halt_ime0_nointr_timing.gb")
     }
 
     @Test
     fun halt_ime1_timing() {
-        runMooneyeTest("halt_ime1_timing.gb", -443991614)
+        runMooneyeTest("halt_ime1_timing.gb")
     }
 
     /*
@@ -95,82 +95,82 @@ class AcceptanceTests : MooneyeTest() {
 
     @Test
     fun if_ie_registers() {
-        runMooneyeTest("if_ie_registers.gb", 2073895254)
+        runMooneyeTest("if_ie_registers.gb")
     }
 
 
     @Test
     fun intr_timing() {
-        runMooneyeTest("intr_timing.gb", 1412901067)
+        runMooneyeTest("intr_timing.gb")
     }
 
     @Test
     fun jp_cc_timing() {
-        runMooneyeTest("jp_cc_timing.gb", 1864719267)
+        runMooneyeTest("jp_cc_timing.gb")
     }
 
     @Test
     fun jp_timing() {
-        runMooneyeTest("jp_timing.gb", 1864719267)
+        runMooneyeTest("jp_timing.gb")
     }
 
     @Test
     fun ld_hl_sp_e_timing() {
-        runMooneyeTest("ld_hl_sp_e_timing.gb", -1593236683)
+        runMooneyeTest("ld_hl_sp_e_timing.gb")
     }
 
     @Test
     fun oam_dma_restart() {
-        runMooneyeTest("oam_dma_restart.gb", 1809143252)
+        runMooneyeTest("oam_dma_restart.gb")
     }
 
     @Test
     fun oam_dma_start() {
-        runMooneyeTest("oam_dma_start.gb", -41705204)
+        runMooneyeTest("oam_dma_start.gb")
     }
 
     @Test
     fun oam_dma_timing() {
-        runMooneyeTest("oam_dma_timing.gb", 1809143252)
+        runMooneyeTest("oam_dma_timing.gb")
     }
 
     @Test
     fun pop_timing() {
-        runMooneyeTest("pop_timing.gb", 1938152555)
+        runMooneyeTest("pop_timing.gb")
     }
 
     @Test
     fun push_timing() {
-        runMooneyeTest("push_timing.gb", -1182071810)
+        runMooneyeTest("push_timing.gb")
     }
 
     @Test
     fun rapid_di_ei() {
-        runMooneyeTest("rapid_di_ei.gb", 1304528537)
+        runMooneyeTest("rapid_di_ei.gb")
     }
 
     @Test
     fun ret_cc_timing() {
-        runMooneyeTest("ret_cc_timing.gb", 1864719267)
+        runMooneyeTest("ret_cc_timing.gb")
     }
 
     @Test
     fun ret_timing() {
-        runMooneyeTest("ret_timing.gb", 1864719267)
+        runMooneyeTest("ret_timing.gb")
     }
 
     @Test
     fun reti_intr_timing() {
-        runMooneyeTest("reti_intr_timing.gb", 1828438669)
+        runMooneyeTest("reti_intr_timing.gb")
     }
 
     @Test
     fun reti_timing() {
-        runMooneyeTest("reti_timing.gb", 1864719267)
+        runMooneyeTest("reti_timing.gb")
     }
 
     @Test
     fun rst_timing() {
-        runMooneyeTest("rst_timing.gb", 892853141)
+        runMooneyeTest("rst_timing.gb")
     }
 }

@@ -8,12 +8,12 @@ class DmaTests : MooneyeTest() {
 
     @Test
     fun basic() {
-        runMooneyeTest("basic.gb", 1864719267)
+        runMooneyeTest("basic.gb")
     }
 
     @Test
     fun reg_read() {
-        runMooneyeTest("reg_read.gb", 1864719267)
+        runMooneyeTest("reg_read.gb")
     }
 
     /*

@@ -2,10 +2,9 @@ package blargg
 
 import org.junit.Test
 
-internal class MemTimingTests : BlarggTest() {
+internal class MemTimingTests : BlarggTestSerial() {
 
     override val path = "mem_timing/individual"
-    override val method = ValidateMethod.SERIAL
 
     @Test
     fun test1() {

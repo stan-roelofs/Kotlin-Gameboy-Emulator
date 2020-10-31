@@ -8,36 +8,36 @@ class Mbc2Tests : MooneyeTest() {
 
     @Test
     fun bits_ramg() {
-        runMooneyeTest("bits_ramg.gb", 1864719267)
+        runMooneyeTest("bits_ramg.gb")
     }
 
     @Test
     fun bits_romb() {
-        runMooneyeTest("bits_romb.gb", 1864719267)
+        runMooneyeTest("bits_romb.gb")
     }
 
     @Test
     fun bits_unused() {
-        runMooneyeTest("bits_unused.gb", 1864719267)
+        runMooneyeTest("bits_unused.gb")
     }
 
     @Test
     fun ram() {
-        runMooneyeTest("ram.gb", 1864719267)
+        runMooneyeTest("ram.gb")
     }
 
     @Test
     fun rom1mb() {
-        runMooneyeTest("rom_1Mb.gb", 1864719267)
+        runMooneyeTest("rom_1Mb.gb")
     }
 
     @Test
     fun rom2mb() {
-        runMooneyeTest("rom_2Mb.gb", 1864719267)
+        runMooneyeTest("rom_2Mb.gb")
     }
 
     @Test
     fun rom512kb() {
-        runMooneyeTest("rom_512kb.gb", 1864719267)
+        runMooneyeTest("rom_512kb.gb")
     }
 }

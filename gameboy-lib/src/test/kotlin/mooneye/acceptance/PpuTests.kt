@@ -27,7 +27,7 @@ class PpuTests : MooneyeTest() {
 
     //@Test
     fun intr_2_mode0_timing() {
-        runMooneyeTest("intr_2_mode0_timing.gb", 653448854)
+        runMooneyeTest("intr_2_mode0_timing.gb")
     }
 
     /*
@@ -38,7 +38,7 @@ class PpuTests : MooneyeTest() {
 
     //@Test
     fun intr_2_mode3_timing() {
-        runMooneyeTest("intr_2_mode3_timing.gb", 1804151641)
+        runMooneyeTest("intr_2_mode3_timing.gb")
     }
 
     /*
@@ -62,7 +62,7 @@ class PpuTests : MooneyeTest() {
 
     @Test
     fun stat_irq_blocking() {
-        runMooneyeTest("stat_irq_blocking.gb", 1864719267)
+        runMooneyeTest("stat_irq_blocking.gb")
     }
 
     /*
@@ -74,6 +74,6 @@ class PpuTests : MooneyeTest() {
 
     @Test
     fun vblank_stat_intr_GS() {
-        runMooneyeTest("vblank_stat_intr-GS.gb", 1311504648)
+        runMooneyeTest("vblank_stat_intr-GS.gb")
     }
 }

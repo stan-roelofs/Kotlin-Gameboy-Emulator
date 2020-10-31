@@ -8,6 +8,6 @@ class InterruptsTests : MooneyeTest() {
 
     @Test
     fun ie_push() {
-        runMooneyeTest("ie_push.gb", 1864719267)
+        runMooneyeTest("ie_push.gb")
     }
 }
