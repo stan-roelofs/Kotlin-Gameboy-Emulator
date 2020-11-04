@@ -30,7 +30,7 @@ abstract class IO(mmu: Mmu) : Memory {
         IF = 0x1
     }
 
-    fun tick(cycles: Int) {
+    open fun tick(cycles: Int) {
         timer.tick(cycles)
         lcd.tick(cycles)
         dma.tick(cycles)

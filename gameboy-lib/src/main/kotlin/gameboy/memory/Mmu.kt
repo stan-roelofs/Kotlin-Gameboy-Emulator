@@ -2,7 +2,6 @@ package gameboy.memory
 
 import gameboy.memory.cartridge.Cartridge
 import gameboy.memory.io.IO
-import gameboy.utils.Log
 import gameboy.utils.setBit
 
 abstract class Mmu(val cartridge: Cartridge) : Memory {
@@ -48,6 +47,11 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
 
         // DMA
         const val DMA = 0xFF46
+        const val HDMA1 = 0xFF51
+        const val HDMA2 = 0xFF52
+        const val HDMA3 = 0xFF53
+        const val HDMA4 = 0xFF54
+        const val HDMA5 = 0xFF55
 
         // Sound
         const val NR10 = 0xFF10
@@ -75,6 +79,10 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
         const val NR50 = 0xFF24
         const val NR51 = 0xFF25
         const val NR52 = 0xFF26
+
+        // CGB
+        const val KEY1 = 0xFF4D
+        const val RP = 0xFF56
     }
 
     internal abstract val hram : HRam
@@ -90,11 +98,8 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
         cartridge.reset()
     }
 
-    internal fun tick(cycles: Int) {
-        if (cycles != 4) {
-            Log.w("Cycles != 4, should not be possible")
-        }
-        io.tick(cycles)
+    internal fun tick() {
+        io.tick(4)
     }
 
     /**

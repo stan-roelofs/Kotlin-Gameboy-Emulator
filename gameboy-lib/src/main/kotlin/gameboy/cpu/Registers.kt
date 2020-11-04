@@ -197,7 +197,3 @@ abstract class Registers {
         return "AF=${getAF()} BC=${getBC()} DE=${getDE()} HL=${getHL()} SP=$SP PC=$PC"
     }
 }
-
-enum class RegisterID {
-    A, F, B, C, D, E, H, L, SP, PC, AF, BC, DE, HL
-}

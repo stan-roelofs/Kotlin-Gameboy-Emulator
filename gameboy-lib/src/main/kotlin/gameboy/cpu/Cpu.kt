@@ -8,7 +8,7 @@ import gameboy.utils.getFirstByte
 import gameboy.utils.getSecondByte
 
 /**
- * Represents the Gameboy CPU
+ * Represents the Gameboy CPU <BR>
  *
  * On initialization [reset] is called.
  */
@@ -32,7 +32,7 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
     internal fun step() {
         if (currentInstruction != null && currentInstruction!!.isExecuting()) {
             currentInstruction!!.tick()
-            increaseClock(4)
+            tick()
         } else {
             // Handle interrupts
             processInterrupts()
@@ -49,7 +49,7 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
 
                 currentInstruction = instructionsPool.getInstruction(opcode)
                 currentInstruction!!.tick()
-                increaseClock(4)
+                tick()
 
                 // If EI was executed, return such that interrupts are only enabled after the next instruction
                 if (opcode == 0xFB) {
@@ -61,7 +61,7 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
                     registers.eiExecuted = false
                 }
             } else {
-                increaseClock(4)
+                tick()
             }
         }
     }
@@ -82,20 +82,20 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
         if (interruptTriggered) {
             if (registers.halt) {
                 registers.halt = false
-                increaseClock(4)
+                tick()
             }
 
             if (registers.IME) {
                 registers.IME = false
 
                 // Execute two nops
-                increaseClock(4)
-                increaseClock(4)
+                tick()
+                tick()
 
                 // Push high byte of current PC onto stack
                 registers.decSP()
                 mmu.writeByte(registers.SP, registers.PC.getSecondByte())
-                increaseClock(4)
+                tick()
 
                 // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
                 val newIE = mmu.readByte(Mmu.IE)
@@ -111,7 +111,7 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
                 if (interruptBit >= 0) {
                     registers.decSP()
                     mmu.writeByte(registers.SP, registers.PC.getFirstByte())
-                    increaseClock(4)
+                    tick()
 
                     // Clear interrupt flag
                     IF = clearBit(IF, interruptBit)
@@ -127,16 +127,13 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
                     registers.PC = 0x0000
                 }
 
-                increaseClock(4)
+                tick()
             }
         }
     }
 
-    private fun increaseClock(steps: Int) {
-        if (steps < 0) {
-            throw IllegalArgumentException("Cannot increase clock by negative value")
-        }
-        mmu.tick(steps)
+    private fun tick() {
+        mmu.tick()
     }
 }
 

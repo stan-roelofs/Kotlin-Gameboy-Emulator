@@ -2,18 +2,24 @@ package gameboy.memory.io
 
 import gameboy.memory.Mmu
 import gameboy.memory.io.graphics.LcdCGB
+import gameboy.memory.io.graphics.Mode
 import gameboy.memory.io.sound.Sound
 
 class IOCGB(mmu : Mmu) : IO(mmu) {
 
     override val lcd = LcdCGB(mmu)
-
     override val sound = Sound()
     override val dma = Dma(mmu)
     override val timer = Timer(mmu)
+    private val hdma = Hdma(mmu)
 
     init {
         reset()
+    }
+
+    override fun tick(cycles: Int) {
+        super.tick(cycles)
+        hdma.tick(cycles, lcd.getMode() == Mode.HBLANK.mode, lcd.lcdEnabled())
     }
 
     override fun readByte(address: Int): Int {
@@ -60,6 +66,13 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
             // Dma
             Mmu.DMA -> dma.readByte(address)
+
+            // Hdma
+            Mmu.HDMA1,
+            Mmu.HDMA2,
+            Mmu.HDMA3,
+            Mmu.HDMA4,
+            Mmu.HDMA5 -> hdma.readByte(address)
 
             // Lcd
             Mmu.LCDC,
@@ -129,6 +142,13 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
             // Dma
             Mmu.DMA -> dma.writeByte(address, newVal)
+
+            // Hdma
+            Mmu.HDMA1,
+            Mmu.HDMA2,
+            Mmu.HDMA3,
+            Mmu.HDMA4,
+            Mmu.HDMA5 -> hdma.writeByte(address, newVal)
 
             // Lcd
             Mmu.LCDC,

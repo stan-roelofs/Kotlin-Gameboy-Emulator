@@ -4,7 +4,7 @@ import gameboy.cpu.Cpu
 import gameboy.memory.Mmu
 
 /**
- * Main Gameboy class
+ * Main Gameboy class <BR>
  *
  * Implements the Runnable interface such that it can be ran in a thread
  */

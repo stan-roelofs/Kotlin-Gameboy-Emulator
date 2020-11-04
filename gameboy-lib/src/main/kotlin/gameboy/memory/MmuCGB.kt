@@ -33,7 +33,13 @@ class MmuCGB(cartridge: Cartridge) : Mmu(cartridge) {
             in 0xFF00 until 0xFF4C -> io.readByte(address)
             in 0xFF4C until 0xFF4F -> return 0xFF
             VBK -> io.readByte(address) // VRAM bank
-            in 0xFF50 until 0xFF68 -> return 0xFF
+            0xFF50 -> return 0xFF
+            HDMA1,
+            HDMA2,
+            HDMA3,
+            HDMA4,
+            HDMA5 -> io.readByte(address)
+            in 0xFF56 until 0xFF68 -> return 0xFF
             BCPS,
             BCPD,
             OCPS,
@@ -85,7 +91,7 @@ class MmuCGB(cartridge: Cartridge) : Mmu(cartridge) {
      * Used to read during DMA transfer, standard readByte prevents this as memory is not accessible
      * during DMA
      */
-    internal override fun dmaReadByte(address: Int): Int {
+    override fun dmaReadByte(address: Int): Int {
         return when(address) {
             in 0x0000 until 0x8000 -> cartridge.readByte(address)
             in 0x8000 until 0xA000 -> io.readByte(address)
@@ -114,7 +120,7 @@ class MmuCGB(cartridge: Cartridge) : Mmu(cartridge) {
      * Used to write DMA transfer, standard writeByte prevents this as memory is not accessible
      * during DMA
      */
-    internal override fun dmaWriteByte(address: Int, value: Int) {
+    override fun dmaWriteByte(address: Int, value: Int) {
         val newVal = value and 0xFF
         when (address) {
             in 0xFE00 until 0xFEA0 -> {

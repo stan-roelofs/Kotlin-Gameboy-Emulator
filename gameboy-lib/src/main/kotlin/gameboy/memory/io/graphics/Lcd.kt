@@ -32,35 +32,37 @@ abstract class Lcd(private val mmu: Mmu) : Memory, Observable() {
     protected var isAnyStat = false
 
     fun tick(cyclesElapsed: Int) {
-       // if (!lcdEnabled()) {
-       //     return
-       // }
+        //if (!lcdEnabled()) {
+        //    return
+        //}
 
         cycleCounter += cyclesElapsed
 
         val mode = getMode()
+        var newMode = mode
+
         when (mode) {
             Mode.OAM_SEARCH.mode -> {
-                if (cycleCounter >= Mode.OAM_SEARCH.cycles) {
+                if (cycleCounter == Mode.OAM_SEARCH.cycles) {
                     cycleCounter = 0
-                    setMode(Mode.LCD_TRANSFER)
+                    newMode = Mode.LCD_TRANSFER.mode
                 }
             }
             Mode.LCD_TRANSFER.mode -> {
-                if (cycleCounter >= Mode.LCD_TRANSFER.cycles) {
+                if (cycleCounter == Mode.LCD_TRANSFER.cycles) {
                     cycleCounter = 0
-                    setMode(Mode.HBLANK)
+                    newMode = Mode.HBLANK.mode
 
                     renderScanline()
                 }
             }
             Mode.HBLANK.mode -> {
-                if (cycleCounter >= Mode.HBLANK.cycles) {
+                if (cycleCounter == Mode.HBLANK.cycles) {
                     cycleCounter = 0
-                    LY++
+                    ++LY
 
                     if (LY == 144) {
-                        setMode(Mode.VBLANK)
+                        newMode = Mode.VBLANK.mode
 
                         mmu.requestInterrupt(0)
 
@@ -71,27 +73,29 @@ abstract class Lcd(private val mmu: Mmu) : Memory, Observable() {
                         notifyObservers(lastFrame)
 
                     } else {
-                        setMode(Mode.OAM_SEARCH)
+                        newMode = Mode.OAM_SEARCH.mode
                     }
                 }
             }
             Mode.VBLANK.mode -> {
-                if (cycleCounter >= Mode.VBLANK.cycles) {
+                if (cycleCounter == Mode.VBLANK.cycles) {
                     cycleCounter = 0
-                    LY++
+                    ++LY
 
-                    if (LY > 153) {
+                    if (LY == 154) {
                         LY = 0
-                        setMode(Mode.OAM_SEARCH)
+                        newMode = Mode.OAM_SEARCH.mode
                     }
                 }
             }
-
         }
 
         STAT = setBit(STAT, 2, LY == LYC)
 
         checkStatInterrupts()
+
+        if (mode != newMode)
+            setMode(newMode)
     }
 
     private fun checkStatInterrupts() {
@@ -111,13 +115,12 @@ abstract class Lcd(private val mmu: Mmu) : Memory, Observable() {
         }
     }
 
-    protected fun setMode(mode: Mode) {
-        val nr = mode.mode
-        STAT = setBit(STAT, 0, nr.getBit(0))
-        STAT = setBit(STAT, 1, nr.getBit(1))
+    protected fun setMode(mode: Int) {
+        STAT = setBit(STAT, 0, mode.getBit(0))
+        STAT = setBit(STAT, 1, mode.getBit(1))
     }
 
-    private fun getMode(): Int {
+    fun getMode(): Int {
         return STAT and 0b11
     }
 
@@ -138,7 +141,7 @@ abstract class Lcd(private val mmu: Mmu) : Memory, Observable() {
 
     internal abstract fun updateTile(address: Int)
 
-    private fun lcdEnabled(): Boolean {
+    fun lcdEnabled(): Boolean {
         return LCDC.getBit(7)
     }
 }

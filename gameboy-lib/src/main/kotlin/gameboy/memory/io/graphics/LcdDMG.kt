@@ -107,7 +107,7 @@ class LcdDMG(private val mmu: Mmu) : Lcd(mmu) {
 
                 if (lcdBefore && !lcdEnabled()) {
                     cycleCounter = 0
-                    setMode(Mode.HBLANK)
+                    setMode(Mode.HBLANK.mode)
                     this.LY = 0
                 }
             }
@@ -399,9 +399,5 @@ class LcdDMG(private val mmu: Mmu) : Lcd(mmu) {
                 }
             }
         }
-    }
-
-    private fun lcdEnabled(): Boolean {
-        return LCDC.getBit(7)
     }
 }
