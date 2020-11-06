@@ -98,8 +98,8 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
         cartridge.reset()
     }
 
-    internal fun tick() {
-        io.tick(4)
+    internal fun tick(cycles: Int) {
+        io.tick(cycles)
     }
 
     /**

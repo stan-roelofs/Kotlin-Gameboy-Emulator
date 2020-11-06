@@ -31,7 +31,7 @@ abstract class SquareWave : SoundChannel() {
 
     override fun trigger() {
         super.trigger()
-        timer = getFrequency()
+        timer = getFrequency() * 4
     }
 
     override fun tick(cycles: Int): Int {
@@ -40,7 +40,7 @@ abstract class SquareWave : SoundChannel() {
 
         timer--
         if (timer == 0) {
-            timer = getFrequency()
+            timer = getFrequency() * 4
             lastOutput = if (dutyCycles[duty].getBit(dutyCounter)) 1 else 0
             dutyCounter = (dutyCounter + 1) % 8
         }

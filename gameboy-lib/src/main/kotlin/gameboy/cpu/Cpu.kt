@@ -17,6 +17,18 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
     private var instructionsPool: InstructionsPool = InstructionsPoolImpl(registers, mmu)
     private var currentInstruction: Instruction? = null
 
+    private var interruptBit = 0
+    private var count = 0
+    private var state = State.EXECUTE
+
+    enum class State {
+        EXECUTE,
+        INTERRUPT_WAIT,
+        INTERRUPT_PUSH_PC_HIGH,
+        INTERRUPT_PUSH_PC_LOW,
+        INTERRUPT_SET_PC
+    }
+
     init {
         reset()
     }
@@ -26,49 +38,107 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
      */
     fun reset() {
         registers.reset()
-        currentInstruction = null
+        count = 0
+        state = State.EXECUTE
+        interruptBit = 0
     }
 
     internal fun step() {
-        if (currentInstruction != null && currentInstruction!!.isExecuting()) {
-            currentInstruction!!.tick()
-            tick()
+        if (++count == 4) {
+            count = 0
         } else {
-            // Handle interrupts
-            processInterrupts()
+            return
+        }
 
-            // Read next instruction
-            if (!registers.halt) {
-                val opcode = mmu.readByte(registers.PC)
+        when (state) {
+            State.EXECUTE -> {
+                if (currentInstruction != null && currentInstruction!!.isExecuting())
+                    currentInstruction!!.tick()
+                else {
+                    // Check whether an interrupt was triggered
+                    if (checkInterrupts()) {
+                        state = State.INTERRUPT_WAIT
+                        return
+                    }
 
-                if (!registers.haltBug) {
-                    registers.incPC()
+                    // Read next instruction
+                    if (!registers.halt) {
+                        val opcode = mmu.readByte(registers.PC)
+
+                        if (!registers.haltBug) {
+                            registers.incPC()
+                        } else {
+                            registers.haltBug = false
+                        }
+
+                        currentInstruction = instructionsPool.getInstruction(opcode)
+                        currentInstruction!!.tick()
+                        state = State.EXECUTE
+
+                        // If EI was executed, return such that interrupts are only enabled after the next instruction
+                        if (opcode == 0xFB) {
+                            return
+                        }
+
+                        if (registers.eiExecuted) {
+                            registers.IME = true
+                            registers.eiExecuted = false
+                        }
+                    }
+                }
+            }
+            State.INTERRUPT_WAIT -> {
+                state = State.INTERRUPT_PUSH_PC_HIGH
+            }
+            State.INTERRUPT_PUSH_PC_HIGH -> {
+                // Push high byte of current PC onto stack
+                registers.decSP()
+                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
+
+                state = State.INTERRUPT_PUSH_PC_LOW
+            }
+            State.INTERRUPT_PUSH_PC_LOW -> {
+                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
+                val IE = mmu.readByte(Mmu.IE)
+                val IF = mmu.readByte(Mmu.IF)
+
+                interruptBit = -1
+                for (i in 0..4) {
+                    if (IE.getBit(i) && IF.getBit(i)) {
+                        interruptBit = i
+                        break
+                    }
+                }
+
+                if (interruptBit >= 0) {
+                    registers.decSP()
+                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
+                    state = State.INTERRUPT_SET_PC
                 } else {
-                    registers.haltBug = false
+                    registers.PC = 0x0000
+                    state = State.EXECUTE
                 }
+            }
+            State.INTERRUPT_SET_PC -> {
+                var IF = mmu.readByte(Mmu.IF)
+                // Clear interrupt flag
+                IF = clearBit(IF, interruptBit)
+                mmu.writeByte(Mmu.IF, IF)
 
-                currentInstruction = instructionsPool.getInstruction(opcode)
-                currentInstruction!!.tick()
-                tick()
+                // Calculate interrupt handler address
+                val interruptAddress = 0x40 + (interruptBit * 8)
 
-                // If EI was executed, return such that interrupts are only enabled after the next instruction
-                if (opcode == 0xFB) {
-                    return
-                }
+                registers.PC = interruptAddress
 
-                if (registers.eiExecuted) {
-                    registers.IME = true
-                    registers.eiExecuted = false
-                }
-            } else {
-                tick()
+                // Set PC to address of handler
+                state = State.EXECUTE
             }
         }
     }
 
-    private fun processInterrupts() {
+    private fun checkInterrupts() : Boolean {
         // Interrupt handling
-        var IF = mmu.readByte(Mmu.IF)
+        val IF = mmu.readByte(Mmu.IF)
         val IE = mmu.readByte(Mmu.IE)
 
         var interruptTriggered = false
@@ -82,58 +152,14 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
         if (interruptTriggered) {
             if (registers.halt) {
                 registers.halt = false
-                tick()
             }
 
             if (registers.IME) {
                 registers.IME = false
-
-                // Execute two nops
-                tick()
-                tick()
-
-                // Push high byte of current PC onto stack
-                registers.decSP()
-                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
-                tick()
-
-                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
-                val newIE = mmu.readByte(Mmu.IE)
-
-                var interruptBit = -1
-                for (i in 0..4) {
-                    if (newIE.getBit(i) && IF.getBit(i)) {
-                        interruptBit = i
-                        break
-                    }
-                }
-
-                if (interruptBit >= 0) {
-                    registers.decSP()
-                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
-                    tick()
-
-                    // Clear interrupt flag
-                    IF = clearBit(IF, interruptBit)
-                    mmu.writeByte(Mmu.IF, IF)
-
-                    // Calculate interrupt handler address
-                    val address = 0x40 + (interruptBit * 8)
-
-                    // Set PC to address of handler
-                    registers.PC = address
-                } else {
-                    // Cancellation apparently sets pc to 0x0000 according to mooneye gb tests
-                    registers.PC = 0x0000
-                }
-
-                tick()
+                return true
             }
         }
-    }
-
-    private fun tick() {
-        mmu.tick()
+        return false
     }
 }
 

@@ -50,7 +50,7 @@ abstract class MooneyeTest {
         Log.i("Provided hash $inputHash")
 
         // TODO: theres probably a better way to do this...
-        for (i in 0..10000000) {
+        for (i in 0..50000000) {
             gb.step()
         }
 

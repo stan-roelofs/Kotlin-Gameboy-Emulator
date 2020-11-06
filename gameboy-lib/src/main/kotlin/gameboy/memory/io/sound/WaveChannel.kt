@@ -47,7 +47,7 @@ class WaveChannel : SoundChannel() {
         timer--
         if (timer == 0) {
             // Reset timer
-            timer = (2048 - frequency) / 2
+            timer = (2048 - frequency) / 2 * 4
 
             // Set sample buffer
             lastOutput = patternRam[positionCounter / 2]
@@ -65,7 +65,7 @@ class WaveChannel : SoundChannel() {
 
     override fun trigger() {
         enabled = true
-        timer = (2048 - frequency) / 2
+        timer = (2048 - frequency) / 2 * 4
         positionCounter = 0
 
         if (!dac) {

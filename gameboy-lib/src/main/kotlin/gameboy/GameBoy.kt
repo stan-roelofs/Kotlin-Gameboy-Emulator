@@ -12,7 +12,7 @@ abstract class GameBoy : Runnable {
 
     companion object {
         /** The number of ticks per second the CPU is supposed to execute */
-        const val TICKS_PER_SEC = 4194304 / 4
+        const val TICKS_PER_SEC = 4194304
 
         /** The number of horizontal pixels of the Gameboy's screen */
         const val SCREEN_WIDTH = 160
@@ -43,6 +43,7 @@ abstract class GameBoy : Runnable {
     /** Performs a single cpu step */
     fun step() {
         cpu.step()
+        mmu.tick(1)
     }
 
     /** Toggle pause on / off */
