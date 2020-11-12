@@ -66,10 +66,7 @@ class MmuCGB(cartridge: Cartridge) : Mmu(cartridge) {
             in 0xA000 until 0xC000 -> cartridge.writeByte(address, newVal)
             in 0xC000 until 0xE000 -> internalRam.writeByte(address, newVal)
             in 0xE000 until 0xFE00 -> internalRam.writeByte(address, newVal)
-            in 0xFE00 until 0xFEA0 -> {
-                oam.writeByte(address, newVal)
-                io.lcd.updateSprite(address, newVal)
-            }
+            in 0xFE00 until 0xFEA0 -> oam.writeByte(address, newVal)
             in 0xFEA0 until 0xFF00 -> return // TODO: emulate this for gbc
             in 0xFF00 until 0xFF4C -> io.writeByte(address, newVal)
             in 0xFF4C until 0xFF4F -> return
@@ -123,10 +120,7 @@ class MmuCGB(cartridge: Cartridge) : Mmu(cartridge) {
     override fun dmaWriteByte(address: Int, value: Int) {
         val newVal = value and 0xFF
         when (address) {
-            in 0xFE00 until 0xFEA0 -> {
-                oam.writeByte(address, newVal)
-                io.lcd.updateSprite(address, newVal)
-            }
+            in 0xFE00 until 0xFEA0 -> oam.writeByte(address, newVal)
             else -> throw Exception("Error, DMA attempting to write to different address than OAM: ${address.toHexString()}")
         }
     }

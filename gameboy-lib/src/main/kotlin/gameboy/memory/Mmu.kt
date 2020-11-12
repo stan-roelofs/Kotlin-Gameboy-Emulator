@@ -1,5 +1,6 @@
 package gameboy.memory
 
+import gameboy.cpu.Interrupt
 import gameboy.memory.cartridge.Cartridge
 import gameboy.memory.io.IO
 import gameboy.utils.setBit
@@ -105,9 +106,9 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
     /**
      * Sets the bit at [pos] to true in the Interrupt Flags register
      */
-    fun requestInterrupt(pos: Int) {
+    fun requestInterrupt(pos: Interrupt) {
         var interruptFlags = readByte(IF)
-        interruptFlags = setBit(interruptFlags, pos)
+        interruptFlags = setBit(interruptFlags, pos.ordinal)
         writeByte(IF, interruptFlags)
     }
 
