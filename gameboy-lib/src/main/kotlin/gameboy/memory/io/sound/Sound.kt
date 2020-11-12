@@ -60,10 +60,6 @@ class Sound : Memory {
             samples[i] = if (optionChannelEnables[i]) allChannels[i].tick(cycles) else 0
         }
 
-        if (!enabled) {
-            return
-        }
-
         var left = 0
         var right = 0
 

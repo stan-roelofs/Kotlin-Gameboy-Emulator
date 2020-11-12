@@ -7,7 +7,7 @@ import gameboy.memory.io.sound.SoundOutput
 class SoundOutputGdx : SoundOutput {
 
     private val SAMPLE_RATE = 22050
-    private val BUFFER_SIZE = 512
+    private val BUFFER_SIZE = 2048
 
     private var device : AudioDevice? = null
     private var counter = 0
