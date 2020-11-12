@@ -75,16 +75,14 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
                         currentInstruction!!.tick()
                         state = State.EXECUTE
 
-                        // If EI was executed, return such that interrupts are only enabled after the next instruction
-                        if (opcode == 0xFB) {
+                        if (opcode == 0xFB)
                             return
-                        }
-
-                        if (registers.eiExecuted) {
-                            registers.IME = true
-                            registers.eiExecuted = false
-                        }
                     }
+                }
+
+                if (registers.eiExecuted) {
+                    registers.IME = true
+                    registers.eiExecuted = false
                 }
             }
             State.INTERRUPT_WAIT -> {
