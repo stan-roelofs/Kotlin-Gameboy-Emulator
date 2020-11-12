@@ -134,8 +134,8 @@ abstract class BlarggTestScreenhash : BlarggTest {
             gb.step()
         }
 
-        val hash = getScreenHash(gb.mmu.io.lcd.screenBuffer)
-        makeScreenshot(testOutputScreenshot, gb.mmu.io.lcd.screenBuffer)
+        val hash = getScreenHash(gb.mmu.io.ppu.lcd.lastBuffer)
+        makeScreenshot(testOutputScreenshot, gb.mmu.io.ppu.lcd.lastBuffer)
         testOutputHash.writeText("$hash")
 
         Log.i("Hash: $hash")

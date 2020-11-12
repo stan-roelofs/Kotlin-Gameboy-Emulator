@@ -1,5 +1,6 @@
 package mooneye
 
+import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
 import gameboy.utils.Log
@@ -15,7 +16,7 @@ abstract class MooneyeTest {
     // Runs one of the Mooneye GB test roms
     // Test passes when a hash of the screenBuffer matches a provided hash
     // Provided hash is a hash of the screenBuffer after a test passed
-    fun runMooneyeTest(fileName: String) {
+    fun runMooneyeTest(fileName: String, forceCgb : Boolean = false) {
         val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/$fileName.txt")?.toURI()
         var inputHash = 0
 
@@ -43,7 +44,7 @@ abstract class MooneyeTest {
 
         Assert.assertTrue(testOutputHash.exists())
 
-        val gb = GameBoyDMG(Cartridge(romFile))
+        val gb = if (forceCgb) GameBoyCGB(Cartridge(romFile)) else GameBoyDMG(Cartridge(romFile))
 
         Log.i("")
         Log.i("Running Mooneye Test: $fileName")
@@ -54,8 +55,8 @@ abstract class MooneyeTest {
             gb.step()
         }
 
-        val hash = getScreenHash(gb.mmu.io.lcd.screenBuffer)
-        makeScreenshot(testOutputScreenshot, gb.mmu.io.lcd.screenBuffer)
+        val hash = getScreenHash(gb.mmu.io.ppu.lcd.lastBuffer)
+        makeScreenshot(testOutputScreenshot, gb.mmu.io.ppu.lcd.lastBuffer)
         testOutputHash.writeText("$hash")
 
         Log.i("Hash: $hash")
