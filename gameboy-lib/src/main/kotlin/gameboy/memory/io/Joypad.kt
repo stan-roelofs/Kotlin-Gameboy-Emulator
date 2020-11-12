@@ -1,5 +1,6 @@
 package gameboy.memory.io
 
+import gameboy.cpu.Interrupt
 import gameboy.memory.Memory
 import gameboy.memory.Mmu
 import gameboy.utils.clearBit
@@ -50,7 +51,7 @@ class Joypad(private val mmu: Mmu) : Memory {
         pressedKeys.add(key)
         updateData()
         if (P1.getBit(key.selectBit)) {
-            mmu.requestInterrupt(4)
+            mmu.requestInterrupt(Interrupt.JOYPAD)
         }
     }
 

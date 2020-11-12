@@ -1,5 +1,6 @@
 package gameboy.memory.io
 
+import gameboy.cpu.Interrupt
 import gameboy.memory.Memory
 import gameboy.memory.Mmu
 import gameboy.utils.getBit
@@ -45,7 +46,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
             if (reload <= 4) {
                 TIMA = TMA
-                mmu.requestInterrupt(2)
+                mmu.requestInterrupt(Interrupt.TIMER)
             }
         }
         // Set new value of the counter
@@ -88,7 +89,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
                     if (TIMA > 0xFF) {
                         TIMA = TMA
-                        mmu.requestInterrupt(2)
+                        mmu.requestInterrupt(Interrupt.TIMER)
                     }
                 }
 
@@ -114,7 +115,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
                     if (TIMA > 0xFF) {
                         TIMA = TMA
-                        mmu.requestInterrupt(2)
+                        mmu.requestInterrupt(Interrupt.TIMER)
                     }
                 }
 
