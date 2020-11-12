@@ -7,7 +7,6 @@ import gameboy.GameBoy
 import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
-import gameboy.utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
@@ -57,12 +56,6 @@ class GameboyFrame : JFrame() {
         gameMenu.add(load)
         menuBar.add(gameMenu)
 
-        val debugMenu = JMenu("Debug")
-        val screenHash = JMenuItem("Screen hash")
-        screenHash.addActionListener {screenHash() }
-        debugMenu.add(screenHash)
-        menuBar.add(debugMenu)
-
         jMenuBar = menuBar
 
         container.preferredSize = Dimension(cfg.width, cfg.height)
@@ -95,16 +88,5 @@ class GameboyFrame : JFrame() {
     private fun load() {
         val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
         gb.mmu.cartridge.loadRam(File("$fileName.sav"))
-    }
-
-    private fun screenHash() {
-        var s = ""
-        for (i in gb.mmu.io.lcd.screenBuffer) {
-            for (j in i) {
-                s += j.toString()
-            }
-        }
-
-        Log.d(s.hashCode().toString())
     }
 }
