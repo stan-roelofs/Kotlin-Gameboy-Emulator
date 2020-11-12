@@ -10,13 +10,12 @@ import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
 import gameboy.memory.io.sound.SoundOutput
 import java.nio.ByteBuffer
-import java.util.*
 
 /** Base libgdx gameboy class
  *
  * Contains main rendering logic and platform independent functionality
  */
-abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
+abstract class GameboyLibgdx : ApplicationAdapter() {
 
     class Color(val r: Byte, val g: Byte, val b: Byte)
 
@@ -46,7 +45,6 @@ abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
 
         gameboy = gb
         gb.mmu.io.sound.output = output
-        gb.mmu.io.lcd.addObserver(this)
         gbThread = Thread(gameboy)
         gbThread.start()
     }
@@ -54,26 +52,6 @@ abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
     protected fun stopgb() {
         gameboy.stop()
         gbThread.join()
-    }
-
-    override fun update(o: Observable?, arg: Any?) {
-        fpsCounter.frameRendered()
-
-        val screenBuffer = arg as Array<IntArray>
-        for (i in 0 until height) {
-            for (j in 0 until width) {
-                val red = screenBuffer[i][j * 3] * 255 / 31
-                val green = screenBuffer[i][j * 3 + 1] * 255 / 31
-                val blue = screenBuffer[i][j * 3 + 2] * 255 / 31
-
-                screenBufferArray[i * width * 3 + j * 3] = red.toByte()
-                screenBufferArray[i * width * 3 + j * 3 + 1] = green.toByte()
-                screenBufferArray[i * width * 3 + j * 3 + 2] = blue.toByte()
-            }
-        }
-
-        buffer.put(screenBufferArray)
-        buffer.rewind()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -91,6 +69,24 @@ abstract class GameboyLibgdx : ApplicationAdapter(), Observer {
     }
 
     override fun render() {
+        if (this::gameboy.isInitialized) {
+            val screenBuffer = gameboy.mmu.io.ppu.lcd.lastBuffer
+            for (y in 0 until GameBoy.SCREEN_HEIGHT) {
+                for (x in 0 until GameBoy.SCREEN_WIDTH) {
+                    val red = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3] * 255 / 31
+                    val green = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1] * 255 / 31
+                    val blue = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 2] * 255 / 31
+
+                    screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3] = red.toByte()
+                    screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1] = green.toByte()
+                    screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 2] = blue.toByte()
+                }
+            }
+        }
+
+        buffer.put(screenBufferArray)
+        buffer.rewind()
+
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
