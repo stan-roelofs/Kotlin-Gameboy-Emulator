@@ -2,14 +2,14 @@ package gameboy.memory.io.graphics
 
 @Suppress("UNCHECKED_CAST")
 /**
- * A generic FIFO queue implementation which can hold up to [size] elements
+ * A generic FIFO queue implementation which can hold up to [maxSize] elements
  * @param E the type of members in this FIFO
- * @param size the maximum number of elements the queue can hold
+ * @param maxSize the maximum number of elements the queue can hold
  * @constructor Constructs an empty FIFO of a certain size
  */
-class Fifo<E : Any?>(size : Int) {
+class Fifo<E : Any?>(val maxSize : Int) {
 
-    private val values = Array<Any?> (size) { null }
+    private val values = Array<Any?> (maxSize) { null }
     private var index = 0
 
     /**
@@ -26,11 +26,6 @@ class Fifo<E : Any?>(size : Int) {
      */
     var size = 0
         private set
-
-    /**
-     * The maximum number of elements that fit in the FIFO
-     */
-    val maxSize = size
 
     /**
      * Removes all elements from the FIFO
