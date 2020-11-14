@@ -60,7 +60,7 @@ class PpuTests : MooneyeTest() {
         runMooneyeTest(gb, 0)
     }*/
 
-    @Test
+    //@Test
     fun stat_irq_blocking() {
         runMooneyeTest("stat_irq_blocking.gb")
     }
