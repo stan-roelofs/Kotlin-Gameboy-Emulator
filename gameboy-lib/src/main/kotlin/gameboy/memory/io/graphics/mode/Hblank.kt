@@ -1,4 +1,6 @@
-package gameboy.memory.io.graphics
+package gameboy.memory.io.graphics.mode
+
+import gameboy.memory.io.graphics.Mode
 
 class Hblank : Mode {
 
