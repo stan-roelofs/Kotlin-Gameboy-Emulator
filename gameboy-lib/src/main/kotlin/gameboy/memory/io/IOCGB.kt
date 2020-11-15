@@ -1,13 +1,13 @@
 package gameboy.memory.io
 
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.LcdCGB
-import gameboy.memory.io.graphics.Mode
+import gameboy.memory.io.graphics.Ppu
+import gameboy.memory.io.graphics.PpuCGB
 import gameboy.memory.io.sound.Sound
 
 class IOCGB(mmu : Mmu) : IO(mmu) {
 
-    override val lcd = LcdCGB(mmu)
+    override val ppu = PpuCGB(mmu)
     override val sound = Sound()
     override val dma = Dma(mmu)
     override val timer = Timer(mmu)
@@ -19,7 +19,7 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
     override fun tick(cycles: Int) {
         super.tick(cycles)
-        hdma.tick(cycles, lcd.getMode() == Mode.HBLANK.mode, lcd.lcdEnabled())
+        hdma.tick(cycles, ppu.getMode() == Ppu.ModeEnum.HBLANK, ppu.lcdEnabled())
     }
 
     override fun readByte(address: Int): Int {
@@ -91,7 +91,7 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
             Mmu.BCPD,
             Mmu.OCPS,
             Mmu.OCPD,
-            in 0x8000 until 0xA000 -> lcd.readByte(address)
+            in 0x8000 until 0xA000 -> ppu.readByte(address)
             else -> 0xFF
         }
     }
@@ -167,7 +167,7 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
             Mmu.BCPD,
             Mmu.OCPS,
             Mmu.OCPD,
-            in 0x8000 until 0xA000 -> lcd.writeByte(address, newVal)
+            in 0x8000 until 0xA000 -> ppu.writeByte(address, newVal)
             else -> return
         }
     }

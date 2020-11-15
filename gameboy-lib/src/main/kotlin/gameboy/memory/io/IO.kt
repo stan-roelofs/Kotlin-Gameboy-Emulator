@@ -2,14 +2,14 @@ package gameboy.memory.io
 
 import gameboy.memory.Memory
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.Lcd
+import gameboy.memory.io.graphics.Ppu
 import gameboy.memory.io.sound.Sound
 
 abstract class IO(mmu: Mmu) : Memory {
 
     // These are public such that gui can read the LCD data to render,
     // and can send key presses/releases to the Joypad
-    abstract val lcd: Lcd
+    abstract val ppu: Ppu
     val joypad = Joypad(mmu)
     val serial = Serial()
 
@@ -21,7 +21,7 @@ abstract class IO(mmu: Mmu) : Memory {
 
     final override fun reset() {
         timer.reset()
-        lcd.reset()
+        ppu.reset()
         joypad.reset()
         dma.reset()
         serial.reset()
@@ -32,7 +32,7 @@ abstract class IO(mmu: Mmu) : Memory {
 
     open fun tick(cycles: Int) {
         timer.tick(cycles)
-        lcd.tick(cycles)
+        ppu.tick(cycles)
         dma.tick(cycles)
         sound.tick(cycles)
     }

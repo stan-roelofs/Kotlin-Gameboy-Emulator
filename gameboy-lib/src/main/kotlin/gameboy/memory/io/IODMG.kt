@@ -1,14 +1,14 @@
 package gameboy.memory.io
 
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.LcdDMG
+import gameboy.memory.io.graphics.PpuDMG
 import gameboy.memory.io.sound.Sound
 
 class IODMG(mmu : Mmu) : IO(mmu) {
 
     // These are public such that gui can read the LCD data to render,
     // and can send key presses/releases to the Joypad
-    override val lcd = LcdDMG(mmu)
+    override val ppu = PpuDMG(mmu)
 
     override val sound = Sound()
     override val dma = Dma(mmu)
@@ -75,7 +75,7 @@ class IODMG(mmu : Mmu) : IO(mmu) {
             Mmu.BGP,
             Mmu.OBP0,
             Mmu.OBP1,
-            in 0x8000 until 0xA000 -> lcd.readByte(address)
+            in 0x8000 until 0xA000 -> ppu.readByte(address)
             else -> 0xFF
         }
     }
@@ -139,7 +139,7 @@ class IODMG(mmu : Mmu) : IO(mmu) {
             Mmu.BGP,
             Mmu.OBP0,
             Mmu.OBP1,
-            in 0x8000 until 0xA000 -> lcd.writeByte(address, newVal)
+            in 0x8000 until 0xA000 -> ppu.writeByte(address, newVal)
             else -> return
         }
     }
