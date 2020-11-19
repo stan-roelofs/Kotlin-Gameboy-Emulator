@@ -5,7 +5,7 @@ import gameboy.memory.Memory
 import gameboy.memory.Mmu
 import gameboy.memory.io.graphics.mode.Hblank
 import gameboy.memory.io.graphics.mode.OamSearch
-import gameboy.memory.io.graphics.mode.PixelTransferDMG
+import gameboy.memory.io.graphics.mode.PixelTransfer
 import gameboy.memory.io.graphics.mode.Vblank
 import gameboy.utils.getBit
 import java.util.*
@@ -35,7 +35,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
 
     private val oamSearch = OamSearch(mmu)
     val lcd = Lcd()
-    private val pixelTransfer = PixelTransferDMG(lcd, mmu)
+    abstract val pixelTransfer : PixelTransfer
     private val hblank = Hblank()
     private val vblank = Vblank()
 

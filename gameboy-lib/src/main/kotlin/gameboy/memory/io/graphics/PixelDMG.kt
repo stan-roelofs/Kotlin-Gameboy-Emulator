@@ -1,6 +1,7 @@
 package gameboy.memory.io.graphics
 
-class PixelDMG (
-        var color : Int,
-        var palette1: Boolean,
-        var priority: Boolean)
+open class Pixel (var color: Int, var priority: Boolean)
+
+class PixelCGB(color: Int, priority: Boolean) : Pixel(color, priority)
+
+class PixelDMG (color : Int, var palette1: Boolean, priority: Boolean) : Pixel(color, priority)

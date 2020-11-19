@@ -4,7 +4,7 @@ import gameboy.GameBoy
 
 class Lcd {
 
-    val bufferSize = GameBoy.SCREEN_WIDTH * GameBoy.SCREEN_HEIGHT * 3
+    private val bufferSize = GameBoy.SCREEN_WIDTH * GameBoy.SCREEN_HEIGHT * 3
     var currentIndex = 0
         private set
 

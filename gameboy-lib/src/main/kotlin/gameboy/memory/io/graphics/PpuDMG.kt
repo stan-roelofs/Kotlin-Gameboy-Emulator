@@ -1,9 +1,12 @@
 package gameboy.memory.io.graphics
 
 import gameboy.memory.Mmu
+import gameboy.memory.io.graphics.mode.PixelTransfer
 import gameboy.utils.toHexString
 
 class PpuDMG(private val mmu: Mmu) : Ppu(mmu) {
+
+    override val pixelTransfer = PixelTransfer(PixelRendererDMG(lcd, mmu), mmu)
 
     // Video RAM memory
     private val vram = IntArray(0x2000)
