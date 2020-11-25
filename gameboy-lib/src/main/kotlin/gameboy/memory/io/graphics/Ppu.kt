@@ -19,7 +19,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
         PIXEL_TRANSFER(3),
     }
 
-    protected var LCDC = 0
+    protected var lcdc = Lcdc()
     protected var LY = 0
     protected var LYC = 0
     protected var STAT = 0
@@ -27,9 +27,9 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
     protected var SCX = 0
     protected var WY = 0
     protected var WX = 0
-    protected var BGP = 0
-    protected var OBP0 = 0
-    protected var OBP1 = 0
+    protected val bgp = PaletteDMG()
+    protected val obp0 = PaletteDMG()
+    protected val obp1 = PaletteDMG()
 
     protected var ticksInLine = 0
 
@@ -49,7 +49,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
     }
 
     fun tick(cycles: Int) {
-        if (!lcdEnabled())
+        if (!lcdc.getLcdEnable())
             return
 
         ++ticksInLine
@@ -115,9 +115,5 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
 
     fun getMode(): ModeEnum {
         return currentModeEnum
-    }
-
-    fun lcdEnabled(): Boolean {
-        return LCDC.getBit(7)
     }
 }

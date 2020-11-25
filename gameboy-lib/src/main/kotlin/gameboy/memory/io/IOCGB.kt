@@ -1,7 +1,6 @@
 package gameboy.memory.io
 
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.Ppu
 import gameboy.memory.io.graphics.PpuCGB
 import gameboy.memory.io.sound.Sound
 
@@ -19,7 +18,7 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
     override fun tick(cycles: Int) {
         super.tick(cycles)
-        hdma.tick(cycles, ppu.getMode() == Ppu.ModeEnum.HBLANK, ppu.lcdEnabled())
+        //hdma.tick(cycles, ppu.getMode() == Ppu.ModeEnum.HBLANK, ppu.lcdEnabled())
     }
 
     override fun readByte(address: Int): Int {
