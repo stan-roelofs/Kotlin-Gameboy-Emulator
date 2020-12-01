@@ -6,7 +6,7 @@ import gameboy.utils.toHexString
 
 class PpuDMG(private val mmu: Mmu) : Ppu(mmu) {
 
-    override val pixelTransfer = PixelTransfer(PixelRendererDMG(lcd, lcdc, bgp = bgp, obp0 = obp0, obp1 = obp1), mmu)
+    override val pixelTransfer = PixelTransfer(lcdc, PixelRendererDMG(lcd, lcdc, bgp = bgp, obp0 = obp0, obp1 = obp1), false, mmu)
 
     // Video RAM memory
     private val vram = IntArray(0x2000)

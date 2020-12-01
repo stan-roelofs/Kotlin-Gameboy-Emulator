@@ -1,7 +1,7 @@
 package gameboy.memory.io.graphics
 
-class PixelRendererDMG(private val lcd: Lcd, private val lcdc : Lcdc, private val bgp : PaletteDMG, private val obp0 : PaletteDMG,
-                        private val obp1 : PaletteDMG) : PixelRenderer {
+class PixelRendererDMG(private val lcd: Lcd, private val lcdc : Lcdc, private val bgp : Palette, private val obp0 : Palette,
+                        private val obp1 : Palette) : PixelRenderer {
 
     override fun renderPixel(bgPixel: Pixel, oamPixel: Pixel?) {
         if (!lcdc.getBGWindowDisplay()) {

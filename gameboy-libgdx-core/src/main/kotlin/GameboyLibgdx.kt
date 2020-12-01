@@ -73,9 +73,9 @@ abstract class GameboyLibgdx : ApplicationAdapter() {
             val screenBuffer = gameboy.mmu.io.ppu.lcd.lastBuffer
             for (y in 0 until GameBoy.SCREEN_HEIGHT) {
                 for (x in 0 until GameBoy.SCREEN_WIDTH) {
-                    val red = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3] * 255 / 31
-                    val green = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1] * 255 / 31
-                    val blue = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 2] * 255 / 31
+                    val red = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3]
+                    val green = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1]
+                    val blue = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 2]
 
                     screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3] = red.toByte()
                     screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1] = green.toByte()

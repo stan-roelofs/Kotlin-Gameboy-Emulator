@@ -3,7 +3,7 @@ package gameboy.memory.io.graphics
 import gameboy.memory.Mmu
 import gameboy.utils.getBit
 
-class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetcher(bgFifo, oamFifo, mmu) {
+class FetcherCGB (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetcher(bgFifo, oamFifo, mmu) {
 
     enum class TileState {
         READ_TILE_NUMBER,
@@ -21,23 +21,23 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
     }
 
     private val tileStateMachine = arrayOf(
-        TileState.SLEEP,
-        TileState.READ_TILE_NUMBER,
-        TileState.SLEEP,
-        TileState.READ_DATA_0,
-        TileState.SLEEP,
-        TileState.READ_DATA_1,
-        TileState.PUSH,
-        TileState.PUSH
+            TileState.SLEEP,
+            TileState.READ_TILE_NUMBER,
+            TileState.SLEEP,
+            TileState.READ_DATA_0,
+            TileState.SLEEP,
+            TileState.READ_DATA_1,
+            TileState.PUSH,
+            TileState.PUSH
     )
 
     private val spriteStateMachine = arrayOf(
-        SpriteState.SLEEP,
-        SpriteState.READ_SPRITE_TILE_NUMBER,
-        SpriteState.SLEEP,
-        SpriteState.READ_SPRITE_DATA_0,
-        SpriteState.SLEEP,
-        SpriteState.READ_SPRITE_DATA_1
+            SpriteState.SLEEP,
+            SpriteState.READ_SPRITE_TILE_NUMBER,
+            SpriteState.SLEEP,
+            SpriteState.READ_SPRITE_DATA_0,
+            SpriteState.SLEEP,
+            SpriteState.READ_SPRITE_DATA_1
     )
 
     private var x = 0
@@ -169,7 +169,7 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
                 val lowerBit = (tileData and (1 shl (7 - i))) shr (7 - i)
                 val upperBit = (tileData2 and (1 shl (7 - i))) shr (7 - i)
                 val color = lowerBit or (upperBit shl 1)
-                bgFifo.push(PixelDMG(color, palette1 = false, priority = false))
+                bgFifo.push(PixelCGB(color, 0, false))
             }
             return true
         }
@@ -182,7 +182,7 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
         // Push transparent pixels if the oam fifo does not have at least 8 pixels
         if (oamFifo.size < 8) {
             for (i in 0 until 8 - oamFifo.size)
-                oamFifo.push(PixelDMG(0, palette1 = false, priority = false))
+                oamFifo.push(PixelCGB(0, 0, false))
         }
 
         // Overlay the pixels onto the ones already in the oam fifo
@@ -191,10 +191,10 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
             val upperBit = if (xFlip) (spriteData2 and (1 shl i)) shr i else (spriteData2 and (1 shl (7 - i))) shr (7 - i)
             val color = lowerBit or (upperBit shl 1)
 
-            val pixel = oamFifo.peek(i) as PixelDMG
+            val pixel = oamFifo.peek(i) as PixelCGB
             if (pixel.color == 0) {
                 pixel.color = color
-                pixel.palette1 = flags.getBit(4)
+                //pixel.palette1 = flags.getBit(4)
                 pixel.priority = flags.getBit(7)
             }
         }

@@ -7,15 +7,15 @@ import gameboy.utils.toHexString
 
 class PpuCGB(private val mmu: Mmu) : Ppu(mmu) {
 
-    override val pixelTransfer = PixelTransfer(PixelRendererCGB(lcd, mmu), mmu)
-
     // Video RAM memory
     val vram = Array(2) {IntArray(0x2000)}
 
     private var BCPS = 0
     private var OCPS = 0
-    var bgPalettes = IntArray(0x40)
-    var objPalettes = IntArray(0x40)
+    var bgPalettes = Array(8) {PaletteCGB()}
+    var objPalettes = Array(8) {PaletteCGB()}
+
+    override val pixelTransfer = PixelTransfer(lcdc, PixelRendererCGB(lcd, lcdc, bgPalettes = bgPalettes, objPalettes = objPalettes), true, mmu)
 
     private var currentBank = 0
 
@@ -40,8 +40,7 @@ class PpuCGB(private val mmu: Mmu) : Ppu(mmu) {
         BCPS = 0
         OCPS = 0
 
-        bgPalettes.fill(0)
-        objPalettes.fill(0)
+        // TODO: reset palettes
 
         for (bank in vram) {
             bank.fill(0)
@@ -75,9 +74,15 @@ class PpuCGB(private val mmu: Mmu) : Ppu(mmu) {
             Mmu.OBP1 -> this.obp1.paletteByte
             Mmu.VBK -> this.currentBank or 0b11111110
             Mmu.BCPS -> this.BCPS or 0b01000000
-            Mmu.BCPD -> this.bgPalettes[BCPS and 0b00111111]
+            Mmu.BCPD -> {
+                val index = BCPS and 0b00111111
+                this.bgPalettes[index / 8].getByte(index % 8)
+            }
             Mmu.OCPS -> this.OCPS or 0b01000000
-            Mmu.OCPD -> this.objPalettes[OCPS and 0b00111111]
+            Mmu.OCPD -> {
+                val index = OCPS and 0b00111111
+                this.objPalettes[index / 8].getByte(index % 8)
+            }
             in 0x8000 until 0xA000 -> vram[currentBank][address - 0x8000]
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Lcd")
         }
@@ -110,16 +115,20 @@ class PpuCGB(private val mmu: Mmu) : Ppu(mmu) {
             Mmu.VBK -> this.currentBank = newVal and 0b00000001
             Mmu.BCPS -> this.BCPS = newVal and 0b10111111
             Mmu.BCPD -> {
-                this.bgPalettes[BCPS and 0b00111111] = newVal
+                var index = BCPS and 0b00111111
+                this.bgPalettes[index / 8].setByte(index % 8, newVal)
                 if (this.BCPS.getBit(7)) {
-                    this.BCPS = (this.BCPS + 1) and 0b10111111
+                    index = (index + 1) and 0b111111
+                    this.BCPS = (index) or (1 shl 6)
                 }
             }
             Mmu.OCPS -> this.OCPS = newVal and 0b10111111
             Mmu.OCPD -> {
-                this.objPalettes[OCPS and 0b00111111] = newVal
+                var index = this.OCPS and 0b00111111
+                this.objPalettes[index / 8].setByte(index % 8, newVal)
                 if (this.OCPS.getBit(7)) {
-                    this.OCPS = (this.OCPS + 1) and 0b10111111
+                    index = (index + 1) and 0b111111
+                    this.OCPS = (index) or (1 shl 6)
                 }
             }
             in 0x8000 until 0xA000 -> vram[currentBank][address - 0x8000] = value and 0xFF

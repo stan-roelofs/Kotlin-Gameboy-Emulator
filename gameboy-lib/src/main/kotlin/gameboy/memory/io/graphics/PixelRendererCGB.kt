@@ -1,12 +1,16 @@
 package gameboy.memory.io.graphics
 
-import gameboy.memory.Mmu
+class PixelRendererCGB(private val lcd: Lcd, private val lcdc: Lcdc, private val objPalettes: Array<PaletteCGB>,
+                        private val bgPalettes: Array<PaletteCGB>) : PixelRenderer {
 
-class PixelRendererCGB(lcd: Lcd, mmu: Mmu) : PixelRenderer {
+    init {
+        if (objPalettes.size != 8 || bgPalettes.size != 8) {
+            throw IllegalArgumentException("Invalid palette array size")
+        }
+    }
 
     override fun renderPixel(bgPixel: Pixel, oamPixel: Pixel?) {
-        /*
-        if (!mmu.readByte(Mmu.LCDC).getBit(0)) {// Lcd disabled
+        if (!lcdc.getBGWindowDisplay()) {
             bgPixel.color = 0
         }
 
@@ -15,13 +19,11 @@ class PixelRendererCGB(lcd: Lcd, mmu: Mmu) : PixelRenderer {
         // - The oam pixel is transparent (color 0)
         // - The OBJ-to-BG priority (0 = OBJ above BG, 1 = OBJ behind BG color 1-3) is set (oamPixel.priority) and the BG pixel is not transparent
         val color = if (oamPixel == null || oamPixel.color == 0 || (oamPixel.priority && bgPixel.color != 0)) {
-            val palette = mmu.readByte(Mmu.BGP)
-            (palette shr (bgPixel.color * 2)) and 0b11
+            bgPalettes[(bgPixel as PixelCGB).palette].getColor(bgPixel.color)
         } else {
-            val palette = if ((oamPixel as PixelDMG).palette1) mmu.readByte(Mmu.OBP1) else mmu.readByte(Mmu.OBP0)
-            (palette shr (oamPixel.color * 2)) and 0b11
+            objPalettes[(oamPixel as PixelCGB).palette].getColor(bgPixel.color)
         }
 
-        lcd.pushPixel(colors[color].red, colors[color].green, colors[color].blue)*/
+        lcd.pushPixel(color.red, color.green, color.blue)
     }
 }

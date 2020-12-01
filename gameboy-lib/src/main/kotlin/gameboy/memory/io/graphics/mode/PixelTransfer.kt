@@ -2,15 +2,14 @@ package gameboy.memory.io.graphics.mode
 
 import gameboy.memory.Mmu
 import gameboy.memory.io.graphics.*
-import gameboy.utils.getBit
 
 
-class PixelTransfer(private val renderer: PixelRenderer, private val mmu: Mmu) : Mode {
+class PixelTransfer(private val lcdc: Lcdc, private val renderer: PixelRenderer, cgb: Boolean, private val mmu: Mmu) : Mode {
 
     private var sprites = Array<SpritePosition?>(10) { null }
     private var bgFifo = Fifo<Pixel>(16)
     private var oamFifo = Fifo<Pixel>(16)
-    private var fetcher = FetcherDMG(bgFifo, oamFifo, mmu)
+    private var fetcher = if (cgb) FetcherCGB(bgFifo, oamFifo, mmu) else FetcherDMG(bgFifo, oamFifo, mmu) // TODO: dependency injection
 
     private var x = 0
 
@@ -31,7 +30,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val mmu: Mmu) :
 
         x = 0
 
-        if (mmu.readByte(Mmu.LCDC).getBit(0)) {
+        if (lcdc.getBGWindowDisplay()) {
             fetcher.startFetchingBackground()
         }
     }
@@ -39,7 +38,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val mmu: Mmu) :
     override fun tick() {
         fetcher.tick()
 
-        if (mmu.readByte(Mmu.LCDC).getBit(0)) { // Bg/window enabled
+        if (lcdc.getBGWindowDisplay()) { // Bg/window enabled
             if (!bgFifo.empty && droppedPixels < mmu.readByte(Mmu.SCX) % 8) { // When SCX is not divisible by 8, we should drop the first few pixels
                 bgFifo.pop()
                 droppedPixels++
@@ -47,14 +46,14 @@ class PixelTransfer(private val renderer: PixelRenderer, private val mmu: Mmu) :
             }
 
             // If we have not processed the window, and window is enabled, and LY == WY, and current x == WX
-            if (!window && mmu.readByte(Mmu.LCDC).getBit(5) && mmu.readByte(Mmu.LY) >= mmu.readByte(Mmu.WY) && x == mmu.readByte(Mmu.WX) - 7) {
+            if (!window && lcdc.getWindowEnable() && mmu.readByte(Mmu.LY) >= mmu.readByte(Mmu.WY) && x == mmu.readByte(Mmu.WX) - 7) {
                 window = true
                 fetcher.startFetchingWindow()
-               return
+                return
             }
         }
 
-        if (mmu.readByte(Mmu.LCDC).getBit(1)) { // OBJ display enabled
+        if (lcdc.getObjectEnable()) { // OBJ display enabled
             if (fetcher.fetchingSprite())
                 return
 
