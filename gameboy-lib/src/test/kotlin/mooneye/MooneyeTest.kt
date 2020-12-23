@@ -1,17 +1,20 @@
 package mooneye
 
+import gameboy.GameBoy
 import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
+import gameboy.memory.io.graphics.ScreenOutput
 import gameboy.utils.Log
 import getScreenHash
 import makeScreenshot
 import org.junit.Assert
 import java.io.File
 
-abstract class MooneyeTest {
+abstract class MooneyeTest : ScreenOutput {
 
     abstract val path: String
+    private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
 
     // Runs one of the Mooneye GB test roms
     // Test passes when a hash of the screenBuffer matches a provided hash
@@ -45,6 +48,7 @@ abstract class MooneyeTest {
         Assert.assertTrue(testOutputHash.exists())
 
         val gb = if (forceCgb) GameBoyCGB(Cartridge(romFile)) else GameBoyDMG(Cartridge(romFile))
+        gb.mmu.io.ppu.lcd.output = this
 
         Log.i("")
         Log.i("Running Mooneye Test: $fileName")
@@ -55,12 +59,16 @@ abstract class MooneyeTest {
             gb.step()
         }
 
-        val hash = getScreenHash(gb.mmu.io.ppu.lcd.lastBuffer)
-        makeScreenshot(testOutputScreenshot, gb.mmu.io.ppu.lcd.lastBuffer)
+        val hash = getScreenHash(lastBuffer)
+        makeScreenshot(testOutputScreenshot, lastBuffer)
         testOutputHash.writeText("$hash")
 
         Log.i("Hash: $hash")
         Assert.assertNotNull(inputHashURI)
         Assert.assertEquals(inputHash, hash)
+    }
+
+    override fun render(screenBuffer: ByteArray) {
+        screenBuffer.copyInto(lastBuffer)
     }
 }

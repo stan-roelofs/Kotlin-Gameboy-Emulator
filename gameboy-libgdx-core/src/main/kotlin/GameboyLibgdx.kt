@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
+import gameboy.memory.io.graphics.ScreenOutput
 import gameboy.memory.io.sound.SoundOutput
 import java.nio.ByteBuffer
 
@@ -15,14 +15,11 @@ import java.nio.ByteBuffer
  *
  * Contains main rendering logic and platform independent functionality
  */
-abstract class GameboyLibgdx : ApplicationAdapter() {
-
-    class Color(val r: Byte, val g: Byte, val b: Byte)
+abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
 
     val width = GameBoy.SCREEN_WIDTH
     val height = GameBoy.SCREEN_HEIGHT
 
-    private lateinit var font: BitmapFont
     private lateinit var batch : SpriteBatch
     private lateinit var screenTexture: Texture
 
@@ -34,17 +31,18 @@ abstract class GameboyLibgdx : ApplicationAdapter() {
     protected lateinit var gbThread: Thread
     protected val cam = OrthographicCamera()
     protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
-    protected var fpsCounter = FpsCounter()
+    private var fpsCounter = FpsCounter()
 
     private val screenBufferArray = ByteArray(width * height * 3)
     private val buffer = ByteBuffer.allocateDirect(width * height * 3)
-    
+
     open fun startgb(gb: GameBoy) {
         if (this::gameboy.isInitialized && gameboy.running)
             stopgb()
 
         gameboy = gb
         gb.mmu.io.sound.output = output
+        gb.mmu.io.ppu.lcd.output = this
         gbThread = Thread(gameboy)
         gbThread.start()
     }
@@ -59,8 +57,9 @@ abstract class GameboyLibgdx : ApplicationAdapter() {
     }
 
     override fun create() {
-        font = BitmapFont()
-        font.data.scale(-0.8f)
+        Gdx.graphics.isContinuousRendering = false
+
+        fpsCounter.enabled = true
         screenTexture = Texture(width, height, Pixmap.Format.RGB888)
         batch = SpriteBatch()
         output.initialize()
@@ -68,25 +67,14 @@ abstract class GameboyLibgdx : ApplicationAdapter() {
         cam.position.set(width.toFloat() / 2f, height.toFloat() / 2f, 0f)
     }
 
-    override fun render() {
-        if (this::gameboy.isInitialized) {
-            val screenBuffer = gameboy.mmu.io.ppu.lcd.lastBuffer
-            for (y in 0 until GameBoy.SCREEN_HEIGHT) {
-                for (x in 0 until GameBoy.SCREEN_WIDTH) {
-                    val red = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3]
-                    val green = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1]
-                    val blue = screenBuffer[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 2]
-
-                    screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3] = red.toByte()
-                    screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 1] = green.toByte()
-                    screenBufferArray[y * GameBoy.SCREEN_WIDTH * 3 + x * 3 + 2] = blue.toByte()
-                }
-            }
-        }
-
-        buffer.put(screenBufferArray)
+    override fun render(screenBuffer: ByteArray) {
+        buffer.put(screenBuffer)
         buffer.rewind()
+        Gdx.graphics.requestRendering()
+        fpsCounter.frameRendered()
+    }
 
+    override fun render() {
         Gdx.gl.glClearColor(1f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
@@ -101,7 +89,6 @@ abstract class GameboyLibgdx : ApplicationAdapter() {
     override fun dispose() {
         batch.dispose()
         output.dispose()
-        font.dispose()
         screenTexture.dispose()
 
         stopgb()

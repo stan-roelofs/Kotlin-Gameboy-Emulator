@@ -1,8 +1,10 @@
 package blargg
 
 import MAX_ITERATIONS
+import gameboy.GameBoy
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
+import gameboy.memory.io.graphics.ScreenOutput
 import gameboy.utils.Log
 import getScreenHash
 import makeScreenshot
@@ -93,7 +95,9 @@ abstract class BlarggTestMemory : BlarggTest {
     }
 }
 
-abstract class BlarggTestScreenhash : BlarggTest {
+abstract class BlarggTestScreenhash : BlarggTest, ScreenOutput {
+
+    private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
 
     override fun runBlarggTest(fileName: String) {
         Log.i("")
@@ -129,18 +133,23 @@ abstract class BlarggTestScreenhash : BlarggTest {
         Assert.assertTrue(testOutputHash.exists())
 
         val gb = GameBoyDMG(Cartridge(romFile))
+        gb.mmu.io.ppu.lcd.output = this
 
         for (i in 0..MAX_ITERATIONS) {
             gb.step()
         }
 
-        val hash = getScreenHash(gb.mmu.io.ppu.lcd.lastBuffer)
-        makeScreenshot(testOutputScreenshot, gb.mmu.io.ppu.lcd.lastBuffer)
+        val hash = getScreenHash(lastBuffer)
+        makeScreenshot(testOutputScreenshot, lastBuffer)
         testOutputHash.writeText("$hash")
 
         Log.i("Hash: $hash")
         Assert.assertNotNull(inputHashURI)
         Assert.assertEquals(inputHash, hash)
+    }
+
+    override fun render(screenBuffer: ByteArray) {
+        screenBuffer.copyInto(lastBuffer)
     }
 }
 
