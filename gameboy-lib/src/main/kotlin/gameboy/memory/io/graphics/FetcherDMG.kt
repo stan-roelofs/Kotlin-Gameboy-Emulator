@@ -1,9 +1,11 @@
 package gameboy.memory.io.graphics
 
-import gameboy.memory.Mmu
+import gameboy.memory.Oam
+import gameboy.memory.Register
 import gameboy.utils.getBit
 
-class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetcher(bgFifo, oamFifo, mmu) {
+class FetcherDMG (lcdc: Lcdc, wx: Register, wy: Register, scy: Register, scx: Register, ly: Register, oam: Oam, vram: Vram)
+    : Fetcher(lcdc, wx, wy, scy, scx, ly, oam, vram) {
 
     enum class TileState {
         READ_TILE_NUMBER,
@@ -83,33 +85,33 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
         spriteData = 0
         spriteData2 = 0
         spriteTile = 0
+        bgFifo.clear()
+        oamFifo.clear()
     }
 
     override fun tick() {
         if (!spriteRequested || state < 5 || bgFifo.size < 8) {
             when (tileStateMachine[state]) {
                 TileState.READ_TILE_NUMBER -> {
-                    val lcdc = mmu.readByte(Mmu.LCDC)
-                    val tileMap = if ((!window && lcdc.getBit(3)) || (window && lcdc.getBit(6))) 0x9C00 else 0x9800
-                    tile = mmu.readByte(tileMap + (y / 8 * 32) + x)
+                    val tileMap = if ((!window && lcdc.getBackgroundTileMap()) || (window && lcdc.getWindowTileMap())) 0x9C00 else 0x9800
+                    tile = vram.readByte(0, tileMap + (y / 8 * 32) + x)
                     ++state
                 }
                 TileState.READ_DATA_0 -> {
-                    val lcdc = mmu.readByte(Mmu.LCDC)
-                    val tileBaseAddress = if (lcdc.getBit(4)) 0x8000 else 0x9000
-                    val tileOffset = if (lcdc.getBit(4)) tile else tile.toByte().toInt()
-                    tileData = mmu.readByte(tileBaseAddress + tileOffset * 16 + (y % 8) * 2)
+                    val tileBaseAddress = if (lcdc.getTileDataSelect()) 0x8000 else 0x9000
+                    val tileOffset = if (lcdc.getTileDataSelect()) tile else tile.toByte().toInt()
+                    tileData = vram.readByte(0,tileBaseAddress + tileOffset * 16 + (y % 8) * 2)
                     ++state
                 }
                 TileState.READ_DATA_1 -> {
-                    val lcdc = mmu.readByte(Mmu.LCDC)
-                    val tileBaseAddress = if (lcdc.getBit(4)) 0x8000 else 0x9000
-                    val tileOffset = if (lcdc.getBit(4)) tile else tile.toByte().toInt()
-                    tileData2 = mmu.readByte(tileBaseAddress + tileOffset * 16 + (y % 8) * 2 + 1)
+                    val tileBaseAddress = if (lcdc.getTileDataSelect()) 0x8000 else 0x9000
+                    val tileOffset = if (lcdc.getTileDataSelect()) tile else tile.toByte().toInt()
+                    tileData2 = vram.readByte(0,tileBaseAddress + tileOffset * 16 + (y % 8) * 2 + 1)
                     ++state
                     if (dropPixels) {
                         state = 0
                         dropPixels = false
+                        return
                     }
                     if (push()) {
                         state = 0
@@ -129,12 +131,12 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
         } else {
             when (spriteStateMachine[spriteState]) {
                 SpriteState.READ_SPRITE_TILE_NUMBER -> {
-                    spriteTile = mmu.readByte(sprite.address + 2)
-                    flags = mmu.readByte(sprite.address + 3)
+                    spriteTile = oam.readByte(sprite.address + 2)
+                    flags = oam.readByte(sprite.address + 3)
                     ++spriteState
                 }
                 SpriteState.READ_SPRITE_DATA_0 -> {
-                    spriteSize = if (mmu.readByte(Mmu.LCDC).getBit(2)) {
+                    spriteSize = if (lcdc.getObjectSize()) {
                         spriteTile = spriteTile and 0xFE
                         16
                     } else {
@@ -143,16 +145,16 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
 
                     spriteYFlip = flags.getBit(6)
                     spriteLine = if (spriteYFlip) {
-                        spriteSize - 1 - (mmu.readByte(Mmu.LY) + 16 - sprite.y)
+                        spriteSize - 1 - (ly.value + 16 - sprite.y)
                     } else {
-                        mmu.readByte(Mmu.LY) + 16 - sprite.y
+                        ly.value + 16 - sprite.y
                     }
 
-                    spriteData = mmu.readByte(0x8000 + spriteTile * 16 + spriteLine * 2)
+                    spriteData = vram.readByte(0,0x8000 + spriteTile * 16 + spriteLine * 2)
                     ++spriteState
                 }
                 SpriteState.READ_SPRITE_DATA_1 -> {
-                    spriteData2 = mmu.readByte(0x8000 + spriteTile * 16 + spriteLine * 2 + 1)
+                    spriteData2 = vram.readByte(0,0x8000 + spriteTile * 16 + spriteLine * 2 + 1)
                     pushSprite()
                     spriteRequested = false
                 }
@@ -202,14 +204,14 @@ class FetcherDMG (bgFifo : Fifo<Pixel>, oamFifo: Fifo<Pixel>, mmu: Mmu) : Fetche
 
     override fun startFetchingBackground() {
         dropPixels = true
-        x = (mmu.readByte(Mmu.SCX) / 8) and 0x1F
-        y = (mmu.readByte(Mmu.LY) + mmu.readByte(Mmu.SCY)) and 0xFF
+        x = (scx.value / 8) and 0x1F
+        y = (ly.value + scy.value) and 0xFF
     }
 
     override fun startFetchingWindow() {
         window = true
-        x = (mmu.readByte(Mmu.WX) / 8) and 0x1F
-        y = mmu.readByte(Mmu.LY) - mmu.readByte(Mmu.WY)
+        x = (wx.value / 8) and 0x1F
+        y = ly.value - wy.value
         state = 0
         bgFifo.clear()
     }

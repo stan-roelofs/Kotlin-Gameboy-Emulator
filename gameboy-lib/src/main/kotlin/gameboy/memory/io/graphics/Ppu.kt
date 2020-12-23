@@ -3,11 +3,11 @@ package gameboy.memory.io.graphics
 import gameboy.cpu.Interrupt
 import gameboy.memory.Memory
 import gameboy.memory.Mmu
+import gameboy.memory.Register
 import gameboy.memory.io.graphics.mode.Hblank
 import gameboy.memory.io.graphics.mode.OamSearch
 import gameboy.memory.io.graphics.mode.PixelTransfer
 import gameboy.memory.io.graphics.mode.Vblank
-import gameboy.utils.getBit
 import java.util.*
 
 abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
@@ -19,14 +19,15 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
         PIXEL_TRANSFER(3),
     }
 
+    abstract val vram: Vram
     protected var lcdc = Lcdc()
-    protected var LY = 0
-    protected var LYC = 0
-    protected var STAT = 0
-    protected var SCY = 0
-    protected var SCX = 0
-    protected var WY = 0
-    protected var WX = 0
+    protected var ly = Register(0xFF44)
+    protected var lyc = Register(0xFF45)
+    protected var stat = Register(0xFF41)
+    protected var scy = Register(0xFF42)
+    protected var scx = Register(0xFF43)
+    protected var wy = Register(0xFF4A)
+    protected var wx = Register(0xFF4B)
     protected val bgp = PaletteDMG()
     protected val obp0 = PaletteDMG()
     protected val obp1 = PaletteDMG()
@@ -69,7 +70,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                 }
                 ModeEnum.HBLANK -> {
                     ticksInLine = 0
-                    if (++LY == 144) {
+                    if (++ly.value == 144) {
                         currentMode = vblank
                         vblank.start()
                         currentModeEnum = ModeEnum.VBLANK
@@ -87,9 +88,9 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                     requestLycEqualsLyInterrupt()
                 }
                 ModeEnum.VBLANK -> {
-                    if (++LY == 154) {
+                    if (++ly.value == 154) {
                         ticksInLine = 0
-                        LY = 0
+                        ly.value = 0
                         currentMode = oamSearch
                         oamSearch.start()
                         currentModeEnum = ModeEnum.OAM_SEARCH
@@ -104,12 +105,12 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
     }
 
     private fun requestStatInterrupt(bit: Int) {
-        if (STAT.getBit(bit))
+        if (stat.getBit(bit))
             mmu.requestInterrupt(Interrupt.STAT)
     }
 
     private fun requestLycEqualsLyInterrupt() {
-        if (LYC == LY)
+        if (lyc == ly)
             requestStatInterrupt(6)
     }
 

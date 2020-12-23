@@ -1,16 +1,13 @@
 package gameboy.memory.io.graphics.mode
 
-import gameboy.memory.Mmu
+import gameboy.memory.Register
 import gameboy.memory.io.graphics.*
 
 
-class PixelTransfer(private val lcdc: Lcdc, private val renderer: PixelRenderer, cgb: Boolean, private val mmu: Mmu) : Mode {
+class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fetcher, private val lcdc: Lcdc, private val ly: Register,
+                    private val wy: Register, private val wx: Register, private val scx: Register) : Mode {
 
     private var sprites = Array<SpritePosition?>(10) { null }
-    private var bgFifo = Fifo<Pixel>(16)
-    private var oamFifo = Fifo<Pixel>(16)
-    private var fetcher = if (cgb) FetcherCGB(bgFifo, oamFifo, mmu) else FetcherDMG(bgFifo, oamFifo, mmu) // TODO: dependency injection
-
     private var x = 0
 
     // The number of pixels we dropped
@@ -24,8 +21,6 @@ class PixelTransfer(private val lcdc: Lcdc, private val renderer: PixelRenderer,
         droppedPixels = 0
         window = false
 
-        bgFifo.clear()
-        oamFifo.clear()
         fetcher.reset()
 
         x = 0
@@ -38,19 +33,17 @@ class PixelTransfer(private val lcdc: Lcdc, private val renderer: PixelRenderer,
     override fun tick() {
         fetcher.tick()
 
-        if (lcdc.getBGWindowDisplay()) { // Bg/window enabled
-            if (!bgFifo.empty && droppedPixels < mmu.readByte(Mmu.SCX) % 8) { // When SCX is not divisible by 8, we should drop the first few pixels
-                bgFifo.pop()
-                droppedPixels++
-                return
-            }
+        if (!fetcher.bgFifo.empty && droppedPixels < scx.value % 8) { // When SCX is not divisible by 8, we should drop the first few pixels
+            fetcher.bgFifo.pop()
+            droppedPixels++
+            return
+        }
 
-            // If we have not processed the window, and window is enabled, and LY == WY, and current x == WX
-            if (!window && lcdc.getWindowEnable() && mmu.readByte(Mmu.LY) >= mmu.readByte(Mmu.WY) && x == mmu.readByte(Mmu.WX) - 7) {
-                window = true
-                fetcher.startFetchingWindow()
-                return
-            }
+        // If we have not processed the window, and window is enabled, and LY == WY, and current x == WX
+        if (!window && lcdc.getWindowEnable() && ly.value >= wy.value && x == wx.value - 7) {
+            window = true
+            fetcher.startFetchingWindow()
+            return
         }
 
         if (lcdc.getObjectEnable()) { // OBJ display enabled
@@ -66,9 +59,9 @@ class PixelTransfer(private val lcdc: Lcdc, private val renderer: PixelRenderer,
             }
         }
 
-        if (x < 160 && !bgFifo.empty) {
+        if (x < 160 && !fetcher.bgFifo.empty) {
             ++x
-            renderer.renderPixel(bgFifo.pop(), if (oamFifo.empty) null else oamFifo.pop())
+            renderer.renderPixel(fetcher.bgFifo.pop(), if (fetcher.oamFifo.empty) null else fetcher.oamFifo.pop())
         }
     }
 

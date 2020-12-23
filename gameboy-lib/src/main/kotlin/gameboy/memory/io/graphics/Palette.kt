@@ -64,9 +64,9 @@ class PaletteCGB : Palette() {
             values[colorIndex] = (values[colorIndex] and 0x00FF) or (value shl 8)
         }
 
-        val red = rgb555ToRgb888(value and 0b11111)
-        val green = rgb555ToRgb888((value and 0b1111100000) shr 5)
-        val blue = rgb555ToRgb888((value and 0b111110000000000) shr 10)
+        val red = rgb555ToRgb888(values[colorIndex] and 0b11111)
+        val green = rgb555ToRgb888((values[colorIndex] and 0b1111100000) shr 5)
+        val blue = rgb555ToRgb888((values[colorIndex] and 0b111110000000000) shr 10)
         colors[colorIndex] = Color(red, green, blue)
     }
 

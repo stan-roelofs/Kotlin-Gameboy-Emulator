@@ -1,40 +1,39 @@
 package gameboy.memory.io.graphics
 
+import gameboy.memory.Register
 import gameboy.utils.getBit
 
-class Lcdc {
-
-    var LcdcByte = 0
+class Lcdc : Register(0xFF40) {
 
     fun getLcdEnable(): Boolean {
-        return LcdcByte.getBit(7)
+        return value.getBit(7)
     }
 
     fun getWindowTileMap(): Boolean {
-        return LcdcByte.getBit(6)
+        return value.getBit(6)
     }
 
     fun getWindowEnable(): Boolean {
-        return LcdcByte.getBit(5)
+        return value.getBit(5)
     }
 
     fun getTileDataSelect(): Boolean {
-        return LcdcByte.getBit(4)
+        return value.getBit(4)
     }
 
     fun getBackgroundTileMap(): Boolean {
-        return LcdcByte.getBit(3)
+        return value.getBit(3)
     }
 
     fun getObjectSize(): Boolean {
-        return LcdcByte.getBit(2)
+        return value.getBit(2)
     }
 
     fun getObjectEnable(): Boolean {
-        return LcdcByte.getBit(1)
+        return value.getBit(1)
     }
 
     fun getBGWindowDisplay(): Boolean {
-        return LcdcByte.getBit(0)
+        return value.getBit(0)
     }
 }

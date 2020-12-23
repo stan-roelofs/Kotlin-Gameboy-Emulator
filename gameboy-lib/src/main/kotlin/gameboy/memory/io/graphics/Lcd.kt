@@ -23,6 +23,9 @@ class Lcd {
     }
 
     fun display() {
+        if (currentIndex != bufferSize)
+            throw IllegalStateException()
+
         buffer.copyInto(lastBuffer)
     }
 }

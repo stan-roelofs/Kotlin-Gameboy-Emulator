@@ -8,8 +8,6 @@ import gameboy.utils.setBit
 abstract class Mmu(val cartridge: Cartridge) : Memory {
 
     companion object {
-        // Constants
-
         // LCD
         const val SVBK = 0xFF70
         const val VBK = 0xFF4F
