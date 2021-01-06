@@ -25,8 +25,8 @@ abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
 
     /** Sound output object, required by gameboy */
     abstract var output : SoundOutput
-    lateinit var gameboy: GameBoy
-        private set
+    var gameboy: GameBoy? = null
+        protected set
 
     protected lateinit var gbThread: Thread
     protected val cam = OrthographicCamera()
@@ -37,7 +37,7 @@ abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
     private val buffer = ByteBuffer.allocateDirect(width * height * 3)
 
     open fun startgb(gb: GameBoy) {
-        if (this::gameboy.isInitialized && gameboy.running)
+        if (gameboy?.running == true)
             stopgb()
 
         gameboy = gb
@@ -48,7 +48,7 @@ abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
     }
 
     protected fun stopgb() {
-        gameboy.stop()
+        gameboy?.stop()
         gbThread.join()
     }
 

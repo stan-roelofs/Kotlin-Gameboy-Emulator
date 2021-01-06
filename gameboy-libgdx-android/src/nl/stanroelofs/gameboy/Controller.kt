@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import gameboy.GameBoy
@@ -20,10 +19,9 @@ import java.io.File
 import java.io.FileNotFoundException
 import javax.microedition.khronos.opengles.GL10
 
-class Controller(private val gb: GameBoy, private val activity: Activity) {
+class Controller(gb: GameBoy?, activity: Activity) {
     private val camera: Camera = OrthographicCamera()
     private val viewPort: Viewport = ExtendViewport(100f, 100f, camera)
-    private val stage: Stage = Stage(viewPort)
     private val controls: ArrayList<Button> = ArrayList()
 
     private val inputProcessor = object : InputAdapter() {
@@ -86,14 +84,14 @@ class Controller(private val gb: GameBoy, private val activity: Activity) {
     }
 }
 
-abstract class Button(var x: Float, var y: Float, protected val gb: GameBoy) {
+abstract class Button(var x: Float, var y: Float, protected val gb: GameBoy?) {
     abstract fun isPressed(x: Float, y: Float): Boolean
     abstract fun onPressed()
     abstract fun onReleased()
     abstract fun draw(shapeRenderer: ShapeRenderer)
 }
 
-class ControllerButton(x: Float, y: Float, gb: GameBoy, private val key: Joypad.JoypadKey) : Button(x, y, gb) {
+class ControllerButton(x: Float, y: Float, gb: GameBoy?, private val key: Joypad.JoypadKey) : Button(x, y, gb) {
     private val width = 10f
     private val height = 10f
 
@@ -102,11 +100,11 @@ class ControllerButton(x: Float, y: Float, gb: GameBoy, private val key: Joypad.
     }
 
     override fun onPressed() {
-        gb.mmu.io.joypad.keyPressed(key)
+        gb?.mmu?.io?.joypad?.keyPressed(key)
     }
 
     override fun onReleased() {
-        gb.mmu.io.joypad.keyReleased(key)
+        gb?.mmu?.io?.joypad?.keyReleased(key)
     }
 
     override fun draw(shapeRenderer: ShapeRenderer) {
@@ -118,7 +116,7 @@ class ControllerButton(x: Float, y: Float, gb: GameBoy, private val key: Joypad.
     }
 }
 
-class MenuButton(x: Float, y: Float, gb: GameBoy, private val context: Activity) : Button(x, y, gb) {
+class MenuButton(x: Float, y: Float, gb: GameBoy?, private val context: Activity) : Button(x, y, gb) {
     private val width = 20f
     private val height = 15f
 
@@ -143,7 +141,7 @@ class MenuButton(x: Float, y: Float, gb: GameBoy, private val context: Activity)
                             context.startActivityForResult(chooseFile, 0)
                         }
                         1 -> {
-                            gb.togglePause()
+                            gb?.togglePause()
                         }
                         2 -> {
                             val root = File(context.filesDir, "Saves")
@@ -153,22 +151,25 @@ class MenuButton(x: Float, y: Float, gb: GameBoy, private val context: Activity)
                             }
 
                             if (root.exists()) {
-                                val saveFile = File(root, "${gb.mmu.cartridge.cartridgeFile.nameWithoutExtension}.sav")
+                                val saveFile = File(root, "${gb?.mmu?.cartridge?.cartridgeFile?.nameWithoutExtension}.sav")
                                 if (!saveFile.exists())
                                     saveFile.createNewFile()
 
                                 try {
-                                    gb.mmu.cartridge.saveRam(saveFile)
+                                    gb?.mmu?.cartridge?.saveRam(saveFile)
                                 } catch (e: FileNotFoundException) {
                                     e.printStackTrace()
                                 }
-                            }
+                            } else
+                                null
                         }
                         3 -> {
                             val root = File(context.filesDir, "Saves")
-                            val saveFile = File(root, "${gb.mmu.cartridge.cartridgeFile.nameWithoutExtension}.sav")
+                            val saveFile = File(root, "${gb?.mmu?.cartridge?.cartridgeFile?.nameWithoutExtension}.sav")
                             if (saveFile.exists())
-                                gb.mmu.cartridge.loadRam(saveFile)
+                                gb?.mmu?.cartridge?.loadRam(saveFile)
+                            else
+                                null
                         }
                         else -> {
 
