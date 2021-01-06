@@ -16,7 +16,7 @@ object Log {
     }
 
     fun w(string: String) {
-        if (LOG) this.log("WARNING: $string")
+        if (LOG) log("WARNING: $string")
     }
 
     private fun log(string: String) {
