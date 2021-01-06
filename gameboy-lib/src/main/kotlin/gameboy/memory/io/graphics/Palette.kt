@@ -1,7 +1,16 @@
 package gameboy.memory.io.graphics
 
-import java.awt.Color
-
+/**
+ * Class that represents a color palette.
+ *
+ * A tile does not encode color information.
+ * Instead, a tile assigns a color ID to each of its pixels, ranging from 0 to 3.
+ * For this reason, Game Boy graphics are also called 2bpp, 2 bits per pixel.
+ * These color IDs are then associated with a palette.
+ * A palette consists of an array of colors, 4 in the Game Boy's case.
+ * Palettes are stored differently in monochrome and color versions of the console.
+ * When applied to a tile, each color ID is used as an index to select the color in the palette array, which then gets sent to the LCD.
+ */
 abstract class Palette {
     /**
      * Given a color index (0-3) for a pixel on the screen,

@@ -33,6 +33,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
     override fun tick() {
         fetcher.tick()
 
+        // TODO:  if (lcdc.getBGWindowDisplay()) { // Bg/window enabled
         if (!fetcher.bgFifo.empty && droppedPixels < scx.value % 8) { // When SCX is not divisible by 8, we should drop the first few pixels
             fetcher.bgFifo.pop()
             droppedPixels++
@@ -51,7 +52,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
                 return
 
             for (i in sprites.indices) {
-                if (sprites[i]?.x == x + 8) {
+                if (sprites[i]?.x == x + 8) { // TODO: handle sprite positions < 8
                     fetcher.startFetchingSprite(sprites[i]!!)
                     sprites[i] = null
                     return

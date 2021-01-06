@@ -73,7 +73,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
         if (!lcdc.getLcdEnable())
             return
 
-        ticksInLine
+        ++ticksInLine
         currentMode.tick()
         if (currentMode.finished()) {
             when (currentModeEnum) {

@@ -40,7 +40,7 @@ class Hdma(private val mmu: Mmu) : Memory {
         if (!inProgress)
             return
 
-        if (hblankTransfer && (!hblank && lcdEnabled))
+        if (hblankTransfer && !hblank && lcdEnabled)
             return
 
         for (i in 0 until 0x10) {
