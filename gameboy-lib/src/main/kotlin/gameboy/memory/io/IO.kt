@@ -20,7 +20,7 @@ abstract class IO(mmu: Mmu) : Memory {
 
     private var IF = 0
 
-    final override fun reset() {
+    override fun reset() {
         timer.reset()
         ppu.reset()
         joypad.reset()
@@ -172,6 +172,10 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
     init {
         reset()
+    }
+
+    override fun reset() {
+        hdma.reset()
     }
 
     override fun tick(cycles: Int) {
