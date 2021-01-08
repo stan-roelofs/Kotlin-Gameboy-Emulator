@@ -47,7 +47,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
     private var currentMode : Mode = oamSearch
     private var currentModeEnum = ModeEnum.OAM_SEARCH
     protected var ticksInLine = 0
-    private var currentBank = 0
+    protected var currentBank = 0
 
     override fun reset() {
         currentMode = oamSearch
@@ -211,8 +211,6 @@ class PpuCGB(mmu: Mmu) : Ppu(mmu) {
     private val renderer = PixelRendererCGB(lcd, lcdc, objPalettes, bgPalettes)
     private val fetcher = FetcherCGB(lcdc, wx, wy, scy, scx, ly, mmu.oam, vram)
     override val pixelTransfer = PixelTransfer(renderer, fetcher, lcdc, ly, wy, wx, scx)
-
-    private var currentBank = 0
 
     init {
         reset()
