@@ -30,7 +30,7 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.
 
 ## Preview
-![alt text](https://media.giphy.com/media/Sr8w0qUxx9K9LhviS1/giphy.gif)
+![alt text](preview.gif)
 
 ## Getting started
 gameboy-lib contains the gameboy emulator library.
