@@ -68,8 +68,15 @@ class Cartridge(file: File) : Memory {
             Log.i("Scrolling Nintendo Graphic bytes match")
         }
 
-        isGbc = data[0x143] == 0x80.toByte()
-        Log.i("Is Color GB: $isGbc")
+        if (data[0x143] == 0x80.toByte()) {
+            Log.i("Game supports CGB functions")
+            isGbc = true
+        }
+
+        if (data[0x143] == 0xC0.toByte()) {
+            Log.i("Game requires CGB functions")
+            isGbc = true
+        }
 
         title = String(data.copyOfRange(0x134, 0x143), Charsets.US_ASCII)
         Log.i("Title: $title")

@@ -23,7 +23,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
 
     // Memory / registers
     abstract val vram: Vram
-    protected val lcdc = Lcdc()
+    val lcdc = Lcdc()
     protected val ly = Register(0xFF44)
     protected val lyc = Register(0xFF45)
     protected val stat = Register(0xFF41)
@@ -177,9 +177,9 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                 lcdc.value = newVal
 
                 if (lcdBefore && !lcdc.getLcdEnable()) {
-                    ticksInLine = 0
+                    //ticksInLine = 0
                     //setMode(Mode.HBLANK.mode)
-                    ly.value = 0
+                    //ly.value = 0
                 }
             }
             ly.address -> ly.value = newVal

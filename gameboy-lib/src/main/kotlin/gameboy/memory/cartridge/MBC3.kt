@@ -48,7 +48,7 @@ class MBC3(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     }
 
     override fun loadRom(value: ByteArray) {
-        for (i in 0 until value.size) {
+        for (i in value.indices) {
             val bank: Int = i / 0x4000
             val index: Int = i - (bank * 0x4000)
 
