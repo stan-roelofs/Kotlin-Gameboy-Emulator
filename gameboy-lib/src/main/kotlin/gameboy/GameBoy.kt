@@ -1,10 +1,14 @@
 package gameboy
 
-import gameboy.cpu.Cpu
+import gameboy.cpu.*
 import gameboy.memory.Mmu
+import gameboy.memory.MmuCGB
+import gameboy.memory.MmuDMG
+import gameboy.memory.cartridge.Cartridge
+import gameboy.memory.io.Hdma
 
 /**
- * Main Gameboy class
+ * Main Gameboy class <BR>
  *
  * Implements the Runnable interface such that it can be ran in a thread
  */
@@ -12,7 +16,7 @@ abstract class GameBoy : Runnable {
 
     companion object {
         /** The number of ticks per second the CPU is supposed to execute */
-        const val TICKS_PER_SEC = 4194304 / 4
+        const val TICKS_PER_SEC = 4194304
 
         /** The number of horizontal pixels of the Gameboy's screen */
         const val SCREEN_WIDTH = 160
@@ -41,8 +45,9 @@ abstract class GameBoy : Runnable {
     }
 
     /** Performs a single cpu step */
-    fun step() {
+    open fun step() {
         cpu.step()
+        mmu.tick(2)
     }
 
     /** Toggle pause on / off */
@@ -62,5 +67,30 @@ abstract class GameBoy : Runnable {
                 step()
             }
         }
+    }
+}
+
+class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
+    override val mmu = MmuCGB(cartridge)
+    override val cpu = CpuCGB(mmu, RegistersCGB())
+
+    init {
+        reset()
+    }
+
+    override fun step() {
+        if (mmu.io.hdma.state != Hdma.State.TRANSFER)
+            cpu.step()
+
+        mmu.tick(if (cpu.doubleSpeed) 1 else 2)
+    }
+}
+
+class GameBoyDMG(cartridge: Cartridge) : GameBoy() {
+    override val mmu = MmuDMG(cartridge)
+    override val cpu = CpuDMG(mmu, RegistersDMG())
+
+    init {
+        reset()
     }
 }

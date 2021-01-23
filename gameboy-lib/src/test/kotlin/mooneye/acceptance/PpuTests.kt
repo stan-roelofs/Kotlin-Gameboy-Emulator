@@ -25,7 +25,7 @@ class PpuTests : MooneyeTest() {
         runMooneyeTest(gb, 0)
     }*/
 
-    //@Test
+    @Test
     fun intr_2_mode0_timing() {
         runMooneyeTest("intr_2_mode0_timing.gb")
     }
@@ -36,7 +36,7 @@ class PpuTests : MooneyeTest() {
         runMooneyeTest("intr_2_mode0_timing_sprites.gb", 0)
     }*/
 
-    //@Test
+    @Test
     fun intr_2_mode3_timing() {
         runMooneyeTest("intr_2_mode3_timing.gb")
     }
@@ -60,7 +60,7 @@ class PpuTests : MooneyeTest() {
         runMooneyeTest(gb, 0)
     }*/
 
-    @Test
+    //@Test
     fun stat_irq_blocking() {
         runMooneyeTest("stat_irq_blocking.gb")
     }

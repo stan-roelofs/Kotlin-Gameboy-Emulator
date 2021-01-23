@@ -19,9 +19,9 @@ class SquareWave1 : SquareWave() {
         frequencySweep.reset()
     }
 
-    override fun tick(cycles: Int): Int {
+    override fun tick(): Int {
         frequencySweep.tick()
-        return super.tick(cycles)
+        return super.tick()
     }
 
     override fun readByte(address: Int): Int {

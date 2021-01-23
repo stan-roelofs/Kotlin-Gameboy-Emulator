@@ -2,7 +2,6 @@ package gameboy.memory.io
 
 import gameboy.memory.Memory
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.toHexString
 
 class Dma(private val mmu: Mmu) : Memory {
@@ -14,6 +13,7 @@ class Dma(private val mmu: Mmu) : Memory {
     private var source = 0
     private var currentOffset = 0
     private var lastReadByte = 0
+    private var count = 0
 
     private var DMA = 0
 
@@ -29,12 +29,16 @@ class Dma(private val mmu: Mmu) : Memory {
         lastReadByte = 0
         starting = false
         requested = false
+        count = 0
     }
 
     fun tick(cycles: Int) {
-        if (cycles != 4) {
-            Log.w("Cycles != 4")
-        }
+        count += cycles
+        if (count != 8)
+            return
+
+        count = 0
+
         if (inProgress || starting) {
             val currentByte = currentOffset
 
@@ -82,6 +86,7 @@ class Dma(private val mmu: Mmu) : Memory {
         currentOffset = 0
         lastReadByte = 0
         starting = true
+        count = 0
 
         val newVal = if (value >= 0xf0) value - 0x20 else value
         source = (newVal and 0xFF) * 0x100

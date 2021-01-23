@@ -29,8 +29,8 @@ class GameboyFrame : JFrame() {
 
         val cfg = LwjglApplicationConfiguration()
         cfg.title = "Gameboy"
-        cfg.width = 320
-        cfg.height = 288
+        cfg.width = 160 * 3
+        cfg.height = 144 * 3
         val canvas = LwjglAWTCanvas(gbapp, cfg)
         container.add(canvas.canvas, BorderLayout.CENTER)
 
@@ -57,12 +57,6 @@ class GameboyFrame : JFrame() {
         gameMenu.add(load)
         menuBar.add(gameMenu)
 
-        val debugMenu = JMenu("Debug")
-        val screenHash = JMenuItem("Screen hash")
-        screenHash.addActionListener {screenHash() }
-        debugMenu.add(screenHash)
-        menuBar.add(debugMenu)
-
         jMenuBar = menuBar
 
         container.preferredSize = Dimension(cfg.width, cfg.height)
@@ -71,12 +65,17 @@ class GameboyFrame : JFrame() {
     }
 
     private fun loadRom() {
-        val romFile = romChooser.chooseRom(this)
-        if (romFile != null) {
-            val cartridge = Cartridge(romFile)
-            gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
-            gbapp.startgb(gb)
-        }
+        val romFile = romChooser.chooseRom(this) ?: return
+        val cartridge = Cartridge(romFile)
+        if (cartridge.type == null)
+            return
+
+        gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
+
+        if (cartridge.type!!.hasBattery())
+            load()
+
+        gbapp.startgb(gb)
     }
 
     private fun togglePause() {
@@ -89,22 +88,29 @@ class GameboyFrame : JFrame() {
 
     private fun save() {
         val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
-        gb.mmu.cartridge.saveRam(File("$fileName.sav"))
+        try {
+            gb.mmu.cartridge.saveRam(File("$fileName.sav"))
+        } catch (e: Exception) {
+            when (e) {
+                is IllegalStateException -> Log.e("Failed to save RAM: $e")
+                else -> throw e
+            }
+        }
     }
 
     private fun load() {
         val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
-        gb.mmu.cartridge.loadRam(File("$fileName.sav"))
-    }
+        val file = File("$fileName.sav")
+        if (!file.exists())
+            return
 
-    private fun screenHash() {
-        var s = ""
-        for (i in gb.mmu.io.lcd.screenBuffer) {
-            for (j in i) {
-                s += j.toString()
+        try {
+            gb.mmu.cartridge.loadRam(File("$fileName.sav"))
+        } catch (e: Exception) {
+            when (e) {
+                is IllegalStateException, is IllegalArgumentException -> Log.e("Failed to load RAM: $e")
+                else -> throw e
             }
         }
-
-        Log.d(s.hashCode().toString())
     }
 }

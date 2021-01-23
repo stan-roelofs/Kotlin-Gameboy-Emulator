@@ -3,6 +3,7 @@ class FpsCounter {
     var FPS = 0
         private set
     private var framesCounter = 0
+    var enabled = false
 
     fun frameRendered() {
         framesCounter++;

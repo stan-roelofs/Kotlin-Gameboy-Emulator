@@ -33,6 +33,10 @@ class ROMONLY : Memory, CartridgeType {
         return
     }
 
+    override fun hasBattery(): Boolean {
+        return false
+    }
+
     override fun toString(): String {
         return "ROM Only"
     }

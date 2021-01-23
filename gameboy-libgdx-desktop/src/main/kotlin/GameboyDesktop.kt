@@ -13,14 +13,14 @@ class GameboyDesktop : GameboyLibgdx() {
         Gdx.input.inputProcessor = object : InputAdapter() {
             override fun keyUp(keycode: Int): Boolean {
                 when (keycode) {
-                    Input.Keys.ENTER -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.START)
-                    Input.Keys.LEFT -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.LEFT)
-                    Input.Keys.RIGHT -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.RIGHT)
-                    Input.Keys.UP -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.UP)
-                    Input.Keys.DOWN -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.DOWN)
-                    Input.Keys.Z -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.A)
-                    Input.Keys.X -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.B)
-                    Input.Keys.TAB -> gameboy.mmu.io.joypad.keyReleased(Joypad.JoypadKey.SELECT)
+                    Input.Keys.ENTER -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.START)
+                    Input.Keys.LEFT -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.LEFT)
+                    Input.Keys.RIGHT -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.RIGHT)
+                    Input.Keys.UP -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.UP)
+                    Input.Keys.DOWN -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.DOWN)
+                    Input.Keys.Z -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.A)
+                    Input.Keys.X -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.B)
+                    Input.Keys.TAB -> gameboy?.mmu?.io?.joypad?.keyReleased(Joypad.JoypadKey.SELECT)
                     else -> {}
                 }
                 return true
@@ -28,14 +28,14 @@ class GameboyDesktop : GameboyLibgdx() {
 
             override fun keyDown(keycode: Int): Boolean {
                 when (keycode) {
-                    Input.Keys.ENTER -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.START)
-                    Input.Keys.LEFT -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.LEFT)
-                    Input.Keys.RIGHT -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.RIGHT)
-                    Input.Keys.UP -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.UP)
-                    Input.Keys.DOWN -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.DOWN)
-                    Input.Keys.Z -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.A)
-                    Input.Keys.X -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.B)
-                    Input.Keys.TAB -> gameboy.mmu.io.joypad.keyPressed(Joypad.JoypadKey.SELECT)
+                    Input.Keys.ENTER -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.START)
+                    Input.Keys.LEFT -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.LEFT)
+                    Input.Keys.RIGHT -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.RIGHT)
+                    Input.Keys.UP -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.UP)
+                    Input.Keys.DOWN -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.DOWN)
+                    Input.Keys.Z -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.A)
+                    Input.Keys.X -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.B)
+                    Input.Keys.TAB -> gameboy?.mmu?.io?.joypad?.keyPressed(Joypad.JoypadKey.SELECT)
                     else -> {}
                 }
                 return true

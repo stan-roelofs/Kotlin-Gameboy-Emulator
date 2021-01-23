@@ -36,7 +36,7 @@ class RomChooser {
                     val entries = zipFile.entries()
                     while(entries.hasMoreElements()) {
                         val entry = entries.nextElement()
-                        if (entry.name.endsWith(".gb")) {
+                        if (entry.name.endsWith(".gb") || entry.name.endsWith(".gbc")) {
                             val inputStream = zipFile.getInputStream(entry)
                             val newPath = "${file.parentFile.path}/${entry.name}"
 

@@ -36,7 +36,7 @@ class PolynomialCounter {
 
         divisorCode = value and 0b111
         val divisor = if (divisorCode == 0) {
-            0b100
+            8
         } else {
             divisorCode shl 4
         }
@@ -47,7 +47,7 @@ class PolynomialCounter {
     fun tick(): Boolean {
         counter--
         return if (counter == 0) {
-            counter = shiftedDivisor
+            counter = shiftedDivisor * 4
             true
         } else {
             false
@@ -55,6 +55,6 @@ class PolynomialCounter {
     }
 
     fun trigger() {
-        counter = shiftedDivisor
+        counter = shiftedDivisor * 4
     }
 }

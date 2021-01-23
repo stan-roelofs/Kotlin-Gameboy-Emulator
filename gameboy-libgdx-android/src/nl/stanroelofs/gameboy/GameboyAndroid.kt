@@ -12,10 +12,17 @@ import gameboy.memory.io.sound.SoundOutput
 class GameboyAndroid(private val context: Activity) : GameboyLibgdx() {
 
     override var output: SoundOutput = SoundOutputGdx()
-    private lateinit var controller: Controller
+    private var controller: Controller? = null
     private lateinit var shape: ShapeRenderer
 
     override fun startgb(gb: GameBoy) {
+        if (gameboy?.running == true)
+            stopgb()
+
+        gameboy = gb
+        gb.mmu.io.sound.output = output
+        gb.mmu.io.ppu.lcd.output = this
+        controller = Controller(gb, context)
         gbThread = GameboyThread(gb)
         gbThread.start()
     }
@@ -28,13 +35,13 @@ class GameboyAndroid(private val context: Activity) : GameboyLibgdx() {
 
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
-        controller.resize(width, height)
+        controller?.resize(width, height)
     }
 
     override fun render() {
         viewport.apply()
         super.render()
-        controller.render(shape)
+        controller?.render(shape)
     }
 }
 

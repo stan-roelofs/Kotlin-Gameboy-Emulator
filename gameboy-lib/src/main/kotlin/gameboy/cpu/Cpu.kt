@@ -2,73 +2,146 @@ package gameboy.cpu
 
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.clearBit
-import gameboy.utils.getBit
-import gameboy.utils.getFirstByte
-import gameboy.utils.getSecondByte
+import gameboy.memory.MmuCGB
+import gameboy.memory.MmuDMG
+import gameboy.memory.Register
+import gameboy.utils.*
 
 /**
- * Represents the Gameboy CPU
+ * Represents the Gameboy CPU <BR>
  *
  * On initialization [reset] is called.
  */
-class Cpu(private val mmu : Mmu, private val registers : Registers) {
+abstract class Cpu(protected val mmu : Mmu, protected val registers : Registers) {
 
     private var instructionsPool: InstructionsPool = InstructionsPoolImpl(registers, mmu)
     private var currentInstruction: Instruction? = null
 
-    init {
-        reset()
+    private var interruptBit = 0
+    protected var count = 0
+    protected var state = State.EXECUTE
+
+    enum class State {
+        EXECUTE,
+        INTERRUPT_WAIT,
+        INTERRUPT_PUSH_PC_HIGH,
+        INTERRUPT_PUSH_PC_LOW,
+        INTERRUPT_SET_PC,
+        SPEED_SWITCH
     }
 
     /**
      * Resets the cpu to the initial state
      */
-    fun reset() {
+    open fun reset() {
         registers.reset()
-        currentInstruction = null
+        count = 0
+        state = State.EXECUTE
+        interruptBit = 0
     }
 
-    internal fun step() {
-        if (currentInstruction != null && currentInstruction!!.isExecuting()) {
-            currentInstruction!!.tick()
-            increaseClock(4)
+    internal open fun step() {
+        count++
+        if (count == 4) {
+            count = 0
         } else {
-            // Handle interrupts
-            processInterrupts()
+            return
+        }
 
-            // Read next instruction
-            if (!registers.halt) {
-                val opcode = mmu.readByte(registers.PC)
+        handleStep()
+    }
 
-                if (!registers.haltBug) {
-                    registers.incPC()
-                } else {
-                    registers.haltBug = false
-                }
+    protected open fun handleStep() {
+        when (state) {
+            State.EXECUTE -> {
+                if (currentInstruction != null && currentInstruction!!.isExecuting())
+                    currentInstruction!!.tick()
+                else {
+                    // Check whether an interrupt was triggered
+                    if (checkInterrupts()) {
+                        state = State.INTERRUPT_WAIT
+                        return
+                    }
 
-                currentInstruction = instructionsPool.getInstruction(opcode)
-                currentInstruction!!.tick()
-                increaseClock(4)
+                    checkSpeedMode()
 
-                // If EI was executed, return such that interrupts are only enabled after the next instruction
-                if (opcode == 0xFB) {
-                    return
+                    // Read next instruction
+                    if (!registers.halt && !registers.stop) {
+                        val opcode = mmu.readByte(registers.PC)
+
+                        if (!registers.haltBug) {
+                            registers.incPC()
+                        } else {
+                            registers.haltBug = false
+                        }
+
+                        currentInstruction = instructionsPool.getInstruction(opcode)
+                        currentInstruction!!.tick()
+                        state = State.EXECUTE
+
+                        if (opcode == 0xFB)
+                            return
+                    }
                 }
 
                 if (registers.eiExecuted) {
                     registers.IME = true
                     registers.eiExecuted = false
                 }
-            } else {
-                increaseClock(4)
             }
+            State.INTERRUPT_WAIT -> {
+                state = State.INTERRUPT_PUSH_PC_HIGH
+            }
+            State.INTERRUPT_PUSH_PC_HIGH -> {
+                // Push high byte of current PC onto stack
+                registers.decSP()
+                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
+
+                state = State.INTERRUPT_PUSH_PC_LOW
+            }
+            State.INTERRUPT_PUSH_PC_LOW -> {
+                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
+                val IE = mmu.readByte(Mmu.IE)
+                val IF = mmu.readByte(Mmu.IF)
+
+                interruptBit = -1
+                for (i in 0..4) {
+                    if (IE.getBit(i) && IF.getBit(i)) {
+                        interruptBit = i
+                        break
+                    }
+                }
+
+                if (interruptBit >= 0) {
+                    registers.decSP()
+                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
+                    state = State.INTERRUPT_SET_PC
+                } else {
+                    registers.PC = 0x0000
+                    state = State.EXECUTE
+                }
+            }
+            State.INTERRUPT_SET_PC -> {
+                var IF = mmu.readByte(Mmu.IF)
+                // Clear interrupt flag
+                IF = clearBit(IF, interruptBit)
+                mmu.writeByte(Mmu.IF, IF)
+
+                // Calculate interrupt handler address
+                val interruptAddress = 0x40 + (interruptBit * 8)
+
+                registers.PC = interruptAddress
+
+                // Set PC to address of handler
+                state = State.EXECUTE
+            }
+            else -> throw IllegalStateException("Invalid state: $state")
         }
     }
 
-    private fun processInterrupts() {
+    private fun checkInterrupts() : Boolean {
         // Interrupt handling
-        var IF = mmu.readByte(Mmu.IF)
+        val IF = mmu.readByte(Mmu.IF)
         val IE = mmu.readByte(Mmu.IE)
 
         var interruptTriggered = false
@@ -80,63 +153,80 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
 
         // Interrupt Service Routine
         if (interruptTriggered) {
-            if (registers.halt) {
-                registers.halt = false
-                increaseClock(4)
+            registers.halt = false
+
+            if (registers.stop) {
+                registers.stop = false
             }
 
             if (registers.IME) {
                 registers.IME = false
+                return true
+            }
+        }
+        return false
+    }
 
-                // Execute two nops
-                increaseClock(4)
-                increaseClock(4)
+    protected abstract fun checkSpeedMode()
+}
 
-                // Push high byte of current PC onto stack
-                registers.decSP()
-                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
-                increaseClock(4)
+class CpuDMG(mmu: MmuDMG, registers: RegistersDMG) : Cpu(mmu, registers) {
 
-                // It is possible the SP was at the IE registers, which might mean the interrupt was cancelled by writing the PC to the stack
-                val newIE = mmu.readByte(Mmu.IE)
+    init {
+        reset()
+    }
 
-                var interruptBit = -1
-                for (i in 0..4) {
-                    if (newIE.getBit(i) && IF.getBit(i)) {
-                        interruptBit = i
-                        break
-                    }
+    override fun checkSpeedMode() {}
+}
+
+class CpuCGB(mmu: MmuCGB, registers: RegistersCGB) : Cpu(mmu, registers) {
+
+    var doubleSpeed = false
+        private set
+    var key1 = Register(Mmu.KEY1)
+    private var speedSwitchCounter = 0
+
+    // TODO: Based on https://gbdev.io/pandocs/ but TCAGBD mentions (128 × 1024 - 76) clocks, which one is correct?
+    private val speedSwitchCycles = 8200
+
+    init {
+        mmu.key1 = key1
+        reset()
+    }
+
+    override fun reset() {
+        super.reset()
+
+        key1.value = 0
+        doubleSpeed = false
+        speedSwitchCounter = 0
+    }
+
+    override fun handleStep() {
+        when(state) {
+            State.EXECUTE,
+            State.INTERRUPT_SET_PC,
+            State.INTERRUPT_PUSH_PC_HIGH,
+            State.INTERRUPT_PUSH_PC_LOW,
+            State.INTERRUPT_WAIT -> super.handleStep()
+
+            State.SPEED_SWITCH -> {
+                speedSwitchCounter += 4
+                if (speedSwitchCounter == speedSwitchCycles) {
+                    doubleSpeed = !doubleSpeed
+                    key1.value = setBit(0, 7, doubleSpeed)
+                    state = State.EXECUTE
+                    registers.stop = false
                 }
-
-                if (interruptBit >= 0) {
-                    registers.decSP()
-                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
-                    increaseClock(4)
-
-                    // Clear interrupt flag
-                    IF = clearBit(IF, interruptBit)
-                    mmu.writeByte(Mmu.IF, IF)
-
-                    // Calculate interrupt handler address
-                    val address = 0x40 + (interruptBit * 8)
-
-                    // Set PC to address of handler
-                    registers.PC = address
-                } else {
-                    // Cancellation apparently sets pc to 0x0000 according to mooneye gb tests
-                    registers.PC = 0x0000
-                }
-
-                increaseClock(4)
             }
         }
     }
 
-    private fun increaseClock(steps: Int) {
-        if (steps < 0) {
-            throw IllegalArgumentException("Cannot increase clock by negative value")
+    override fun checkSpeedMode() {
+        // Bit 0 indicates a speed switch needs to be performed
+        if (registers.stop && key1.getBit(0)) {
+            state = State.SPEED_SWITCH
+            speedSwitchCounter = 0
         }
-        mmu.tick(steps)
     }
 }
-

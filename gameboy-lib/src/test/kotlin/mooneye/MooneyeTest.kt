@@ -1,21 +1,25 @@
 package mooneye
 
+import gameboy.GameBoy
+import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
+import gameboy.memory.io.graphics.ScreenOutput
 import gameboy.utils.Log
 import getScreenHash
 import makeScreenshot
 import org.junit.Assert
 import java.io.File
 
-abstract class MooneyeTest {
+abstract class MooneyeTest : ScreenOutput {
 
     abstract val path: String
+    private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
 
     // Runs one of the Mooneye GB test roms
     // Test passes when a hash of the screenBuffer matches a provided hash
     // Provided hash is a hash of the screenBuffer after a test passed
-    fun runMooneyeTest(fileName: String) {
+    fun runMooneyeTest(fileName: String, forceCgb : Boolean = false) {
         val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/$fileName.txt")?.toURI()
         var inputHash = 0
 
@@ -43,23 +47,28 @@ abstract class MooneyeTest {
 
         Assert.assertTrue(testOutputHash.exists())
 
-        val gb = GameBoyDMG(Cartridge(romFile))
+        val gb = if (forceCgb) GameBoyCGB(Cartridge(romFile)) else GameBoyDMG(Cartridge(romFile))
+        gb.mmu.io.ppu.lcd.output = this
 
         Log.i("")
         Log.i("Running Mooneye Test: $fileName")
         Log.i("Provided hash $inputHash")
 
-        // TODO: theres probably a better way to do this...
-        for (i in 0..10000000) {
+        // TODO: find a way to detect the test has finished running
+        for (i in 0..50000000) {
             gb.step()
         }
 
-        val hash = getScreenHash(gb.mmu.io.lcd.screenBuffer)
-        makeScreenshot(testOutputScreenshot, gb.mmu.io.lcd.screenBuffer)
+        val hash = getScreenHash(lastBuffer)
+        makeScreenshot(testOutputScreenshot, lastBuffer)
         testOutputHash.writeText("$hash")
 
         Log.i("Hash: $hash")
         Assert.assertNotNull(inputHashURI)
         Assert.assertEquals(inputHash, hash)
+    }
+
+    override fun render(screenBuffer: ByteArray) {
+        screenBuffer.copyInto(lastBuffer)
     }
 }

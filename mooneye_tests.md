@@ -63,11 +63,11 @@ text files to the input directory.
 - [ ] intr_2_0_timing - Fails, incorrect timing between STAT mode=1 and STAT mode=2 interrupt
 - [ ] intr_2_mode0_timing
 - [ ] intr_2_mode0_timing_sprites
-- [ ] intr_2_mode3_timing
+- [x] intr_2_mode3_timing
 - [ ] intr_2_oam_ok_timing - E register value incorrect
 - [ ] lcdon_timing-dmgABCmgbS - Cycle: 00 Expected: 00 Actual: 90
 - [ ] lcdon_write_timing-GS - Cycle: 12 Expected: 00 Actual: 81
-- [x] stat_irq_blocking
+- [ ] stat_irq_blocking
 - [ ] stat_lyc_onoff
 - [x] vblank_stat_intr-GS
 

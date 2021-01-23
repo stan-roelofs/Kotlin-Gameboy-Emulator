@@ -16,6 +16,10 @@ interface MBC : CartridgeType {
     /** Cartridge can have battery, which means ram can be saved */
     val hasBattery: Boolean
 
+    override fun hasBattery(): Boolean {
+        return hasBattery
+    }
+
     override fun saveRam(file: File) {
         if (ram == null) {
             throw IllegalStateException("Cannot load save on a cartridge that does not have RAM")
