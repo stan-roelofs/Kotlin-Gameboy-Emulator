@@ -41,7 +41,7 @@ class WaveChannel : SoundChannel() {
         positionCounter = 0
     }
 
-    override fun tick(cycles: Int): Int {
+    override fun tick(): Int {
         lengthCounter.tick()
 
         timer--

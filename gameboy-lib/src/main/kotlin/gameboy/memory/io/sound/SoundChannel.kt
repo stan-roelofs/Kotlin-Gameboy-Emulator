@@ -9,7 +9,7 @@ abstract class SoundChannel : Memory {
     protected val volumeEnvelope = VolumeEnvelope()
     protected var lastOutput = 0
 
-    abstract fun tick(cycles: Int): Int
+    abstract fun tick(): Int
 
     open fun powerOff() {
         enabled = false

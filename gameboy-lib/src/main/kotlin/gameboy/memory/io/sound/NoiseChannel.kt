@@ -28,7 +28,7 @@ class NoiseChannel : SoundChannel() {
         reset()
     }
 
-    override fun tick(cycles: Int): Int {
+    override fun tick(): Int {
         volumeEnvelope.tick()
 
         lengthCounter.tick()
