@@ -1,22 +1,29 @@
 package gameboy.utils
 
 object Log {
-    var LOG = true
+    enum class Level {
+        ERROR,
+        WARNING,
+        INFO,
+        DEBUG
+    }
+
+    var level = Level.DEBUG
 
     fun i(string: String) {
-        if (LOG) log("INFO: $string")
+        if (level >= Level.INFO) log("INFO: $string")
     }
 
     fun e(string: String) {
-        if (LOG) log("ERROR: $string")
+        if (level >= Level.ERROR) log("ERROR: $string")
     }
 
     fun d(string: String) {
-        if (LOG) log("DEBUG: $string")
+        if (level >= Level.DEBUG) log("DEBUG: $string")
     }
 
     fun w(string: String) {
-        if (LOG) log("WARNING: $string")
+        if (level >= Level.WARNING) log("WARNING: $string")
     }
 
     private fun log(string: String) {
