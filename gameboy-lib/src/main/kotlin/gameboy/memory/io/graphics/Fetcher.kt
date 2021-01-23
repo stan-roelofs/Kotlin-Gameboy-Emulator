@@ -114,7 +114,7 @@ class FetcherCGB(lcdc: Lcdc, wx: Register, wy: Register, scy: Register,
                 TileState.READ_TILE_NUMBER -> {
                     val tileMap = if ((!window && lcdc.getBackgroundTileMap()) || (window && lcdc.getWindowTileMap())) 0x9C00 else 0x9800
                     tileAttributes = vram.readByte(1, tileMap + (y / 8 * 32) + x)
-                    tile = vram.readByte(if (tileAttributes.getBit(3)) 1 else 0, tileMap + (y / 8 * 32) + x)
+                    tile = vram.readByte(0, tileMap + (y / 8 * 32) + x)
                     ++state
                 }
                 TileState.READ_DATA_0 -> {
@@ -232,7 +232,7 @@ class FetcherCGB(lcdc: Lcdc, wx: Register, wy: Register, scy: Register,
 
     override fun startFetchingWindow() {
         window = true
-        x = (wx.value / 8) and 0x1F
+        x = 0
         y = ly.value - wy.value
         state = 0
         bgFifo.clear()
@@ -455,7 +455,7 @@ class FetcherDMG (lcdc: Lcdc, wx: Register, wy: Register, scy: Register, scx: Re
 
     override fun startFetchingWindow() {
         window = true
-        x = (wx.value / 8) and 0x1F
+        x = 0
         y = ly.value - wy.value
         state = 0
         bgFifo.clear()

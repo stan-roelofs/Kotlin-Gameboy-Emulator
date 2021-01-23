@@ -1,7 +1,10 @@
 package gameboy.memory.io.graphics.mode
 
 import gameboy.memory.Register
-import gameboy.memory.io.graphics.*
+import gameboy.memory.io.graphics.Fetcher
+import gameboy.memory.io.graphics.Lcdc
+import gameboy.memory.io.graphics.PixelRenderer
+import gameboy.memory.io.graphics.SpritePosition
 
 
 class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fetcher, private val lcdc: Lcdc, private val ly: Register,
@@ -10,11 +13,11 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
     private var sprites = Array<SpritePosition?>(10) { null }
     private var x = 0
 
+    private var dropPixels = 0
     // The number of pixels we dropped
     private var droppedPixels = 0
     // Did we start rendering the window?
     private var window = false
-
     fun start(sprites: Array<SpritePosition?>) {
         this.sprites = sprites
 
@@ -23,6 +26,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
 
         fetcher.reset()
 
+        dropPixels = scx.value % 8
         x = 0
 
         if (lcdc.getBGWindowDisplay()) {
@@ -34,7 +38,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
         fetcher.tick()
 
         // TODO:  if (lcdc.getBGWindowDisplay()) { // Bg/window enabled
-        if (!fetcher.bgFifo.empty && droppedPixels < scx.value % 8) { // When SCX is not divisible by 8, we should drop the first few pixels
+        if (!fetcher.bgFifo.empty && droppedPixels < dropPixels) { // When SCX is not divisible by 8, we should drop the first few pixels
             fetcher.bgFifo.pop()
             droppedPixels++
             return
@@ -44,6 +48,8 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
         if (!window && lcdc.getWindowEnable() && ly.value >= wy.value && x == wx.value - 7) {
             window = true
             fetcher.startFetchingWindow()
+            droppedPixels = 0
+            dropPixels = (wx.value - 7) % 8
             return
         }
 
