@@ -37,6 +37,11 @@ class SoundTests : BlarggTestMemory() {
     }
 
     @Test
+    fun testWaveTriggerWhileOn() {
+        runBlarggTest("10-wave trigger while on.gb")
+    }
+
+    @Test
     fun testRegsAfterPower() {
         runBlarggTest("11-regs after power.gb")
     }
