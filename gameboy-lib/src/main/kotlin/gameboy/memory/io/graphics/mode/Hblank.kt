@@ -1,10 +1,8 @@
 package gameboy.memory.io.graphics.mode
 
-import gameboy.memory.io.graphics.Mode
-
 class Hblank : Mode {
 
-    private val DURATION = 456
+    private val DURATION = 455
     private var ticks = 0
 
     fun start(ticksInLine: Int) {
@@ -16,6 +14,6 @@ class Hblank : Mode {
     }
 
     override fun finished(): Boolean {
-        return ticks == DURATION
+        return ticks >= DURATION
     }
 }

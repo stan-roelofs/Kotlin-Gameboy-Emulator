@@ -1,7 +1,6 @@
 package gameboy.memory.io.graphics.mode
 
 import gameboy.memory.Mmu
-import gameboy.memory.io.graphics.Mode
 import gameboy.memory.io.graphics.SpritePosition
 import gameboy.utils.getBit
 

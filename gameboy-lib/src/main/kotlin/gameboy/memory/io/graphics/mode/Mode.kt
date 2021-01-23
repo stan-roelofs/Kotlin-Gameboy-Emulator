@@ -1,4 +1,4 @@
-package gameboy.memory.io.graphics
+package gameboy.memory.io.graphics.mode
 
 interface Mode {
     fun tick()
