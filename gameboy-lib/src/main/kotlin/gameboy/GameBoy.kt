@@ -1,7 +1,11 @@
 package gameboy
 
-import gameboy.cpu.Cpu
+import gameboy.cpu.*
 import gameboy.memory.Mmu
+import gameboy.memory.MmuCGB
+import gameboy.memory.MmuDMG
+import gameboy.memory.cartridge.Cartridge
+import gameboy.memory.io.Hdma
 
 /**
  * Main Gameboy class <BR>
@@ -41,9 +45,9 @@ abstract class GameBoy : Runnable {
     }
 
     /** Performs a single cpu step */
-    fun step() {
+    open fun step() {
         cpu.step()
-        mmu.tick(1)
+        mmu.tick(2)
     }
 
     /** Toggle pause on / off */
@@ -63,5 +67,30 @@ abstract class GameBoy : Runnable {
                 step()
             }
         }
+    }
+}
+
+class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
+    override val mmu = MmuCGB(cartridge)
+    override val cpu = CpuCGB(mmu, RegistersCGB())
+
+    init {
+        reset()
+    }
+
+    override fun step() {
+        if (mmu.io.hdma.state != Hdma.State.TRANSFER)
+            cpu.step()
+
+        mmu.tick(if (cpu.doubleSpeed) 1 else 2)
+    }
+}
+
+class GameBoyDMG(cartridge: Cartridge) : GameBoy() {
+    override val mmu = MmuDMG(cartridge)
+    override val cpu = CpuDMG(mmu, RegistersDMG())
+
+    init {
+        reset()
     }
 }

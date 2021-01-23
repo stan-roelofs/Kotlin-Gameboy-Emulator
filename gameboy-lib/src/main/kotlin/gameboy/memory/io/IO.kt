@@ -32,7 +32,7 @@ abstract class IO(mmu: Mmu) : Memory {
     }
 
     open fun tick(cycles: Int) {
-        timer.tick(cycles)
+        timer.tick(if (cycles == 2) 1 else 2)
         ppu.tick(cycles)
         dma.tick(cycles)
         sound.tick(cycles)
@@ -168,7 +168,7 @@ abstract class IO(mmu: Mmu) : Memory {
 class IOCGB(mmu : Mmu) : IO(mmu) {
 
     override val ppu = PpuCGB(mmu)
-    private val hdma = Hdma(mmu)
+    val hdma = Hdma(mmu)
 
     init {
         reset()
@@ -180,7 +180,7 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
     override fun tick(cycles: Int) {
         super.tick(cycles)
-        hdma.tick(cycles, ppu.getMode() == Ppu.ModeEnum.HBLANK, false)//ppu.lcdc.getLcdEnable())
+        hdma.tick(cycles, ppu.getMode() == Ppu.ModeEnum.HBLANK, ppu.lcdc.getLcdEnable())
     }
 
     override fun readByte(address: Int): Int {

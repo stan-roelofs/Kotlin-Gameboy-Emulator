@@ -42,7 +42,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
     fun tick(cycles: Int) {
         if (reload > 0) {
-            reload -= cycles
+            reload--
 
             if (reload <= 4) {
                 TIMA = TMA
@@ -55,7 +55,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
         // update timer
         if (TAC.getBit(2)) {
-            timerCounter += cycles
+            timerCounter++
 
             while (timerCounter >= timerCycles) {
                 timerCounter -= timerCycles

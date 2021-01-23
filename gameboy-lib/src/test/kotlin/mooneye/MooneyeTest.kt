@@ -54,7 +54,7 @@ abstract class MooneyeTest : ScreenOutput {
         Log.i("Running Mooneye Test: $fileName")
         Log.i("Provided hash $inputHash")
 
-        // TODO: theres probably a better way to do this...
+        // TODO: find a way to detect the test has finished running
         for (i in 0..50000000) {
             gb.step()
         }

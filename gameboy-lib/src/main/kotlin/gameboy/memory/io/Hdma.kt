@@ -9,16 +9,26 @@ import gameboy.utils.toHexString
 
 class Hdma(private val mmu: Mmu) : Memory {
 
+    enum class State {
+        FINISHED,
+        TRANSFER,
+        WAIT_HBLANK,
+    }
+
     private var hdma1 = 0
     private var hdma2 = 0
     private var hdma3 = 0
     private var hdma4 = 0
+    private var hdma5 = 0
     private var length = 0
     private var hblankTransfer = false
-    private var inProgress = false
 
     private var destination = 0
     private var source = 0
+
+    private var count = 0
+    var state = State.FINISHED
+        private set
 
     init {
         reset()
@@ -31,41 +41,50 @@ class Hdma(private val mmu: Mmu) : Memory {
         hdma4 = 0
         length  = 0
         hblankTransfer = false
-        inProgress = false
         destination = 0
         source = 0
+        count = 0
+        state = State.FINISHED
     }
 
     fun tick(cycles: Int, hblank: Boolean, lcdEnabled: Boolean) {
-        if (!inProgress)
+        count += cycles
+        if (count >= 2)
+            count = 0
+        else
             return
 
-        if (hblankTransfer && !hblank && lcdEnabled)
-            return
+        when(state) {
+            State.FINISHED -> {}
+            State.TRANSFER -> {
+                mmu.writeByte(destination, mmu.readByte(source))
+                source++
+                destination++
+                length--
 
-        for (i in 0 until 0x10) {
-            mmu.writeByte(destination + i, mmu.readByte(source + i))
-        }
+                if (length == 0) {
+                    state = State.FINISHED
+                    hdma5 = 0xFF
+                    return
+                }
 
-        source += 0x10
-        destination += 0x10
-
-        if (length-- == 0) {
-            inProgress = false
-            length = 0x7F
+                if (hblankTransfer && length % 0x10 == 0)
+                    state = State.WAIT_HBLANK
+            }
+            State.WAIT_HBLANK -> {
+                if (hblank || !lcdEnabled)
+                    state = State.TRANSFER
+            }
         }
     }
 
     override fun readByte(address: Int): Int {
         return when (address) {
-            Mmu.HDMA1 -> hdma1
-            Mmu.HDMA2 -> hdma2
-            Mmu.HDMA3 -> hdma3
-            Mmu.HDMA4 -> hdma4
-            Mmu.HDMA5 -> {
-                val hblank = if (hblankTransfer) 1 else 0
-                length or (hblank shl 7)
-            }
+            Mmu.HDMA1 -> 0xFF
+            Mmu.HDMA2 -> 0xFF
+            Mmu.HDMA3 -> 0xFF
+            Mmu.HDMA4 -> 0xFF
+            Mmu.HDMA5 -> hdma5
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Dma")
         }
     }
@@ -78,11 +97,23 @@ class Hdma(private val mmu: Mmu) : Memory {
             Mmu.HDMA3 -> hdma3 = newVal
             Mmu.HDMA4 -> hdma4 = newVal
             Mmu.HDMA5 -> {
-                val hblankMode = newVal.getBit(7)
-                if (inProgress && !hblankMode)
-                    stopTransfer()
-                else
+                hdma5 = newVal
+
+                if (state == State.FINISHED) {
                     startTransfer(newVal)
+                }
+
+                val hblankMode = newVal.getBit(7)
+                if (state != State.FINISHED && hblankTransfer) {
+                    if (hblankMode) {
+                        // Restart
+                        startTransfer(newVal)
+                    } else {
+                        // stop
+                        state = State.FINISHED
+                        hdma5 = newVal or 0x80
+                    }
+                }
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Dma")
         }
@@ -90,22 +121,26 @@ class Hdma(private val mmu: Mmu) : Memory {
 
     private fun startTransfer(value: Int) {
         hblankTransfer = value.getBit(7)
-        length = value and 0b01111111
+        length = ((value and 0x7F) + 1) * 0x10
 
         val sourceHigh = hdma1
         val sourceLow = hdma2 and 0b11110000 // The lower four bits are ignored
         source = setSecondByte(sourceLow, sourceHigh)
 
-        val destinationHigh = (hdma3 or 0b10000000) and 0b00011111 // Only bits 12-4 are respected
+        val destinationHigh = hdma3 and 0b00011111 // Only bits 12-4 are respected
         val destinationLow = hdma4 and 0b11110000
         destination = setSecondByte(destinationLow, destinationHigh)
+        destination += 0x8000
 
-        inProgress = true
+        if (destination + length >= 0x10000) {
+            length = 0x10000 - destination
+        }
 
-        Log.d("Starting HDMA transfer from ")
-    }
+        state = if (hblankTransfer)
+            State.WAIT_HBLANK
+        else
+            State.TRANSFER
 
-    private fun stopTransfer() {
-        inProgress = false
+        Log.d("Starting ${if (hblankTransfer) "G" else "H"}DMA transfer from ${source.toHexString(4)} to ${destination.toHexString(4)}")
     }
 }

@@ -2,54 +2,56 @@ package gameboy.cpu
 
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.clearBit
-import gameboy.utils.getBit
-import gameboy.utils.getFirstByte
-import gameboy.utils.getSecondByte
+import gameboy.memory.MmuCGB
+import gameboy.memory.MmuDMG
+import gameboy.memory.Register
+import gameboy.utils.*
 
 /**
  * Represents the Gameboy CPU <BR>
  *
  * On initialization [reset] is called.
  */
-class Cpu(private val mmu : Mmu, private val registers : Registers) {
+abstract class Cpu(protected val mmu : Mmu, protected val registers : Registers) {
 
     private var instructionsPool: InstructionsPool = InstructionsPoolImpl(registers, mmu)
     private var currentInstruction: Instruction? = null
 
     private var interruptBit = 0
-    private var count = 0
-    private var state = State.EXECUTE
+    protected var count = 0
+    protected var state = State.EXECUTE
 
     enum class State {
         EXECUTE,
         INTERRUPT_WAIT,
         INTERRUPT_PUSH_PC_HIGH,
         INTERRUPT_PUSH_PC_LOW,
-        INTERRUPT_SET_PC
-    }
-
-    init {
-        reset()
+        INTERRUPT_SET_PC,
+        SPEED_SWITCH
     }
 
     /**
      * Resets the cpu to the initial state
      */
-    fun reset() {
+    open fun reset() {
         registers.reset()
         count = 0
         state = State.EXECUTE
         interruptBit = 0
     }
 
-    internal fun step() {
-        if (++count == 4) {
+    internal open fun step() {
+        count++
+        if (count == 4) {
             count = 0
         } else {
             return
         }
 
+        handleStep()
+    }
+
+    protected open fun handleStep() {
         when (state) {
             State.EXECUTE -> {
                 if (currentInstruction != null && currentInstruction!!.isExecuting())
@@ -61,8 +63,10 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
                         return
                     }
 
+                    checkSpeedMode()
+
                     // Read next instruction
-                    if (!registers.halt) {
+                    if (!registers.halt && !registers.stop) {
                         val opcode = mmu.readByte(registers.PC)
 
                         if (!registers.haltBug) {
@@ -131,6 +135,7 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
                 // Set PC to address of handler
                 state = State.EXECUTE
             }
+            else -> throw IllegalStateException("Invalid state: $state")
         }
     }
 
@@ -148,8 +153,10 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
 
         // Interrupt Service Routine
         if (interruptTriggered) {
-            if (registers.halt) {
-                registers.halt = false
+            registers.halt = false
+
+            if (registers.stop) {
+                registers.stop = false
             }
 
             if (registers.IME) {
@@ -159,5 +166,67 @@ class Cpu(private val mmu : Mmu, private val registers : Registers) {
         }
         return false
     }
+
+    protected abstract fun checkSpeedMode()
 }
 
+class CpuDMG(mmu: MmuDMG, registers: RegistersDMG) : Cpu(mmu, registers) {
+
+    init {
+        reset()
+    }
+
+    override fun checkSpeedMode() {}
+}
+
+class CpuCGB(mmu: MmuCGB, registers: RegistersCGB) : Cpu(mmu, registers) {
+
+    var doubleSpeed = false
+        private set
+    var key1 = Register(Mmu.KEY1)
+    private var speedSwitchCounter = 0
+
+    // TODO: Based on https://gbdev.io/pandocs/ but TCAGBD mentions (128 × 1024 - 76) clocks, which one is correct?
+    private val speedSwitchCycles = 8200
+
+    init {
+        mmu.key1 = key1
+        reset()
+    }
+
+    override fun reset() {
+        super.reset()
+
+        key1.value = 0
+        doubleSpeed = false
+        speedSwitchCounter = 0
+    }
+
+    override fun handleStep() {
+        when(state) {
+            State.EXECUTE,
+            State.INTERRUPT_SET_PC,
+            State.INTERRUPT_PUSH_PC_HIGH,
+            State.INTERRUPT_PUSH_PC_LOW,
+            State.INTERRUPT_WAIT -> super.handleStep()
+
+            State.SPEED_SWITCH -> {
+                speedSwitchCounter += 4
+                if (speedSwitchCounter == speedSwitchCycles) {
+                    doubleSpeed = !doubleSpeed
+                    key1.value = setBit(0, 7, doubleSpeed)
+                    state = State.EXECUTE
+                    registers.stop = false
+                }
+            }
+        }
+    }
+
+    override fun checkSpeedMode() {
+        // Bit 0 indicates a speed switch needs to be performed
+        if (registers.stop && key1.getBit(0)) {
+            state = State.SPEED_SWITCH
+            speedSwitchCounter = 0
+        }
+    }
+}

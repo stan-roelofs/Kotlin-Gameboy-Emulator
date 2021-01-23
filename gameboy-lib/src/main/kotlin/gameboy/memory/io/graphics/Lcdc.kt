@@ -1,9 +1,10 @@
 package gameboy.memory.io.graphics
 
+import gameboy.memory.Mmu
 import gameboy.memory.Register
 import gameboy.utils.getBit
 
-class Lcdc : Register(0xFF40) {
+class Lcdc : Register(Mmu.LCDC) {
 
     fun getLcdEnable(): Boolean {
         return value.getBit(7)

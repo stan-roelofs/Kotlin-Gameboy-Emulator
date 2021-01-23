@@ -34,7 +34,7 @@ class Dma(private val mmu: Mmu) : Memory {
 
     fun tick(cycles: Int) {
         count += cycles
-        if (count != 4)
+        if (count != 8)
             return
 
         count = 0
