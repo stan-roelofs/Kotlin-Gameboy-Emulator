@@ -7,6 +7,7 @@ import gameboy.GameBoy
 import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
+import gameboy.utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
@@ -28,8 +29,8 @@ class GameboyFrame : JFrame() {
 
         val cfg = LwjglApplicationConfiguration()
         cfg.title = "Gameboy"
-        cfg.width = 320
-        cfg.height = 288
+        cfg.width = 160 * 3
+        cfg.height = 144 * 3
         val canvas = LwjglAWTCanvas(gbapp, cfg)
         container.add(canvas.canvas, BorderLayout.CENTER)
 
@@ -64,12 +65,17 @@ class GameboyFrame : JFrame() {
     }
 
     private fun loadRom() {
-        val romFile = romChooser.chooseRom(this)
-        if (romFile != null) {
-            val cartridge = Cartridge(romFile)
-            gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
-            gbapp.startgb(gb)
-        }
+        val romFile = romChooser.chooseRom(this) ?: return
+        val cartridge = Cartridge(romFile)
+        if (cartridge.type == null)
+            return
+
+        gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
+
+        if (cartridge.type!!.hasBattery())
+            load()
+
+        gbapp.startgb(gb)
     }
 
     private fun togglePause() {
@@ -82,11 +88,29 @@ class GameboyFrame : JFrame() {
 
     private fun save() {
         val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
-        gb.mmu.cartridge.saveRam(File("$fileName.sav"))
+        try {
+            gb.mmu.cartridge.saveRam(File("$fileName.sav"))
+        } catch (e: Exception) {
+            when (e) {
+                is IllegalStateException -> Log.e("Failed to save RAM: $e")
+                else -> throw e
+            }
+        }
     }
 
     private fun load() {
         val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
-        gb.mmu.cartridge.loadRam(File("$fileName.sav"))
+        val file = File("$fileName.sav")
+        if (!file.exists())
+            return
+
+        try {
+            gb.mmu.cartridge.loadRam(File("$fileName.sav"))
+        } catch (e: Exception) {
+            when (e) {
+                is IllegalStateException, is IllegalArgumentException -> Log.e("Failed to load RAM: $e")
+                else -> throw e
+            }
+        }
     }
 }

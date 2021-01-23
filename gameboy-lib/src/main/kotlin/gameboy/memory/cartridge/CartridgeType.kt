@@ -35,6 +35,9 @@ interface CartridgeType : Memory {
     /** Write [value] to RAM at location [address] */
     fun writeRam(address: Int, value: Int)
 
+    /** Returns true when the cartridge has a battery, false otherwise */
+    fun hasBattery(): Boolean
+
     fun saveRam(file: File) {
         throw IllegalStateException("This cartridge type cannot load/save")
     }
