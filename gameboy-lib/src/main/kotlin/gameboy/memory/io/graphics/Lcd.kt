@@ -25,5 +25,6 @@ class Lcd {
             throw IllegalStateException()
 
         output?.render(buffer)
+        currentIndex = 0
     }
 }

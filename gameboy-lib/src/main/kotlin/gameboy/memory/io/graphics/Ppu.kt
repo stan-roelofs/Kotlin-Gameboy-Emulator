@@ -68,6 +68,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
         count = 0
 
         vram.reset()
+        lcd.reset()
     }
 
     fun tick(cycles: Int) {
@@ -103,7 +104,6 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                         requestStatInterrupt(5)
                         requestStatInterrupt(4)
                         lcd.display()
-                        lcd.reset()
                     } else {
                         currentMode = oamSearch
                         oamSearch.start()
