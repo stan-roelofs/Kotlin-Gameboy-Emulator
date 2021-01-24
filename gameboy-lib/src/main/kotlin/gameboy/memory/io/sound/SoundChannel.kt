@@ -12,7 +12,6 @@ abstract class SoundChannel : Memory {
     abstract fun tick(): Int
 
     open fun powerOn() {
-        lengthCounter.powerOn()
         volumeEnvelope.powerOn()
     }
 

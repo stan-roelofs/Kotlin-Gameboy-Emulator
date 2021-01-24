@@ -44,6 +44,9 @@ class WaveChannel : SoundChannel() {
     override fun tick(): Int {
         lengthCounter.tick()
 
+        if (!enabled)
+            return 0
+
         timer--
         if (timer == 0) {
             // Reset timer
