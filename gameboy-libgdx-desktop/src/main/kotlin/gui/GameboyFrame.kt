@@ -15,9 +15,10 @@ import javax.swing.*
 
 class GameboyFrame : JFrame() {
 
-    private lateinit var gb: GameBoy
+    private var gb: GameBoy? = null
     private val gbapp = GameboyDesktop()
     private val romChooser: RomChooser
+    private val optionsDialog = OptionsDialog()
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -38,8 +39,11 @@ class GameboyFrame : JFrame() {
         val fileMenu = JMenu("File")
         //fileMenu.mnemonic = KeyEvent.VK_ALT
         val loadRom = JMenuItem("Load rom")
-        loadRom.addActionListener {loadRom() }
+        loadRom.addActionListener { loadRom() }
         fileMenu.add(loadRom)
+        val options = JMenuItem("Options")
+        options.addActionListener { showOptions() }
+        fileMenu.add(options)
         menuBar.add(fileMenu)
 
         val gameMenu = JMenu("Game")
@@ -71,25 +75,33 @@ class GameboyFrame : JFrame() {
             return
 
         gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
+        optionsDialog.gb = gb
 
         if (cartridge.type!!.hasBattery())
             load()
 
-        gbapp.startgb(gb)
+        gbapp.startgb(gb!!)
+    }
+
+    private fun showOptions() {
+        optionsDialog.isVisible = true
     }
 
     private fun togglePause() {
-        gb.togglePause()
+        gb?.togglePause()
     }
 
     private fun reset() {
-        gb.reset()
+        gb?.reset()
     }
 
     private fun save() {
-        val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
+        if (gb == null)
+            return
+
+        val fileName = gb!!.mmu.cartridge.cartridgeFile.nameWithoutExtension
         try {
-            gb.mmu.cartridge.saveRam(File("$fileName.sav"))
+            gb!!.mmu.cartridge.saveRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
                 is IllegalStateException -> Log.e("Failed to save RAM: $e")
@@ -99,13 +111,16 @@ class GameboyFrame : JFrame() {
     }
 
     private fun load() {
-        val fileName = gb.mmu.cartridge.cartridgeFile.nameWithoutExtension
+        if (gb == null)
+            return
+
+        val fileName = gb!!.mmu.cartridge.cartridgeFile.nameWithoutExtension
         val file = File("$fileName.sav")
         if (!file.exists())
             return
 
         try {
-            gb.mmu.cartridge.loadRam(File("$fileName.sav"))
+            gb!!.mmu.cartridge.loadRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
                 is IllegalStateException, is IllegalArgumentException -> Log.e("Failed to load RAM: $e")
