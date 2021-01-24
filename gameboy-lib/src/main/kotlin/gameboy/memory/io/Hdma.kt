@@ -61,6 +61,11 @@ class Hdma(private val mmu: Mmu) : Memory {
                 source++
                 destination++
                 length--
+                hdma5 = ((length / 0x10) - 1) and 0x1F
+                hdma1 = (source shr 8) and 0xFF
+                hdma2 = source and 0xFF
+                hdma3 = (destination shr 8) and 0xFF
+                hdma4 = destination and 0xFF
 
                 if (length == 0) {
                     state = State.FINISHED
@@ -68,8 +73,10 @@ class Hdma(private val mmu: Mmu) : Memory {
                     return
                 }
 
-                if (hblankTransfer && length % 0x10 == 0)
+                if (hblankTransfer && length % 0x10 == 0) {
                     state = State.WAIT_HBLANK
+                    return
+                }
             }
             State.WAIT_HBLANK -> {
                 if (hblank || !lcdEnabled)
@@ -97,7 +104,7 @@ class Hdma(private val mmu: Mmu) : Memory {
             Mmu.HDMA3 -> hdma3 = newVal
             Mmu.HDMA4 -> hdma4 = newVal
             Mmu.HDMA5 -> {
-                hdma5 = newVal
+                hdma5 = newVal and 0x1F
 
                 if (state == State.FINISHED) {
                     startTransfer(newVal)
@@ -107,9 +114,11 @@ class Hdma(private val mmu: Mmu) : Memory {
                 if (state != State.FINISHED && hblankTransfer) {
                     if (hblankMode) {
                         // Restart
+                        Log.d("HDMA restarted")
                         startTransfer(newVal)
                     } else {
                         // stop
+                        Log.d("HDMA cancelled")
                         state = State.FINISHED
                         hdma5 = newVal or 0x80
                     }
@@ -141,6 +150,6 @@ class Hdma(private val mmu: Mmu) : Memory {
         else
             State.TRANSFER
 
-        Log.d("Starting ${if (hblankTransfer) "G" else "H"}DMA transfer from ${source.toHexString(4)} to ${destination.toHexString(4)}")
+        Log.d("${if (hblankTransfer) "H" else "G"}DMA: Copying $length bytes from ${source.toHexString(4)} to ${destination.toHexString(4)}")
     }
 }
