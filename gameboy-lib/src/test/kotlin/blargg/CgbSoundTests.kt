@@ -36,6 +36,11 @@ class CgbSoundTests : BlarggTestMemory() {
         runBlarggTest("06-overflow on trigger.gb")
     }
 
+    @Test
+    fun testWaveTriggerWhileOn() {
+        runBlarggTest("10-wave trigger while on.gb")
+    }
+
 //    @Test
     fun testRegsAfterPower() {
         runBlarggTest("11-regs after power.gb")

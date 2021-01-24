@@ -26,6 +26,10 @@ class FrequencySweep(private val soundChannel : SoundChannel) {
         reset()
     }
 
+    fun powerOn() {
+        counter %= 8192
+    }
+
     fun reset() {
         timer = 0
         sweepEnabled = false

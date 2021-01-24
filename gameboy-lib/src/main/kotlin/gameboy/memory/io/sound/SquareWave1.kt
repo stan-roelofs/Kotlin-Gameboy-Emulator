@@ -11,6 +11,11 @@ class SquareWave1 : SquareWave() {
         reset()
     }
 
+    override fun powerOn() {
+        super.powerOn()
+        frequencySweep.powerOn()
+    }
+
     override fun reset() {
         super.reset()
         duty = 0b10

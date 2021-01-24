@@ -66,7 +66,9 @@ class Sound : Memory {
             return
 
         for (i in 0 until 4) {
-            samples[i] = if (optionChannelEnables[i]) allChannels[i].tick() else 0
+            samples[i] = allChannels[i].tick()
+            if (!optionChannelEnables[i])
+                samples[i] = 0
         }
 
         var left = 0
@@ -173,7 +175,7 @@ class Sound : Memory {
          * unaffected by power and can still be written while off)
          */
         if (!enabled) {
-            if (address != Mmu.NR52 && address != Mmu.NR41) {
+            if (address != Mmu.NR52 && address != Mmu.NR11 && address != Mmu.NR21 && address != Mmu.NR31 && address != Mmu.NR41) {
                 return
             }
         }
@@ -239,6 +241,12 @@ class Sound : Memory {
                     for (i in 0..3) {
                         this.leftEnables[i] = false
                         this.rightEnables[i] = false
+                    }
+                }
+
+                if (!wasEnabled && enabled) {
+                    for (channel in allChannels) {
+                        channel.powerOn()
                     }
                 }
             }

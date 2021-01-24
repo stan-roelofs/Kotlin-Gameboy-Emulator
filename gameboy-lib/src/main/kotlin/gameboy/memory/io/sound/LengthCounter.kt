@@ -18,6 +18,10 @@ class LengthCounter(private val fullLength: Int, private val soundChannel: Sound
         reset()
     }
 
+    fun powerOn() {
+        counter %= 8192
+    }
+
     fun reset() {
         this.lengthEnabled = false
         this.counter = 0

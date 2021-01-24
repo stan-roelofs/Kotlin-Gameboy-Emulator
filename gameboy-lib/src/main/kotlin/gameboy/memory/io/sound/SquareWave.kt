@@ -14,16 +14,25 @@ abstract class SquareWave : SoundChannel() {
     // Current bit in duty
     private var dutyCounter = 0
 
+    private var off = false
+
     protected var timer = 0
 
     override fun reset() {
         super.reset()
         dutyCounter = 0
         timer = 0
+        off = false
+    }
+
+    override fun powerOn() {
+        super.powerOn()
+        off = false
     }
 
     override fun powerOff() {
         reset()
+        off = true
 
         super.powerOff()
         duty = 0
@@ -76,7 +85,11 @@ abstract class SquareWave : SoundChannel() {
         when(address) {
             Mmu.NR11,
             Mmu.NR21 -> {
-                duty = (newVal shr 6) and 0b11
+                // Only write to the length counter if the APU is off
+                if (!off)
+                    duty = (newVal shr 6) and 0b11
+
+                // On DMG the length counters are not affected by power and can still be written while off
                 lengthCounter.setNr1(newVal and 0b00111111)
             }
             Mmu.NR12,

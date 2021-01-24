@@ -19,6 +19,10 @@ class VolumeEnvelope {
         reset()
     }
 
+    fun powerOn() {
+        counter %= 8192
+    }
+
     fun reset() {
         this.enabled = false
         this.counter = 0

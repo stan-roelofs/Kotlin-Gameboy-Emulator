@@ -32,13 +32,13 @@ class SoundTests : BlarggTestMemory() {
     }
 
     @Test
-    fun testOverflowOnTrigger() {
-        runBlarggTest("06-overflow on trigger.gb")
+    fun testLenCtrDuringPower() {
+        runBlarggTest("08-len ctr during power.gb")
     }
 
     @Test
-    fun testWaveTriggerWhileOn() {
-        runBlarggTest("10-wave trigger while on.gb")
+    fun testOverflowOnTrigger() {
+        runBlarggTest("06-overflow on trigger.gb")
     }
 
     @Test
