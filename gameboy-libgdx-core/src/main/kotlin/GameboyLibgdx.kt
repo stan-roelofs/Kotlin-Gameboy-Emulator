@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
 import gameboy.GameBoy
-import gameboy.memory.io.graphics.ScreenOutput
+import gameboy.memory.io.graphics.VSyncListener
 import gameboy.memory.io.sound.SoundOutput
 import java.nio.ByteBuffer
 
@@ -15,7 +15,7 @@ import java.nio.ByteBuffer
  *
  * Contains main rendering logic and platform independent functionality
  */
-abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
+abstract class GameboyLibgdx : ApplicationAdapter(), VSyncListener {
 
     val width = GameBoy.SCREEN_WIDTH
     val height = GameBoy.SCREEN_HEIGHT
@@ -42,7 +42,7 @@ abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
 
         gameboy = gb
         gb.mmu.io.sound.output = output
-        gb.mmu.io.ppu.lcd.output = this
+        gb.mmu.io.ppu.lcd.addListener(this)
         gbThread = Thread(gameboy)
         gbThread.start()
     }
@@ -67,7 +67,7 @@ abstract class GameboyLibgdx : ApplicationAdapter(), ScreenOutput {
         cam.position.set(width.toFloat() / 2f, height.toFloat() / 2f, 0f)
     }
 
-    override fun render(screenBuffer: ByteArray) {
+    override fun vsync(screenBuffer: ByteArray) {
         buffer.put(screenBuffer)
         buffer.rewind()
         Gdx.graphics.requestRendering()

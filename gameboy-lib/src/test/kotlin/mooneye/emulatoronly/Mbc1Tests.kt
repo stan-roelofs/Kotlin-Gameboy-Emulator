@@ -8,12 +8,6 @@ class Mbc1Tests : MooneyeTest() {
 
     /*
     @Test
-    fun bits_ram_en() {
-        runMooneyeTest("bits_ram_en.gb", -1059871625)
-    }*/
-
-    /*
-    @Test
     fun multicart_rom_8mb() {
         runMooneyeTest("multicart_rom_8Mb.gb", -1059871625)
     }*/

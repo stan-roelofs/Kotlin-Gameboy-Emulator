@@ -39,7 +39,7 @@ class SoundOutputGdx : SoundOutput {
         buffer[bufferIndex++] = (right * 255).toShort()
 
         if (bufferIndex >= BUFFER_SIZE) {
-            device?.writeSamples(buffer, 0, buffer.size)
+            device?.writeSamples(buffer, 0, bufferIndex)
             bufferIndex = 0
         }
     }

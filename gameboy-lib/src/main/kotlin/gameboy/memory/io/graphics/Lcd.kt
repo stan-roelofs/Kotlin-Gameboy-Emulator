@@ -1,13 +1,14 @@
 package gameboy.memory.io.graphics
 
 import gameboy.GameBoy
+import java.util.*
 
 class Lcd {
 
     private val bufferSize = GameBoy.SCREEN_WIDTH * GameBoy.SCREEN_HEIGHT * 3
     private var currentIndex = 0
     private val buffer = ByteArray(bufferSize)
-    var output : ScreenOutput? = null
+    private val listeners = LinkedList<VSyncListener>()
 
     fun reset() {
         currentIndex = 0
@@ -24,7 +25,13 @@ class Lcd {
         if (currentIndex != bufferSize)
             throw IllegalStateException()
 
-        output?.render(buffer)
+        for (listener in listeners)
+            listener.vsync(buffer)
+
         currentIndex = 0
+    }
+
+    fun addListener(output: VSyncListener) {
+        listeners.add(output)
     }
 }

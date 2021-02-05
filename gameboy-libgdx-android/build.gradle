@@ -29,7 +29,7 @@ dependencies {
 
 android {
     buildToolsVersion "30.0.2"
-    ndkVersion = "21.1.6352462"
+    ndkVersion = "22.0.7026061"
     compileSdkVersion 30
     sourceSets {
         main {

@@ -31,7 +31,7 @@ text files to the input directory.
 - [x] boot_div_dmgABC
 - [x] push_timing
 - [x] pop_timing
-- [x] halt_ime0_nointr_timing
+- [ ] halt_ime0_nointr_timing
 - [x] oam_dma_restart
 - [x] oam_dma_timing
 - [x] oam_dma_start
@@ -40,7 +40,7 @@ text files to the input directory.
 - [x] jp_timing
 - [ ] ei_sequence
 - [x] ret_cc_timing
-- [x] boot_hwio_dmgABC
+- [ ] boot_hwio_dmgABC
 - [x] call_cc_timing
 - [x] add_sp_e_timing
 
@@ -61,7 +61,7 @@ text files to the input directory.
 - [ ] hblank_ly_scx_timing-GS
 - [ ] intr_1_2_timing-GS
 - [ ] intr_2_0_timing - Fails, incorrect timing between STAT mode=1 and STAT mode=2 interrupt
-- [ ] intr_2_mode0_timing
+- [x] intr_2_mode0_timing
 - [ ] intr_2_mode0_timing_sprites
 - [x] intr_2_mode3_timing
 - [ ] intr_2_oam_ok_timing - E register value incorrect
@@ -118,11 +118,11 @@ text files to the input directory.
 - [x] bits_unused
 
 ### MBC5
-- [ ] rom_1Mb
-- [ ] rom_2Mb
-- [ ] rom_4Mb
-- [ ] rom_8Mb
-- [ ] rom_16Mb
-- [ ] rom_32Mb
-- [ ] rom_64Mb
-- [ ] rom_512Kb
+- [x] rom_1Mb
+- [x] rom_2Mb
+- [x] rom_4Mb
+- [x] rom_8Mb
+- [x] rom_16Mb
+- [x] rom_32Mb
+- [x] rom_64Mb
+- [x] rom_512Kb

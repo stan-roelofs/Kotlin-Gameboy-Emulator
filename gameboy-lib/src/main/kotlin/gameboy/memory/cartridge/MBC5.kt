@@ -1,6 +1,8 @@
 package gameboy.memory.cartridge
 
 import gameboy.memory.Memory
+import gameboy.utils.getBit
+import gameboy.utils.setBit
 import gameboy.utils.toHexString
 
 class MBC5(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false) : Memory, MBC {
@@ -8,7 +10,7 @@ class MBC5(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     override val ram: Array<IntArray>?
     override val rom: Array<IntArray>
 
-    override var currentRomBank = 0
+    override var currentRomBank = 1
     override var currentRamBank = 0
     override var ramEnabled = false
 
@@ -33,7 +35,7 @@ class MBC5(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     override fun reset() {
         super.reset()
         currentRamBank = 0
-        currentRomBank = 0
+        currentRomBank = 1
         ramEnabled = false
     }
 
@@ -71,7 +73,7 @@ class MBC5(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
 
             // ROM Bank Number upper bit
             in 0x3000 until 0x4000 -> {
-                currentRomBank = (currentRomBank and 0xFF) or ((value and 1) shl 8)
+                currentRomBank = setBit(currentRomBank, 8, value.getBit(0))
             }
 
             // RAM Bank Number

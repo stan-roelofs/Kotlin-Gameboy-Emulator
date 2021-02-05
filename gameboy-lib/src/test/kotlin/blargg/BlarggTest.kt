@@ -4,7 +4,7 @@ import MAX_ITERATIONS
 import gameboy.GameBoy
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
-import gameboy.memory.io.graphics.ScreenOutput
+import gameboy.memory.io.graphics.VSyncListener
 import gameboy.utils.Log
 import getScreenHash
 import makeScreenshot
@@ -95,7 +95,7 @@ abstract class BlarggTestMemory : BlarggTest {
     }
 }
 
-abstract class BlarggTestScreenhash : BlarggTest, ScreenOutput {
+abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
 
     private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
 
@@ -104,7 +104,7 @@ abstract class BlarggTestScreenhash : BlarggTest, ScreenOutput {
         Log.i("Running Blargg Test: $fileName")
         Log.i("Using screen hash to validate")
 
-        val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/$fileName.txt")?.toURI()
+        val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/blargg/$path/$fileName.txt")?.toURI()
         var inputHash = 0
 
         if (inputHashURI == null)
@@ -121,8 +121,8 @@ abstract class BlarggTestScreenhash : BlarggTest, ScreenOutput {
         val romFile = File(romURI!!)
         Assert.assertTrue(romFile.exists())
 
-        val testOutputScreenshots = File("testoutput/screenshots")
-        val testOutputHashes = File("testoutput/hashes")
+        val testOutputScreenshots = File("testoutput/screenshots/blargg/$path")
+        val testOutputHashes = File("testoutput/hashes/blargg/$path")
         val testOutputHash = File("$testOutputHashes/$fileName.txt")
         val testOutputScreenshot = File("$testOutputScreenshots/$fileName.png")
 
@@ -133,7 +133,7 @@ abstract class BlarggTestScreenhash : BlarggTest, ScreenOutput {
         Assert.assertTrue(testOutputHash.exists())
 
         val gb = GameBoyDMG(Cartridge(romFile))
-        gb.mmu.io.ppu.lcd.output = this
+        gb.mmu.io.ppu.lcd.addListener(this)
 
         for (i in 0..MAX_ITERATIONS) {
             gb.step()
@@ -148,7 +148,7 @@ abstract class BlarggTestScreenhash : BlarggTest, ScreenOutput {
         Assert.assertEquals(inputHash, hash)
     }
 
-    override fun render(screenBuffer: ByteArray) {
+    override fun vsync(screenBuffer: ByteArray) {
         screenBuffer.copyInto(lastBuffer)
     }
 }

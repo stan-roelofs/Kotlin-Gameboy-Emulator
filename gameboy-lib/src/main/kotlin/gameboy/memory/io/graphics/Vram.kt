@@ -4,7 +4,7 @@ import gameboy.utils.toHexString
 
 class Vram(numBanks: Int) {
 
-    val vram = Array(numBanks) {IntArray(0x2000)}
+    private val vram = Array(numBanks) {IntArray(0x2000)}
 
     init {
         reset()

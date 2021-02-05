@@ -4,14 +4,14 @@ import gameboy.GameBoy
 import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
-import gameboy.memory.io.graphics.ScreenOutput
+import gameboy.memory.io.graphics.VSyncListener
 import gameboy.utils.Log
 import getScreenHash
 import makeScreenshot
 import org.junit.Assert
 import java.io.File
 
-abstract class MooneyeTest : ScreenOutput {
+abstract class MooneyeTest : VSyncListener {
 
     abstract val path: String
     private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
@@ -20,7 +20,7 @@ abstract class MooneyeTest : ScreenOutput {
     // Test passes when a hash of the screenBuffer matches a provided hash
     // Provided hash is a hash of the screenBuffer after a test passed
     fun runMooneyeTest(fileName: String, forceCgb : Boolean = false) {
-        val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/$fileName.txt")?.toURI()
+        val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/mooneye/$path/$fileName.txt")?.toURI()
         var inputHash = 0
 
         if (inputHashURI == null)
@@ -36,8 +36,8 @@ abstract class MooneyeTest : ScreenOutput {
         val romFile = File(romURI!!)
         Assert.assertTrue(romFile.exists())
 
-        val testOutputScreenshots = File("testoutput/screenshots")
-        val testOutputHashes = File("testoutput/hashes")
+        val testOutputScreenshots = File("testoutput/screenshots/mooneye/$path")
+        val testOutputHashes = File("testoutput/hashes/mooneye/$path")
         val testOutputHash = File("$testOutputHashes/$fileName.txt")
         val testOutputScreenshot = File("$testOutputScreenshots/$fileName.png")
 
@@ -48,7 +48,7 @@ abstract class MooneyeTest : ScreenOutput {
         Assert.assertTrue(testOutputHash.exists())
 
         val gb = if (forceCgb) GameBoyCGB(Cartridge(romFile)) else GameBoyDMG(Cartridge(romFile))
-        gb.mmu.io.ppu.lcd.output = this
+        gb.mmu.io.ppu.lcd.addListener(this)
 
         Log.i("")
         Log.i("Running Mooneye Test: $fileName")
@@ -68,7 +68,7 @@ abstract class MooneyeTest : ScreenOutput {
         Assert.assertEquals(inputHash, hash)
     }
 
-    override fun render(screenBuffer: ByteArray) {
+    override fun vsync(screenBuffer: ByteArray) {
         screenBuffer.copyInto(lastBuffer)
     }
 }
