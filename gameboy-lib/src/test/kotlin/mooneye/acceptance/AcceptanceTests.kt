@@ -47,24 +47,20 @@ class AcceptanceTests : MooneyeTest() {
         runMooneyeTest("call_timing2.gb")
     }
 
-    /*
     @Test
     fun di_timing_GS() {
-        runMooneyeTest("boot_regs-dmgABC.gb", -1938941160)
-
-    }*/
+        runMooneyeTest("boot_regs-dmgABC.gb")
+    }
 
     @Test
     fun div_timing() {
         runMooneyeTest("div_timing.gb")
     }
 
-    /*
     @Test
     fun ei_sequence() {
-        val gb = GameBoy(File("${path}ei_sequence.gb"))
-        runMooneyeTest(gb, 0)
-    }*/
+        runMooneyeTest("ei_sequence.gb")
+    }
 
     @Test
     fun ei_timing() {
@@ -86,12 +82,11 @@ class AcceptanceTests : MooneyeTest() {
         runMooneyeTest("halt_ime1_timing.gb")
     }
 
-    /*
+
     @Test
     fun halt_ime1_timing2_GS() {
-        val gb = GameBoy(File("${path}halt_ime1_timing2-GS.gb"))
-        runMooneyeTest(gb, 0)
-    }*/
+        runMooneyeTest("halt_ime1_timing2-GS.gb")
+    }
 
     @Test
     fun if_ie_registers() {

@@ -12,14 +12,15 @@ import gameboy.utils.*
  *
  * On initialization [reset] is called.
  */
-abstract class Cpu(protected val mmu : Mmu, protected val registers : Registers) {
+abstract class Cpu(protected val mmu : Mmu, val registers : Registers) {
 
     private var instructionsPool: InstructionsPool = InstructionsPoolImpl(registers, mmu)
     private var currentInstruction: Instruction? = null
-
     private var interruptBit = 0
     protected var count = 0
     protected var state = State.EXECUTE
+    var opcode = 0
+        private set
 
     enum class State {
         EXECUTE,
@@ -38,6 +39,7 @@ abstract class Cpu(protected val mmu : Mmu, protected val registers : Registers)
         count = 0
         state = State.EXECUTE
         interruptBit = 0
+        opcode = 0
     }
 
     internal open fun step() {
@@ -67,7 +69,7 @@ abstract class Cpu(protected val mmu : Mmu, protected val registers : Registers)
 
                     // Read next instruction
                     if (!registers.halt && !registers.stop) {
-                        val opcode = mmu.readByte(registers.PC)
+                        opcode = mmu.readByte(registers.PC)
 
                         if (!registers.haltBug) {
                             registers.incPC()

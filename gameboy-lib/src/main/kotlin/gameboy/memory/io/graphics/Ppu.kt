@@ -21,16 +21,16 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
     // Memory / registers
     abstract val vram: Vram
     val lcdc = Lcdc()
-    protected val ly = Register(Mmu.LY)
+    val ly = Register(Mmu.LY)
     protected val lyc = Register(Mmu.LYC)
     protected val stat = Register(Mmu.STAT)
-    protected val scy = Register(Mmu.SCY)
-    protected val scx = Register(Mmu.SCX)
-    protected val wy = Register(Mmu.WY)
-    protected val wx = Register(Mmu.WX)
-    protected val bgp = PaletteDMG()
-    protected val obp0 = PaletteDMG()
-    protected val obp1 = PaletteDMG()
+    val scy = Register(Mmu.SCY)
+    val scx = Register(Mmu.SCX)
+    val wy = Register(Mmu.WY)
+    val wx = Register(Mmu.WX)
+    val bgp = PaletteDMG()
+    val obp0 = PaletteDMG()
+    val obp1 = PaletteDMG()
 
     val lcd = Lcd()
 
@@ -101,7 +101,6 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                         vblank.start()
                         currentModeEnum = ModeEnum.VBLANK
                         mmu.requestInterrupt(Interrupt.VBLANK)
-                        requestStatInterrupt(5)
                         requestStatInterrupt(4)
                         lcd.display()
                     } else {
@@ -113,10 +112,10 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                     requestLycEqualsLyInterrupt()
                 }
                 ModeEnum.VBLANK -> {
+                    ticksInLine = 0
                     // Apparently LY is reset to 0 at line 153
                     when {
                         ly.value == 0 -> {
-                            ticksInLine = 0
                             ly.value = 0
                             currentMode = oamSearch
                             oamSearch.start()
@@ -127,7 +126,6 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                             ly.value = 0
                         }
                         else -> {
-                            ticksInLine = 0
                             vblank.start()
                         }
                     }
@@ -221,8 +219,8 @@ class PpuCGB(mmu: Mmu) : Ppu(mmu) {
 
     private var bcps = 0
     private var ocps = 0
-    private val bgPalettes = Array(8) {PaletteCGB()}
-    private val objPalettes = Array(8) {PaletteCGB()}
+    val bgPalettes = Array(8) {PaletteCGB()}
+    val objPalettes = Array(8) {PaletteCGB()}
 
     private val renderer = PixelRendererCGB(lcd, lcdc, objPalettes, bgPalettes)
     private val fetcher = FetcherCGB(lcdc, wx, wy, scy, scx, ly, mmu.oam, vram)
@@ -261,7 +259,7 @@ class PpuCGB(mmu: Mmu) : Ppu(mmu) {
     override fun writeByte(address: Int, value: Int) {
         val newVal = value and 0xFF
         when(address) {
-            Mmu.VBK -> currentBank = newVal and 0b00000001
+            Mmu.VBK -> currentBank = newVal and 0b1
             Mmu.BCPS -> bcps = newVal and 0b10111111
             Mmu.BCPD -> {
                 var index = bcps and 0b00111111

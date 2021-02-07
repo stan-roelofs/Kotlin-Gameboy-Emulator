@@ -8,6 +8,6 @@ class SpritePriority : MooneyeTest() {
 
     @Test
     fun sprite_priority() {
-        runMooneyeTest("sprite_priority.gb")
+        runMooneyeTest("sprite_priority.gb", Type.SCREENHASH)
     }
 }

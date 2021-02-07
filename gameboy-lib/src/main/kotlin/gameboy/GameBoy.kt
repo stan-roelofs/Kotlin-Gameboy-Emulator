@@ -5,7 +5,6 @@ import gameboy.memory.Mmu
 import gameboy.memory.MmuCGB
 import gameboy.memory.MmuDMG
 import gameboy.memory.cartridge.Cartridge
-import gameboy.memory.io.Hdma
 
 /**
  * Main Gameboy class <BR>
@@ -23,6 +22,12 @@ abstract class GameBoy : Runnable {
 
         /** The number of vertical pixels of the Gameboy's screen */
         const val SCREEN_HEIGHT = 144
+
+        /** The width of the screen buffer */
+        const val SCREENBUFFER_WIDTH = 256
+
+        /** The height of the screen buffer */
+        const val SCREENBUFFER_HEIGHT = 256
     }
 
     /** The Gameboy's MMU instance */
@@ -30,6 +35,9 @@ abstract class GameBoy : Runnable {
 
     /** The Gameboy's CPU instance */
     abstract val cpu: Cpu
+
+    /** Indicates whether the gameboy is a GBC */
+    abstract val isGbc: Boolean
 
     /** Indicates whether the gameboy is currently running or not */
     var running = false
@@ -73,13 +81,14 @@ abstract class GameBoy : Runnable {
 class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
     override val mmu = MmuCGB(cartridge)
     override val cpu = CpuCGB(mmu, RegistersCGB())
+    override val isGbc = true
 
     init {
         reset()
     }
 
     override fun step() {
-        if (mmu.io.hdma.state != Hdma.State.TRANSFER)
+        if (!mmu.io.hdma.inProgress())
             cpu.step()
 
         mmu.tick(if (cpu.doubleSpeed) 1 else 2)
@@ -89,6 +98,7 @@ class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
 class GameBoyDMG(cartridge: Cartridge) : GameBoy() {
     override val mmu = MmuDMG(cartridge)
     override val cpu = CpuDMG(mmu, RegistersDMG())
+    override val isGbc = false
 
     init {
         reset()

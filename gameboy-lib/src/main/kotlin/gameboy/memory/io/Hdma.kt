@@ -22,13 +22,13 @@ class Hdma(private val mmu: Mmu) : Memory {
     private var hdma5 = 0
     private var length = 0
     private var hblankTransfer = false
+    private var previousHblank = false
 
     private var destination = 0
     private var source = 0
 
     private var count = 0
-    var state = State.FINISHED
-        private set
+    private var state = State.FINISHED
 
     init {
         reset()
@@ -45,6 +45,7 @@ class Hdma(private val mmu: Mmu) : Memory {
         source = 0
         count = 0
         state = State.FINISHED
+        previousHblank = false
     }
 
     fun tick(cycles: Int, hblank: Boolean, lcdEnabled: Boolean) {
@@ -54,8 +55,11 @@ class Hdma(private val mmu: Mmu) : Memory {
         else
             return
 
+        if (!hblank)
+            previousHblank = false
+
         when(state) {
-            State.FINISHED -> {}
+            State.FINISHED -> return
             State.TRANSFER -> {
                 mmu.writeByte(destination, mmu.readByte(source))
                 source++
@@ -79,8 +83,10 @@ class Hdma(private val mmu: Mmu) : Memory {
                 }
             }
             State.WAIT_HBLANK -> {
-                if (hblank || !lcdEnabled)
+                if (!previousHblank && (hblank || !lcdEnabled)) {
                     state = State.TRANSFER
+                    previousHblank = true
+                }
             }
         }
     }
@@ -108,17 +114,18 @@ class Hdma(private val mmu: Mmu) : Memory {
 
                 if (state == State.FINISHED) {
                     startTransfer(newVal)
+                    return
                 }
 
                 val hblankMode = newVal.getBit(7)
                 if (state != State.FINISHED && hblankTransfer) {
                     if (hblankMode) {
                         // Restart
-                        Log.d("HDMA restarted")
+                        Log.d("HDMA restarted, remaining length: $length")
                         startTransfer(newVal)
                     } else {
                         // stop
-                        Log.d("HDMA cancelled")
+                        Log.d("HDMA cancelled, remaining length: $length")
                         state = State.FINISHED
                         hdma5 = newVal or 0x80
                     }
@@ -151,5 +158,9 @@ class Hdma(private val mmu: Mmu) : Memory {
             State.TRANSFER
 
         Log.d("${if (hblankTransfer) "H" else "G"}DMA: Copying $length bytes from ${source.toHexString(4)} to ${destination.toHexString(4)}")
+    }
+
+    fun inProgress() : Boolean {
+        return state == State.TRANSFER
     }
 }
