@@ -1,9 +1,10 @@
 package gui
 
 import gameboy.GameBoy
-import java.awt.FlowLayout
+import java.awt.BorderLayout
 import javax.swing.JCheckBox
 import javax.swing.JDialog
+import javax.swing.JPanel
 
 class OptionsDialog : JDialog() {
 
@@ -18,8 +19,8 @@ class OptionsDialog : JDialog() {
     private val sound4: JCheckBox
 
     init {
-        layout = FlowLayout()
-        setSize(300, 300)
+        layout = BorderLayout()
+        val panel = JPanel()
 
         sound1 = JCheckBox("Sound channel 1 - Tone & Sweep")
         sound1.addActionListener {
@@ -37,10 +38,12 @@ class OptionsDialog : JDialog() {
         sound4.addActionListener {
             setSoundChannelEnabled(3, sound4.isSelected)
         }
-        add(sound1)
-        add(sound2)
-        add(sound3)
-        add(sound4)
+        panel.add(sound1)
+        panel.add(sound2)
+        panel.add(sound3)
+        panel.add(sound4)
+        add(panel, BorderLayout.CENTER)
+        pack()
     }
 
     private fun onVisible() {
@@ -51,7 +54,9 @@ class OptionsDialog : JDialog() {
     }
 
     override fun setVisible(b: Boolean) {
-        onVisible()
+        if (b)
+            onVisible()
+
         super.setVisible(b)
     }
 

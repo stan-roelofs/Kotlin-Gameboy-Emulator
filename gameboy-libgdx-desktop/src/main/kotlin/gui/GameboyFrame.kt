@@ -11,7 +11,10 @@ import gameboy.utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
-import javax.swing.*
+import javax.swing.JFrame
+import javax.swing.JMenu
+import javax.swing.JMenuBar
+import javax.swing.JMenuItem
 
 class GameboyFrame : JFrame() {
 
@@ -19,10 +22,10 @@ class GameboyFrame : JFrame() {
     private val gbapp = GameboyDesktop()
     private val romChooser: RomChooser
     private val optionsDialog = OptionsDialog()
+    private val vramViewer = VramViewer()
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
         romChooser = RomChooser()
 
         val container = contentPane
@@ -30,8 +33,8 @@ class GameboyFrame : JFrame() {
 
         val cfg = LwjglApplicationConfiguration()
         cfg.title = "Gameboy"
-        cfg.width = 160 * 3
-        cfg.height = 144 * 3
+        cfg.width = GameBoy.SCREEN_WIDTH * 3
+        cfg.height = GameBoy.SCREEN_HEIGHT * 3
         val canvas = LwjglAWTCanvas(gbapp, cfg)
         container.add(canvas.canvas, BorderLayout.CENTER)
 
@@ -44,6 +47,9 @@ class GameboyFrame : JFrame() {
         val options = JMenuItem("Options")
         options.addActionListener { showOptions() }
         fileMenu.add(options)
+        val viewer = JMenuItem("Vram Viewer")
+        viewer.addActionListener { showVramViewer() }
+        fileMenu.add(viewer)
         menuBar.add(fileMenu)
 
         val gameMenu = JMenu("Game")
@@ -63,6 +69,7 @@ class GameboyFrame : JFrame() {
 
         jMenuBar = menuBar
 
+        container.minimumSize = Dimension(GameBoy.SCREEN_WIDTH, GameBoy.SCREEN_HEIGHT)
         container.preferredSize = Dimension(cfg.width, cfg.height)
         pack()
         isVisible = true
@@ -76,6 +83,7 @@ class GameboyFrame : JFrame() {
 
         gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
         optionsDialog.gb = gb
+        vramViewer.gb = gb
 
         if (cartridge.type!!.hasBattery())
             load()
@@ -85,6 +93,10 @@ class GameboyFrame : JFrame() {
 
     private fun showOptions() {
         optionsDialog.isVisible = true
+    }
+
+    private fun showVramViewer() {
+        vramViewer.isVisible = true
     }
 
     private fun togglePause() {
