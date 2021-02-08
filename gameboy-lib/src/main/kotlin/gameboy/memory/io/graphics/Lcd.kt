@@ -14,6 +14,12 @@ class Lcd {
         currentIndex = 0
     }
 
+    fun setCurrentLine(value: Int) {
+        if (value !in 0..153)
+            throw IllegalArgumentException("LY must be between 0 and 153, invalid value: $value")
+        currentIndex = value * GameBoy.SCREEN_WIDTH * 3
+    }
+
     fun pushPixel(r: Int, g: Int, b: Int) {
         buffer[currentIndex] = r.toByte()
         buffer[++currentIndex] = g.toByte()

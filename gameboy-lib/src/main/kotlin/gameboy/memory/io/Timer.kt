@@ -55,7 +55,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
         // update timer
         if (TAC.getBit(2)) {
-            timerCounter++
+            timerCounter += cycles
 
             while (timerCounter >= timerCycles) {
                 timerCounter -= timerCycles

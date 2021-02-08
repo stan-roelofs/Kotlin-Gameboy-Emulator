@@ -32,10 +32,10 @@ abstract class IO(mmu: Mmu) : Memory {
     }
 
     open fun tick(cycles: Int) {
-        timer.tick(if (cycles == 2) 1 else 2)
-        ppu.tick(cycles)
+        timer.tick(cycles)
+        ppu.tick()
         dma.tick(cycles)
-        sound.tick(cycles)
+        sound.tick()
     }
 
     override fun readByte(address: Int): Int {
@@ -180,7 +180,7 @@ class IOCGB(mmu : Mmu) : IO(mmu) {
 
     override fun tick(cycles: Int) {
         super.tick(cycles)
-        hdma.tick(cycles, ppu.getMode() == Ppu.ModeEnum.HBLANK, ppu.lcdc.getLcdEnable())
+        hdma.tick(ppu.getMode() == Ppu.ModeEnum.HBLANK, ppu.lcdc.getLcdEnable())
     }
 
     override fun readByte(address: Int): Int {

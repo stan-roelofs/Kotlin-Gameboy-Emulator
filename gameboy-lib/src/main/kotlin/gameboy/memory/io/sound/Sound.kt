@@ -28,7 +28,6 @@ class Sound : Memory {
     private var volumeRight = 0
     private var leftEnables = Array(4) {false}
     private var rightEnables = Array(4) {false}
-    private var count = 0
 
     init {
         reset()
@@ -46,8 +45,6 @@ class Sound : Memory {
         rightEnables[2] = false
         rightEnables[3] = false
 
-        count = 0
-
         for (channel in allChannels) {
             channel.reset()
         }
@@ -58,13 +55,7 @@ class Sound : Memory {
         output?.reset()
     }
 
-    fun tick(cycles: Int) {
-        count += cycles
-        if (count >= 2)
-            count = 0
-        else
-            return
-
+    fun tick() {
         for (i in 0 until 4) {
             samples[i] = allChannels[i].tick()
             if (!optionChannelEnables[i])

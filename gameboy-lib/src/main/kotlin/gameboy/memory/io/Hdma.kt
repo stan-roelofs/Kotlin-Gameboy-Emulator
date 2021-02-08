@@ -48,13 +48,7 @@ class Hdma(private val mmu: Mmu) : Memory {
         previousHblank = false
     }
 
-    fun tick(cycles: Int, hblank: Boolean, lcdEnabled: Boolean) {
-        count += cycles
-        if (count >= 2)
-            count = 0
-        else
-            return
-
+    fun tick(hblank: Boolean, lcdEnabled: Boolean) {
         if (!hblank)
             previousHblank = false
 

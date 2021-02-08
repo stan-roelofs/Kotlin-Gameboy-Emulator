@@ -6,6 +6,7 @@ import gameboy.memory.Mmu
 import gameboy.memory.Register
 import gameboy.memory.io.graphics.mode.*
 import gameboy.utils.getBit
+import gameboy.utils.setBit
 import gameboy.utils.toHexString
 import java.util.*
 
@@ -46,11 +47,10 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
     protected var ticksInLine = 0
     protected var currentBank = 0
 
-    private var count = 0
-
     override fun reset() {
         currentMode = oamSearch
         currentModeEnum = ModeEnum.OAM_SEARCH
+        oamSearch.start()
         ticksInLine = 0
 
         lcdc.value = 0x91
@@ -65,19 +65,11 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
         obp0.paletteByte = 0xFF
         obp1.paletteByte = 0xFF
 
-        count = 0
-
         vram.reset()
         lcd.reset()
     }
 
-    fun tick(cycles: Int) {
-        count += cycles
-        if (count == 2)
-            count = 0
-        else
-            return
-
+    fun tick() {
         if (!lcdc.getLcdEnable())
             return
 
@@ -165,7 +157,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
             lyc.address -> lyc.value
             stat.address -> {
                 if (lcdc.getLcdEnable()) {
-                    stat.value or 0b10000000 or getMode().mode // Bit 7 is always 1
+                    setBit(stat.value or 0b10000000 or getMode().mode, 2, ly.value == lyc.value) // Bit 7 is always 1
                 } else {
                     (stat.value or 0b10000000) and 0b11111000 // Bits 0-2 return 0 when LCD is off
                 }
@@ -196,9 +188,12 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
                     //ly.value = 0
                 }
             }
-            ly.address -> ly.value = newVal
+            ly.address -> {
+                ly.value = newVal
+                lcd.setCurrentLine(ly.value)
+            }
             lyc.address -> lyc.value = newVal
-            stat.address -> stat.value = stat.value or (newVal and 0b11111000) // Last three bits are read-only
+            stat.address -> stat.value = newVal and 0b11111000 // Last three bits are read-only
             scy.address -> scy.value = newVal
             scx.address -> scx.value = newVal
             wx.address -> wx.value = newVal
@@ -235,8 +230,6 @@ class PpuCGB(mmu: Mmu) : Ppu(mmu) {
 
         bcps = 0
         ocps = 0
-
-        // TODO: reset palettes
     }
 
     override fun readByte(address: Int): Int {
@@ -266,7 +259,7 @@ class PpuCGB(mmu: Mmu) : Ppu(mmu) {
                 bgPalettes[index / 8].setByte(index % 8, newVal)
                 if (bcps.getBit(7)) {
                     index = (index + 1) and 0b111111
-                    bcps = (index) or (1 shl 7)
+                    bcps = setBit(index, 7)
                 }
             }
             Mmu.OCPS -> ocps = newVal and 0b10111111

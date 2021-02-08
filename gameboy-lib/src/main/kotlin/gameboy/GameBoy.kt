@@ -55,7 +55,7 @@ abstract class GameBoy : Runnable {
     /** Performs a single cpu step */
     open fun step() {
         cpu.step()
-        mmu.tick(2)
+        mmu.tick(1)
     }
 
     /** Toggle pause on / off */
@@ -91,7 +91,7 @@ class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
         if (!mmu.io.hdma.inProgress())
             cpu.step()
 
-        mmu.tick(if (cpu.doubleSpeed) 1 else 2)
+        mmu.tick(if (cpu.doubleSpeed) 2 else 1)
     }
 }
 

@@ -68,6 +68,10 @@ abstract class MooneyeTest : VSyncListener {
             gb.step()
         }
 
+        val hash = getScreenHash(lastBuffer)
+        makeScreenshot(testOutputScreenshot, lastBuffer)
+        testOutputHash.writeText("$hash")
+
         if (type == Type.REGISTERS) {
             Assert.assertEquals(0, gb.cpu.registers.A)
             Assert.assertEquals(3, gb.cpu.registers.B)
@@ -77,10 +81,6 @@ abstract class MooneyeTest : VSyncListener {
             Assert.assertEquals(21, gb.cpu.registers.H)
             Assert.assertEquals(34, gb.cpu.registers.L)
         }
-
-        val hash = getScreenHash(lastBuffer)
-        makeScreenshot(testOutputScreenshot, lastBuffer)
-        testOutputHash.writeText("$hash")
 
         if (type == Type.SCREENHASH) {
             Log.i("Hash: $hash")

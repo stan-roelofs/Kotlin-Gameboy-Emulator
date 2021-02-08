@@ -196,6 +196,18 @@ class CpuCGB(mmu: MmuCGB, registers: RegistersCGB) : Cpu(mmu, registers) {
         reset()
     }
 
+    override fun step() {
+        count++
+        val step = if (doubleSpeed) 2 else 4
+        if (count >= step) {
+            count = 0
+        } else {
+            return
+        }
+
+        handleStep()
+    }
+
     override fun reset() {
         super.reset()
 
