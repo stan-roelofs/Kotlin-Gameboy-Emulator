@@ -100,6 +100,9 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
     abstract fun readTileNumber()
     abstract fun readTileData0()
     abstract fun readTileData1()
+    abstract fun readSpriteTileNumber()
+    abstract fun readSpriteTileData0()
+    abstract fun readSpriteTileData1()
 
     abstract fun push() : Boolean
     abstract fun pushSprite()
@@ -129,32 +132,13 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
         } else {
             when (spriteStateMachine[spriteState]) {
                 SpriteState.READ_SPRITE_TILE_NUMBER -> {
-                    spriteTile = oam.readByte(sprite.address + 2)
-                    flags = oam.readByte(sprite.address + 3)
-                    ++spriteState
+                    readSpriteTileNumber()
                 }
                 SpriteState.READ_SPRITE_DATA_0 -> {
-                    spriteSize = if (lcdc.getObjectSize()) {
-                        spriteTile = spriteTile and 0xFE
-                        16
-                    } else {
-                        8
-                    }
-
-                    spriteYFlip = flags.getBit(6)
-                    spriteLine = if (spriteYFlip) {
-                        spriteSize - 1 - (ly.value + 16 - sprite.y)
-                    } else {
-                        ly.value + 16 - sprite.y
-                    }
-
-                    spriteData = vram.readByte(0,0x8000 + spriteTile * 16 + spriteLine * 2)
-                    ++spriteState
+                    readSpriteTileData0()
                 }
                 SpriteState.READ_SPRITE_DATA_1 -> {
-                    spriteData2 = vram.readByte(0,0x8000 + spriteTile * 16 + spriteLine * 2 + 1)
-                    pushSprite()
-                    spriteRequested = false
+                    readSpriteTileData1()
                 }
                 SpriteState.SLEEP -> {
                     ++spriteState
@@ -238,6 +222,39 @@ class FetcherCGB(lcdc: Lcdc, wx: Register, wy: Register, scy: Register,
         }
     }
 
+    override fun readSpriteTileNumber() {
+        spriteTile = oam.readByte(sprite.address + 2)
+        flags = oam.readByte(sprite.address + 3)
+        ++spriteState
+    }
+
+    override fun readSpriteTileData0() {
+        spriteSize = if (lcdc.getObjectSize()) {
+            spriteTile = spriteTile and 0xFE
+            16
+        } else {
+            8
+        }
+
+        spriteYFlip = flags.getBit(6)
+        spriteLine = if (spriteYFlip) {
+            spriteSize - 1 - (ly.value + 16 - sprite.y)
+        } else {
+            ly.value + 16 - sprite.y
+        }
+
+        val bank = if (flags.getBit(3)) 1 else 0
+        spriteData = vram.readByte(bank,0x8000 + spriteTile * 16 + spriteLine * 2)
+        ++spriteState
+    }
+
+    override fun readSpriteTileData1() {
+        val bank = if (flags.getBit(3)) 1 else 0
+        spriteData2 = vram.readByte(bank,0x8000 + spriteTile * 16 + spriteLine * 2 + 1)
+        pushSprite()
+        spriteRequested = false
+    }
+
     override fun push() : Boolean {
         val xFlip = tileAttributes.getBit(5)
 
@@ -313,6 +330,37 @@ class FetcherDMG (lcdc: Lcdc, wx: Register, wy: Register, scy: Register, scx: Re
             state = 0
             x = (x + 1) and 0x1F
         }
+    }
+
+    override fun readSpriteTileNumber() {
+        spriteTile = oam.readByte(sprite.address + 2)
+        flags = oam.readByte(sprite.address + 3)
+        ++spriteState
+    }
+
+    override fun readSpriteTileData0() {
+        spriteSize = if (lcdc.getObjectSize()) {
+            spriteTile = spriteTile and 0xFE
+            16
+        } else {
+            8
+        }
+
+        spriteYFlip = flags.getBit(6)
+        spriteLine = if (spriteYFlip) {
+            spriteSize - 1 - (ly.value + 16 - sprite.y)
+        } else {
+            ly.value + 16 - sprite.y
+        }
+
+        spriteData = vram.readByte(0,0x8000 + spriteTile * 16 + spriteLine * 2)
+        ++spriteState
+    }
+
+    override fun readSpriteTileData1() {
+        spriteData2 = vram.readByte(0,0x8000 + spriteTile * 16 + spriteLine * 2 + 1)
+        pushSprite()
+        spriteRequested = false
     }
 
     override fun push() : Boolean {
