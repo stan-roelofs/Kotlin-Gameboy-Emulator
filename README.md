@@ -1,8 +1,8 @@
-# kGB (Kotlin-Gameboy-Emulator) [![Build Status](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator.svg?branch=master)](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator)
-A Gameboy emulator written in Kotlin.
+# Yage (Kotlin-Gameboy-Emulator) [![Build Status](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator.svg?branch=master)](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator)
+A Gameboy / Gameboy color emulator written in Kotlin.
 
 ## Can I use this emulator to play?
-Yes you can, but you shouldn't. There are a lot more capable emulators available. 
+There are a lot more capable emulators available. 
 This is a work in progress personal project with the aim for me to learn about emulation.
 
 ## Downloads
@@ -32,9 +32,6 @@ This emulator is for the original Game Boy (DMG) and the versions A,B,C of the C
 ## Preview
 ![alt text](preview.gif)
 
-## Getting started
-gameboy-lib contains the gameboy emulator library.
+![alt text](preview2.gif)
 
-gameboy-libgdx-core contains common rendering code.
-
-gameboy-libgdx-desktop and gameboy-libgdx-android contain code specific to different platforms. 
+![alt text](preview3.gif)
