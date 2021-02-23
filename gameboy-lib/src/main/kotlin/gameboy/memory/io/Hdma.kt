@@ -2,7 +2,6 @@ package gameboy.memory.io
 
 import gameboy.memory.Memory
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.getBit
 import gameboy.utils.setSecondByte
 import gameboy.utils.toHexString
@@ -55,10 +54,18 @@ class Hdma(private val mmu: Mmu) : Memory {
         when(state) {
             State.FINISHED -> return
             State.TRANSFER -> {
-                mmu.writeByte(destination, mmu.readByte(source))
-                source++
-                destination++
-                length--
+                ++count
+                if (count < 0x20)
+                    return
+
+                count = 0
+
+                for (i in 0 until 0x10) {
+                    mmu.writeByte(destination + i, mmu.readByte(source + i))
+                }
+                source += 0x10
+                destination += 0x10
+                length -= 0x10
                 hdma5 = ((length / 0x10) - 1) and 0x1F
                 hdma1 = (source shr 8) and 0xFF
                 hdma2 = source and 0xFF
@@ -71,7 +78,7 @@ class Hdma(private val mmu: Mmu) : Memory {
                     return
                 }
 
-                if (hblankTransfer && length % 0x10 == 0) {
+                if (hblankTransfer) {
                     state = State.WAIT_HBLANK
                     return
                 }
@@ -80,6 +87,7 @@ class Hdma(private val mmu: Mmu) : Memory {
                 if (!previousHblank && (hblank || !lcdEnabled)) {
                     state = State.TRANSFER
                     previousHblank = true
+                    count = 0
                 }
             }
         }
@@ -115,11 +123,11 @@ class Hdma(private val mmu: Mmu) : Memory {
                 if (state != State.FINISHED && hblankTransfer) {
                     if (hblankMode) {
                         // Restart
-                        Log.d("HDMA restarted, remaining length: $length")
+                      //  Log.d("HDMA restarted, remaining length: $length")
                         startTransfer(newVal)
                     } else {
                         // stop
-                        Log.d("HDMA cancelled, remaining length: $length")
+                      //  Log.d("HDMA cancelled, remaining length: $length")
                         state = State.FINISHED
                         hdma5 = newVal or 0x80
                     }
@@ -147,11 +155,11 @@ class Hdma(private val mmu: Mmu) : Memory {
         }
 
         state = if (hblankTransfer)
-            State.WAIT_HBLANK
+            State.TRANSFER
         else
             State.TRANSFER
 
-        Log.d("${if (hblankTransfer) "H" else "G"}DMA: Copying $length bytes from ${source.toHexString(4)} to ${destination.toHexString(4)}")
+        //Log.d("${if (hblankTransfer) "H" else "G"}DMA: Copying $length bytes from ${source.toHexString(4)} to ${destination.toHexString(4)}")
     }
 
     fun inProgress() : Boolean {
