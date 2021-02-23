@@ -1,19 +1,21 @@
+import gameboy.utils.Log
+
 class FpsCounter {
-    private var oldTime = 0L
-    var FPS = 0
+    private var startTime = 0L
+    var FPS = 0.0
         private set
-    private var framesCounter = 0
-    var enabled = false
+    private var frameCount = 0
 
     fun frameRendered() {
-        framesCounter++;
+        ++frameCount
 
         val newTime = System.nanoTime()
-        val delta = newTime - oldTime
-        if (delta > 1000000000) {
-            oldTime = newTime
-            FPS = framesCounter
-            framesCounter = 0
+        val delta = newTime - startTime
+        if (delta > 1e9) {
+            startTime = newTime
+            FPS = frameCount / (delta / 1e9)
+            frameCount = 0
+            Log.d("$FPS")
         }
     }
 }

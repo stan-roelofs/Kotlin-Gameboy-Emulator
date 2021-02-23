@@ -1,6 +1,7 @@
 package nl.stanroelofs.gameboy
 
 import GameboyLibgdx
+import GameboyThread
 import SoundOutputGdx
 import android.app.Activity
 import android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY
@@ -16,15 +17,15 @@ class GameboyAndroid(private val context: Activity) : GameboyLibgdx() {
     private lateinit var shape: ShapeRenderer
 
     override fun startgb(gb: GameBoy) {
-        if (gameboy?.running == true)
+        if (gbThread?.running == true)
             stopgb()
 
         gameboy = gb
         gb.mmu.io.sound.output = output
-        gb.mmu.io.ppu.lcd.output = this
+        gb.mmu.io.ppu.lcd.addListener(this)
         controller = Controller(gb, context)
-        gbThread = GameboyThread(gb)
-        gbThread.start()
+        gbThread = AGameboyThread(gb)
+        gbThread!!.start()
     }
 
     override fun create() {
@@ -45,7 +46,7 @@ class GameboyAndroid(private val context: Activity) : GameboyLibgdx() {
     }
 }
 
-class GameboyThread(gb: GameBoy) : Thread(gb) {
+class AGameboyThread(gb: GameBoy) : GameboyThread(gb) {
     init {
         setThreadPriority(THREAD_PRIORITY_URGENT_DISPLAY)
     }

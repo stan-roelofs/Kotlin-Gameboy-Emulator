@@ -11,7 +11,7 @@ import gameboy.memory.cartridge.Cartridge
  *
  * Implements the Runnable interface such that it can be ran in a thread
  */
-abstract class GameBoy : Runnable {
+abstract class GameBoy {
 
     companion object {
         /** The number of ticks per second the CPU is supposed to execute */
@@ -39,13 +39,6 @@ abstract class GameBoy : Runnable {
     /** Indicates whether the gameboy is a GBC */
     abstract val isGbc: Boolean
 
-    /** Indicates whether the gameboy is currently running or not */
-    var running = false
-        private set
-
-    /** Indicates whether the gameboy is paused or not */
-    var paused = false
-
     /** Resets all registers and memory addresses */
     fun reset() {
         mmu.reset()
@@ -56,25 +49,6 @@ abstract class GameBoy : Runnable {
     open fun step() {
         cpu.step()
         mmu.tick(1)
-    }
-
-    /** Toggle pause on / off */
-    fun togglePause() {
-        paused = !paused
-    }
-
-    /** Stop running */
-    fun stop() {
-        running = false
-    }
-
-    override fun run() {
-        running = true
-        while (running) {
-            if (!paused) {
-                step()
-            }
-        }
     }
 }
 

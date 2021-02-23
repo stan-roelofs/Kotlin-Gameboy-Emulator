@@ -28,7 +28,7 @@ abstract class GameboyLibgdx : ApplicationAdapter(), VSyncListener {
     var gameboy: GameBoy? = null
         protected set
 
-    protected lateinit var gbThread: Thread
+    protected var gbThread: GameboyThread? = null
     protected val cam = OrthographicCamera()
     protected val viewport = StretchViewport(width.toFloat(), height.toFloat(), cam)
     private var fpsCounter = FpsCounter()
@@ -37,19 +37,27 @@ abstract class GameboyLibgdx : ApplicationAdapter(), VSyncListener {
     private val buffer = ByteBuffer.allocateDirect(width * height * 3)
 
     open fun startgb(gb: GameBoy) {
-        if (gameboy?.running == true)
+        if (gbThread?.running == true)
             stopgb()
 
         gameboy = gb
         gb.mmu.io.sound.output = output
         gb.mmu.io.ppu.lcd.addListener(this)
-        gbThread = Thread(gameboy)
-        gbThread.start()
+        gbThread = GameboyThread(gb)
+        gbThread!!.start()
     }
 
     protected fun stopgb() {
-        gameboy?.stop()
-        gbThread.join()
+        gbThread?.running = false
+        gbThread?.join()
+    }
+
+    fun setPause(state: Boolean) {
+        gbThread?.paused = state
+    }
+
+    fun lockFps(state: Boolean) {
+        gbThread?.lockFps = state
     }
 
     override fun resize(width: Int, height: Int) {
@@ -59,7 +67,6 @@ abstract class GameboyLibgdx : ApplicationAdapter(), VSyncListener {
     override fun create() {
         Gdx.graphics.isContinuousRendering = false
 
-        fpsCounter.enabled = true
         screenTexture = Texture(width, height, Pixmap.Format.RGB888)
         batch = SpriteBatch()
         output.initialize()
@@ -92,5 +99,48 @@ abstract class GameboyLibgdx : ApplicationAdapter(), VSyncListener {
         screenTexture.dispose()
 
         stopgb()
+    }
+}
+
+open class GameboyThread(private val gb: GameBoy) : Thread(), VSyncListener {
+
+    /** Indicates whether the gameboy is currently running or not */
+    var running = false
+
+    /** Indicates whether the gameboy is paused or not */
+    var paused = false
+
+    var lockFps = true
+
+    @Volatile private var sleep = false
+    @Synchronized set
+
+    private var lastTime = 0L
+
+    /** The expected time in nanoseconds each frame should take to reach 60 FPS */
+    private val expectedFrameTime = ((1.0 / 60.0) * 1e9).toInt()
+
+    override fun run() {
+        gb.mmu.io.ppu.lcd.addListener(this)
+        running = true
+        while (running) {
+            if (!paused) {
+                if (lockFps && sleep) {
+                    sleep = false
+
+                    do {
+                        val diff = System.nanoTime() - lastTime
+                    } while (diff < expectedFrameTime)
+
+                    lastTime = System.nanoTime()
+                }
+
+                gb.step()
+            }
+        }
+    }
+
+    override fun vsync(screenBuffer: ByteArray) {
+        sleep = true
     }
 }

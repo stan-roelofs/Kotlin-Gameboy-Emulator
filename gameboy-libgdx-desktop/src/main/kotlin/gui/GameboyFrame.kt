@@ -11,10 +11,7 @@ import gameboy.utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
-import javax.swing.JFrame
-import javax.swing.JMenu
-import javax.swing.JMenuBar
-import javax.swing.JMenuItem
+import javax.swing.*
 
 class GameboyFrame : JFrame() {
 
@@ -53,11 +50,15 @@ class GameboyFrame : JFrame() {
         menuBar.add(fileMenu)
 
         val gameMenu = JMenu("Game")
+        val lockFps = JCheckBoxMenuItem("Lock FPS")
+        lockFps.state = true
+        lockFps.addActionListener { setLockFps(lockFps.state) }
+        gameMenu.add(lockFps)
         val reset = JMenuItem("Reset")
         reset.addActionListener { reset() }
         gameMenu.add(reset)
-        val pause = JMenuItem("Toggle pause")
-        pause.addActionListener { togglePause() }
+        val pause = JCheckBoxMenuItem("Pause")
+        pause.addActionListener { setPause(pause.state) }
         gameMenu.add(pause)
         val save = JMenuItem("Save")
         save.addActionListener { save() }
@@ -99,8 +100,8 @@ class GameboyFrame : JFrame() {
         vramViewer.isVisible = true
     }
 
-    private fun togglePause() {
-        gb?.togglePause()
+    private fun setPause(state: Boolean) {
+        gbapp.setPause(state)
     }
 
     private fun reset() {
@@ -139,5 +140,9 @@ class GameboyFrame : JFrame() {
                 else -> throw e
             }
         }
+    }
+
+    private fun setLockFps(state: Boolean) {
+        gbapp.lockFps(state)
     }
 }

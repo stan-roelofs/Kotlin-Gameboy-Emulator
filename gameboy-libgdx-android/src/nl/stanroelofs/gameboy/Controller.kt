@@ -141,7 +141,7 @@ class MenuButton(x: Float, y: Float, gb: GameBoy?, private val context: Activity
                             context.startActivityForResult(chooseFile, 0)
                         }
                         1 -> {
-                            gb?.togglePause()
+                            //gb?.togglePause()
                         }
                         2 -> {
                             val root = File(context.filesDir, "Saves")

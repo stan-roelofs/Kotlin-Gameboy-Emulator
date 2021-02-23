@@ -4,6 +4,7 @@ import gameboy.memory.Oam
 import gameboy.memory.Register
 import gameboy.utils.getBit
 
+// TODO: ugly code, fix this class
 abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, protected val wy: Register, protected val scy: Register,
                        protected val scx: Register, protected val ly: Register, protected val oam: Oam, protected val vram: Vram) {
 
