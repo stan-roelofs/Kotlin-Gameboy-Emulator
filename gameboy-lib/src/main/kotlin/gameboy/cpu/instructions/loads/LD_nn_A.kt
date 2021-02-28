@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.loads
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.setSecondByte
 
 class LD_nn_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
@@ -30,7 +29,7 @@ class LD_nn_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
             12 -> {
                 mmu.writeByte(address, registers.A)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

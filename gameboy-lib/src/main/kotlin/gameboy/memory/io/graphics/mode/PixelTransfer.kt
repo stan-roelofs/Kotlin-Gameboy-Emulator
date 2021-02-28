@@ -18,6 +18,7 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
     private var droppedPixels = 0
     // Did we start rendering the window?
     private var window = false
+
     fun start(sprites: Array<SpritePosition?>) {
         this.sprites = sprites
 
@@ -58,8 +59,8 @@ class PixelTransfer(private val renderer: PixelRenderer, private val fetcher: Fe
                 return
 
             for (i in sprites.indices) {
-                if (sprites[i]?.x == x + 8) { // TODO: handle sprite positions < 8
-                    fetcher.startFetchingSprite(sprites[i]!!)
+                if (sprites[i] != null && sprites[i]!!.x <= x + 8) { // TODO: handle sprite positions < 8
+                    fetcher.startFetchingSprite(sprites[i]!!, (x + 8) - sprites[i]!!.x)
                     sprites[i] = null
                     return
                 }

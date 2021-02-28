@@ -4,7 +4,6 @@ import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class LD_r1_r2(registers: Registers, mmu: Mmu, private val register1: Int, private val register2: Int) : Instruction(registers, mmu) {
 
@@ -35,7 +34,7 @@ class LD_r1_r2(registers: Registers, mmu: Mmu, private val register1: Int, priva
                     else -> throw Exception("Invalid register: $register1")
                 }
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

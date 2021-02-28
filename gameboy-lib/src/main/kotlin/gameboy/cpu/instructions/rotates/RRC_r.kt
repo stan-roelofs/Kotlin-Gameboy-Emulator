@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.rotates
 import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class RRC_r(registers: Registers, mmu: Mmu, private val register: Int) : RRC(registers, mmu) {
 
@@ -47,7 +46,7 @@ class RRC_r(registers: Registers, mmu: Mmu, private val register: Int) : RRC(reg
                     else -> throw Exception("Invalid register: $register")
                 }
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.miscellaneous
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class DAA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
@@ -34,7 +33,7 @@ class DAA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
                 registers.setHFlag(false)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

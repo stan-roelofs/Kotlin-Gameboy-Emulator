@@ -6,6 +6,8 @@ plugins {
 dependencies {
     // junit for testing
     testImplementation 'junit:junit:4.11'
+    api files('libs/klog-1.0.jar')
+
 }
 
 repositories {

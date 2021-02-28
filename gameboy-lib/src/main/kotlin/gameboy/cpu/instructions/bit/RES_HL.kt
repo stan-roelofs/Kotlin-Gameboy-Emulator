@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.bit
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.clearBit
 
 class RES_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instruction(registers, mmu) {
@@ -31,7 +30,7 @@ class RES_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instructi
                 value = clearBit(value, index)
                 mmu.writeByte(registers.getHL(), value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

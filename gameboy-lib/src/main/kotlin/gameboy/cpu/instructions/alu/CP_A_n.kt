@@ -2,7 +2,6 @@ package gameboy.cpu.instructions.alu
 
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class CP_A_n(registers: Registers, mmu: Mmu) : CP(registers, mmu) {
 
@@ -17,7 +16,7 @@ class CP_A_n(registers: Registers, mmu: Mmu) : CP(registers, mmu) {
                 value = getImmediate()
                 cp(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

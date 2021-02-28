@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.calls
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.getFirstByte
 import gameboy.utils.getSecondByte
 import gameboy.utils.setSecondByte
@@ -40,7 +39,7 @@ class CALL_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 pushToStack(registers.PC.getFirstByte())
                 registers.PC = address
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

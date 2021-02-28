@@ -4,7 +4,6 @@ import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.getFirstByte
 import gameboy.utils.getSecondByte
 
@@ -48,7 +47,7 @@ class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instr
             12 -> {
                 pushToStack(value.getFirstByte())
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

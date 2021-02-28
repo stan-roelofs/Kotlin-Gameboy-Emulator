@@ -2,7 +2,6 @@ package gameboy.cpu.instructions.alu
 
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class DEC_HL(registers: Registers, mmu: Mmu) : DEC(registers, mmu) {
 
@@ -32,7 +31,7 @@ class DEC_HL(registers: Registers, mmu: Mmu) : DEC(registers, mmu) {
 
                 super.dec(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

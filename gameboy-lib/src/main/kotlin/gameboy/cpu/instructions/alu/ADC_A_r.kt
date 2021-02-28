@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.alu
 import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class ADC_A_r(registers: Registers, mmu: Mmu, private val register: Int) : ADC(registers, mmu) {
 
@@ -20,12 +19,13 @@ class ADC_A_r(registers: Registers, mmu: Mmu, private val register: Int) : ADC(r
                     RegisterID.E.ordinal -> registers.E
                     RegisterID.H.ordinal -> registers.H
                     RegisterID.L.ordinal -> registers.L
-                    else -> throw Exception("Invalid register: $register")
+                    else -> throw IllegalArgumentException("Invalid register: $register")
                 }
 
                 super.adc(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
+
         }
 
         currentCycle += 4

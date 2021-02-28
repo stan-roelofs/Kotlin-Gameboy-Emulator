@@ -1,13 +1,13 @@
 package gui
 
 import GameboyDesktop
+import Logging
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import gameboy.GameBoy
 import gameboy.GameBoyCGB
 import gameboy.GameBoyDMG
 import gameboy.memory.cartridge.Cartridge
-import gameboy.utils.Log
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
@@ -20,6 +20,7 @@ class GameboyFrame : JFrame() {
     private val romChooser: RomChooser
     private val optionsDialog = OptionsDialog()
     private val vramViewer = VramViewer()
+    private val logger = Logging.getLogger(GameboyFrame::class.java.name)
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -117,7 +118,7 @@ class GameboyFrame : JFrame() {
             gb!!.mmu.cartridge.saveRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
-                is IllegalStateException -> Log.e("Failed to save RAM: $e")
+                is IllegalStateException -> logger.e("Failed to save RAM: $e")
                 else -> throw e
             }
         }
@@ -136,7 +137,7 @@ class GameboyFrame : JFrame() {
             gb!!.mmu.cartridge.loadRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
-                is IllegalStateException, is IllegalArgumentException -> Log.e("Failed to load RAM: $e")
+                is IllegalStateException, is IllegalArgumentException -> logger.e("Failed to load RAM: $e")
                 else -> throw e
             }
         }

@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.jumps
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class JR_cc_n(registers: Registers, mmu: Mmu, private val flag: Int, private val state: Boolean) : Instruction(registers, mmu) {
 
@@ -38,7 +37,7 @@ class JR_cc_n(registers: Registers, mmu: Mmu, private val flag: Int, private val
                     registers.PC += value
                 }
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

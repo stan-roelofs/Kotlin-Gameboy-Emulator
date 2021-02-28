@@ -1,6 +1,5 @@
 package gui
 
-import gameboy.utils.Log
 import java.awt.Window
 import java.io.File
 import java.nio.file.Files
@@ -51,7 +50,6 @@ class RomChooser {
                     return file
                 }
                 else -> {
-                    Log.e("Unknown file type, choose a .gb file or a .zip file")
                 }
             }
         }

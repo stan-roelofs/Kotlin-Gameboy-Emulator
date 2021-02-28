@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.alu
 import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class ADD_HL_rr(registers: Registers, mmu: Mmu, private val register: Int) : ADD(registers, mmu) {
 
@@ -23,7 +22,7 @@ class ADD_HL_rr(registers: Registers, mmu: Mmu, private val register: Int) : ADD
                 }
                 super.add16HL(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

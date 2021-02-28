@@ -2,7 +2,6 @@ package gameboy.cpu.instructions.alu
 
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class ADD_SP_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
 
@@ -21,7 +20,7 @@ class ADD_SP_n(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
             12 -> {
 
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

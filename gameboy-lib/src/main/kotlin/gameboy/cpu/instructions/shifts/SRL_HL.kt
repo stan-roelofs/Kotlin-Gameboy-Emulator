@@ -2,7 +2,6 @@ package gameboy.cpu.instructions.shifts
 
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class SRL_HL(registers: Registers, mmu: Mmu) : SRL(registers, mmu) {
 
@@ -29,7 +28,7 @@ class SRL_HL(registers: Registers, mmu: Mmu) : SRL(registers, mmu) {
             12 -> {
                 mmu.writeByte(address, srl(value))
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

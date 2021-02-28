@@ -2,7 +2,6 @@ package gameboy.cpu.instructions.alu
 
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class XOR_A_n(registers: Registers, mmu: Mmu) : XOR(registers, mmu) {
 
@@ -16,7 +15,7 @@ class XOR_A_n(registers: Registers, mmu: Mmu) : XOR(registers, mmu) {
                 value = getImmediate()
                 xor(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

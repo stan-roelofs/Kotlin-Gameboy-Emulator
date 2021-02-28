@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.restarts
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 import gameboy.utils.getFirstByte
 import gameboy.utils.getSecondByte
 
@@ -26,7 +25,7 @@ class RST_n(registers: Registers, mmu: Mmu, private val address: Int) : Instruct
                 pushToStack(registers.PC.getFirstByte())
                 registers.PC = address
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

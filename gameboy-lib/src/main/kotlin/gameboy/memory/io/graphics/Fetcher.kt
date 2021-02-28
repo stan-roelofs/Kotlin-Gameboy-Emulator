@@ -1,5 +1,6 @@
 package gameboy.memory.io.graphics
 
+import Logging
 import gameboy.memory.Oam
 import gameboy.memory.Register
 import gameboy.utils.getBit
@@ -43,6 +44,8 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
             SpriteState.READ_SPRITE_DATA_1
     )
 
+    protected val logger = Logging.getLogger(Fetcher::class.java.name)
+
     val bgFifo = Fifo<Pixel>(16)
     val oamFifo = Fifo<Pixel>(16)
 
@@ -78,6 +81,7 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
     protected var spriteTile = 0
     protected var spriteLine = 0
     protected var spriteYFlip = false
+    protected var spriteX = 0
 
     fun reset() {
         spriteState = 0
@@ -96,6 +100,7 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
         dropPixels = true
         bgFifo.clear()
         oamFifo.clear()
+        spriteX = 0
     }
     // State machine
     abstract fun readTileNumber()
@@ -162,8 +167,9 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
         bgFifo.clear()
     }
 
-    fun startFetchingSprite(sprite: SpritePosition) {
+    fun startFetchingSprite(sprite: SpritePosition, offset: Int) {
         this.sprite = sprite
+        spriteX = offset
         spriteState = 0
         spriteRequested = true
     }
@@ -281,17 +287,19 @@ class FetcherCGB(lcdc: Lcdc, wx: Register, wy: Register, scy: Register,
         }
 
         // Overlay the pixels onto the ones already in the oam fifo
-        for (i in 0 until 8) {
+        var j = 0
+        for (i in spriteX until 8) {
             val lowerBit = if (xFlip) (spriteData and (1 shl i)) shr i else (spriteData and (1 shl (7 - i))) shr (7 - i)
             val upperBit = if (xFlip) (spriteData2 and (1 shl i)) shr i else (spriteData2 and (1 shl (7 - i))) shr (7 - i)
             val color = lowerBit or (upperBit shl 1)
 
-            val pixel = oamFifo.peek(i) as PixelCGB
+            val pixel = oamFifo.peek(j) as PixelCGB
             if (pixel.color == 0) {
                 pixel.color = color
                 pixel.palette = flags and 0b111
                 pixel.priority = flags.getBit(7)
             }
+            ++j
         }
     }
 }
@@ -387,7 +395,7 @@ class FetcherDMG (lcdc: Lcdc, wx: Register, wy: Register, scy: Register, scx: Re
         }
 
         // Overlay the pixels onto the ones already in the oam fifo
-        for (i in 0 until 8) {
+        for (i in spriteX until 8) {
             val lowerBit = if (xFlip) (spriteData and (1 shl i)) shr i else (spriteData and (1 shl (7 - i))) shr (7 - i)
             val upperBit = if (xFlip) (spriteData2 and (1 shl i)) shr i else (spriteData2 and (1 shl (7 - i))) shr (7 - i)
             val color = lowerBit or (upperBit shl 1)

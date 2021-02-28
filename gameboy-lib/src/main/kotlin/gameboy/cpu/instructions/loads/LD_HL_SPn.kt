@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.loads
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class LD_HL_SPn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
@@ -35,7 +34,7 @@ class LD_HL_SPn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 val hFlag = (registers.SP and 0xF) + (value and 0xF) > 0xF
                 registers.setHFlag(hFlag)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

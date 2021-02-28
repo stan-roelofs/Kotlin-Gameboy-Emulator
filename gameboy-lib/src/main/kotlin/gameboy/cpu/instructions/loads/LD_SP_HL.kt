@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.loads
 import gameboy.cpu.Registers
 import gameboy.cpu.instructions.Instruction
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class LD_SP_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
@@ -18,7 +17,7 @@ class LD_SP_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 val value = registers.getHL()
                 registers.SP = value
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.alu
 import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class OR_A_r(registers: Registers, mmu: Mmu, private val register: Int) : OR(registers, mmu) {
 
@@ -25,7 +24,7 @@ class OR_A_r(registers: Registers, mmu: Mmu, private val register: Int) : OR(reg
 
                 super.or(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

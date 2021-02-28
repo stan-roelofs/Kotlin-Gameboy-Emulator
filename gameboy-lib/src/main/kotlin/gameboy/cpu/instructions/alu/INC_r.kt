@@ -3,7 +3,6 @@ package gameboy.cpu.instructions.alu
 import gameboy.cpu.RegisterID
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class INC_r(registers: Registers, mmu: Mmu, private val register: Int) : INC(registers, mmu) {
 
@@ -56,7 +55,7 @@ class INC_r(registers: Registers, mmu: Mmu, private val register: Int) : INC(reg
                 registers.setZFlag(zFlag)
                 super.inc(value)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4

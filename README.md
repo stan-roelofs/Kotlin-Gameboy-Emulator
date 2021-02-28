@@ -23,8 +23,8 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 
 ## Features
 - Runs on Windows, Linux and Mac.
-- Video RAM debugger which can be used to view tiles that are currently in the video RAM.
-- OAM debugger which can be used to view the sprites and their properties that are currently in the OAM.
+- Video RAM viewer which can be used to view tiles that are currently in the video RAM.
+- OAM viewer which can be used to view the sprites and their properties.
 
 ## Notes
 This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.

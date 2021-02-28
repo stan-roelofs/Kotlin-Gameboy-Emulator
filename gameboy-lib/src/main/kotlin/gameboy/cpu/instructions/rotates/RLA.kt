@@ -2,7 +2,6 @@ package gameboy.cpu.instructions.rotates
 
 import gameboy.cpu.Registers
 import gameboy.memory.Mmu
-import gameboy.utils.Log
 
 class RLA(registers: Registers, mmu: Mmu) : RL(registers, mmu) {
 
@@ -15,7 +14,7 @@ class RLA(registers: Registers, mmu: Mmu) : RL(registers, mmu) {
                 registers.A = rl(value)
                 registers.setZFlag(false)
             }
-            else -> Log.e("Invalid state")
+            else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }
 
         currentCycle += 4
