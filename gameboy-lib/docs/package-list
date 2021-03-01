@@ -1,0 +1,30 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:nl.stanroelofs.gameboy.cpu/Cpu.State///PointingToDeclaration/nl/stanroelofs/gameboy/cpu/Cpu.State.html
+$dokka.location:nl.stanroelofs.gameboy.memory.io.graphics.mode/OamSearch.State///PointingToDeclaration/nl/stanroelofs/gameboy/memory/io/graphics/mode/OamSearch.State.html
+$dokka.location:nl.stanroelofs.gameboy.memory.io.graphics/Ppu.ModeEnum///PointingToDeclaration/nl/stanroelofs/gameboy/memory/io/graphics/Ppu.ModeEnum.html
+$dokka.location:nl.stanroelofs.gameboy.memory.io/Hdma.State///PointingToDeclaration/nl/stanroelofs/gameboy/memory/io/Hdma.State.html
+$dokka.location:nl.stanroelofs.gameboy.memory.io/Joypad.JoypadKey///PointingToDeclaration/nl/stanroelofs/gameboy/memory/io/Joypad.JoypadKey.html
+$dokka.location:nl.stanroelofs.gameboy.memory/Mmu.Companion///PointingToDeclaration/nl/stanroelofs/gameboy/memory/Mmu.Companion.html
+$dokka.location:nl.stanroelofs.gameboy/GameBoy.Companion///PointingToDeclaration/nl/stanroelofs/gameboy/GameBoy.Companion.html
+nl.stanroelofs.gameboy
+nl.stanroelofs.gameboy.cpu
+nl.stanroelofs.gameboy.cpu.instructions
+nl.stanroelofs.gameboy.cpu.instructions.alu
+nl.stanroelofs.gameboy.cpu.instructions.bit
+nl.stanroelofs.gameboy.cpu.instructions.calls
+nl.stanroelofs.gameboy.cpu.instructions.jumps
+nl.stanroelofs.gameboy.cpu.instructions.loads
+nl.stanroelofs.gameboy.cpu.instructions.miscellaneous
+nl.stanroelofs.gameboy.cpu.instructions.restarts
+nl.stanroelofs.gameboy.cpu.instructions.returns
+nl.stanroelofs.gameboy.cpu.instructions.rotates
+nl.stanroelofs.gameboy.cpu.instructions.shifts
+nl.stanroelofs.gameboy.memory
+nl.stanroelofs.gameboy.memory.cartridge
+nl.stanroelofs.gameboy.memory.io
+nl.stanroelofs.gameboy.memory.io.graphics
+nl.stanroelofs.gameboy.memory.io.graphics.mode
+nl.stanroelofs.gameboy.memory.io.sound
+nl.stanroelofs.gameboy.utils
+
