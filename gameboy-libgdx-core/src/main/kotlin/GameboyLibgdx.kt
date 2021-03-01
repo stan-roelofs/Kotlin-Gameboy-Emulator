@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.StretchViewport
-import gameboy.GameBoy
-import gameboy.memory.io.graphics.VSyncListener
-import gameboy.memory.io.sound.SoundOutput
+import nl.stanroelofs.gameboy.GameBoy
+import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
+import nl.stanroelofs.gameboy.memory.io.sound.SoundOutput
 import java.nio.ByteBuffer
 
 /** Base libgdx gameboy class

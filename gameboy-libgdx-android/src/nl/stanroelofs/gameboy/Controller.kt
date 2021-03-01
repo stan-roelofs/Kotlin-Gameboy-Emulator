@@ -12,9 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.Viewport
-import gameboy.GameBoy
-import gameboy.memory.io.Joypad
-import gameboy.utils.Log
+import nl.stanroelofs.gameboy.memory.io.Joypad
 import java.io.File
 import java.io.FileNotFoundException
 import javax.microedition.khronos.opengles.GL10
@@ -147,7 +145,7 @@ class MenuButton(x: Float, y: Float, gb: GameBoy?, private val context: Activity
                             val root = File(context.filesDir, "Saves")
                             if (!root.exists()) {
                                 if (!root.mkdirs())
-                                    Log.e("Could not create directory")
+                                    println("Could not create directory")
                             }
 
                             if (root.exists()) {

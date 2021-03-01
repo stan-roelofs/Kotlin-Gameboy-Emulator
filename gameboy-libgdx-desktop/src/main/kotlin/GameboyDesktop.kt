@@ -1,8 +1,8 @@
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
-import gameboy.memory.io.Joypad
-import gameboy.memory.io.sound.SoundOutput
+import nl.stanroelofs.gameboy.memory.io.Joypad
+import nl.stanroelofs.gameboy.memory.io.sound.SoundOutput
 
 class GameboyDesktop : GameboyLibgdx() {
 

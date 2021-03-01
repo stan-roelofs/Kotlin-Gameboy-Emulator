@@ -1,6 +1,6 @@
 package gui
 
-import gameboy.GameBoy
+import nl.stanroelofs.gameboy.GameBoy
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.lang.Integer.max

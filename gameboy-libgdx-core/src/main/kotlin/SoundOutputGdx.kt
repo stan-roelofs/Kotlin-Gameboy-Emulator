@@ -1,8 +1,8 @@
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.AudioDevice
 import com.badlogic.gdx.utils.GdxRuntimeException
-import gameboy.GameBoy
-import gameboy.memory.io.sound.SoundOutput
+import nl.stanroelofs.gameboy.GameBoy
+import nl.stanroelofs.gameboy.memory.io.sound.SoundOutput
 
 class SoundOutputGdx : SoundOutput {
 

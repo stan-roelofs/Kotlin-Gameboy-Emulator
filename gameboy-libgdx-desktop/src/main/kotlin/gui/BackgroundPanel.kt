@@ -1,8 +1,8 @@
 package gui
 
-import gameboy.GameBoy
-import gameboy.memory.io.graphics.VSyncListener
-import gameboy.utils.getBit
+import nl.stanroelofs.gameboy.GameBoy
+import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
+import nl.stanroelofs.gameboy.utils.getBit
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics

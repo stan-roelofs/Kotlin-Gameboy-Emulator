@@ -1,28 +1,30 @@
 package blargg
 
+import Logging
 import MAX_ITERATIONS
-import gameboy.GameBoy
-import gameboy.GameBoyDMG
-import gameboy.memory.cartridge.Cartridge
-import gameboy.memory.io.graphics.VSyncListener
-import gameboy.utils.Log
 import getScreenHash
 import makeScreenshot
 import mooneye.MooneyeTest
+import nl.stanroelofs.gameboy.GameBoy
+import nl.stanroelofs.gameboy.GameBoyDMG
+import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
+import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
 import org.junit.Assert
 import java.io.File
 import java.net.URI
 
 abstract class BlarggTestSerial : BlarggTest {
 
+    private val logger = Logging.getLogger(BlarggTestSerial::class.java.name)
+
     override fun runBlarggTest(fileName: String) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
         val romFile = File(url)
         val gb = GameBoyDMG(Cartridge(romFile))
 
-        Log.i("")
-        Log.i("Running Blargg Test: $fileName")
-        Log.i("Using serial output to validate")
+        logger.i("")
+        logger.i("Running Blargg Test: $fileName")
+        logger.i("Using serial output to validate")
 
         var output = ""
         for (i in 0..MAX_ITERATIONS) {
@@ -33,7 +35,7 @@ abstract class BlarggTestSerial : BlarggTest {
                 gb.mmu.io.serial.testOutput = false
             }
         }
-        Log.i("Finished test with output: $output")
+        logger.i("Finished test with output: $output")
 
         val result = output.toLowerCase().contains("passed")
         Assert.assertEquals(true, result)
@@ -43,20 +45,22 @@ abstract class BlarggTestSerial : BlarggTest {
 
 abstract class BlarggTestMemory : BlarggTest {
 
+    private val logger = Logging.getLogger(BlarggTestMemory::class.java.name)
+
     override fun runBlarggTest(fileName: String) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
         val romFile = File(url)
         val gb = GameBoyDMG(Cartridge(romFile))
 
-        Log.i("")
-        Log.i("Running Blargg Test: $fileName")
+        logger.i("")
+        logger.i("Running Blargg Test: $fileName")
 
          /*
          * 0xA000 holds the test status code. While the test is running it is set to 0x80.
          * 0xA001-0xA003 indicate that the data is actually from a test and not random and should equal 0xDE, 0xB0, 0x61
          * Text output is appended to 0xA004, terminated by 0
          */
-        Log.i("Using memory at A000 to validate")
+        logger.i("Using memory at A000 to validate")
 
         var i = 0
         var status = false
@@ -70,10 +74,10 @@ abstract class BlarggTestMemory : BlarggTest {
         }
 
         if (i == MAX_ITERATIONS) {
-            Log.w("Max iterations reached")
+            logger.w("Max iterations reached")
         }
 
-        Log.i("Test finished after $i iterations")
+        logger.i("Test finished after $i iterations")
 
         Assert.assertEquals(0xDE, gb.mmu.readByte(0xA001))
         Assert.assertEquals(0xB0, gb.mmu.readByte(0xA002))
@@ -89,7 +93,7 @@ abstract class BlarggTestMemory : BlarggTest {
             currentAddress++
         }
 
-        Log.i("Finished test with status code: $statusCode and output: $output")
+        logger.i("Finished test with status code: $statusCode and output: $output")
 
         Assert.assertEquals(0, statusCode)
     }
@@ -97,23 +101,24 @@ abstract class BlarggTestMemory : BlarggTest {
 
 abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
 
+    private val logger = Logging.getLogger(BlarggTestScreenhash::class.java.name)
     private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
 
     override fun runBlarggTest(fileName: String) {
-        Log.i("")
-        Log.i("Running Blargg Test: $fileName")
-        Log.i("Using screen hash to validate")
+        logger.i("")
+        logger.i("Running Blargg Test: $fileName")
+        logger.i("Using screen hash to validate")
 
         val inputHashURI = MooneyeTest::class.java.classLoader.getResource("testhashes/blargg/$path/$fileName.txt")?.toURI()
         var inputHash = 0
 
         if (inputHashURI == null)
-            Log.e("No input hash, test will fail regardless of output")
+            logger.e("No input hash, test will fail regardless of output")
         else {
             val inputFile = File(inputHashURI)
             Assert.assertTrue(inputFile.exists())
             inputHash = inputFile.readText().toInt()
-            Log.i("Provided hash: $inputHash")
+            logger.i("Provided hash: $inputHash")
         }
 
         val romURI = MooneyeTest::class.java.classLoader.getResource("blargg/$path/$fileName")?.toURI()
@@ -143,7 +148,7 @@ abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
         makeScreenshot(testOutputScreenshot, lastBuffer)
         testOutputHash.writeText("$hash")
 
-        Log.i("Hash: $hash")
+        logger.i("Hash: $hash")
         Assert.assertNotNull(inputHashURI)
         Assert.assertEquals(inputHash, hash)
     }
@@ -155,5 +160,6 @@ abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
 
 interface BlarggTest {
     val path: String
+
     fun runBlarggTest(fileName: String)
 }

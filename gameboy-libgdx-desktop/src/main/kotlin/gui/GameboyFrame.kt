@@ -4,10 +4,10 @@ import GameboyDesktop
 import Logging
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-import gameboy.GameBoy
-import gameboy.GameBoyCGB
-import gameboy.GameBoyDMG
-import gameboy.memory.cartridge.Cartridge
+import nl.stanroelofs.gameboy.GameBoy
+import nl.stanroelofs.gameboy.GameBoyCGB
+import nl.stanroelofs.gameboy.GameBoyDMG
+import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File

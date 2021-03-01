@@ -1,9 +1,9 @@
 package gui
 
-import gameboy.GameBoy
-import gameboy.memory.io.graphics.PpuCGB
-import gameboy.memory.io.graphics.VSyncListener
-import gameboy.utils.getBit
+import nl.stanroelofs.gameboy.GameBoy
+import nl.stanroelofs.gameboy.memory.io.graphics.PpuCGB
+import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
+import nl.stanroelofs.gameboy.utils.getBit
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
@@ -95,7 +95,7 @@ class SpritePanel(private val index: Int) : JPanel() {
                 val colorValue = bit1 or (bit2 shl 1)
 
                 val colorRgb = if (colorValue == 0) {
-                    gameboy.memory.io.graphics.Color(255, 255, 255)
+                    nl.stanroelofs.gameboy.memory.io.graphics.Color(255, 255, 255)
                 } else if (gb!!.isGbc) {
                     val palette = flags and 0b111
                     (gb!!.mmu.io.ppu as PpuCGB).objPalettes[palette].getColor(colorValue)

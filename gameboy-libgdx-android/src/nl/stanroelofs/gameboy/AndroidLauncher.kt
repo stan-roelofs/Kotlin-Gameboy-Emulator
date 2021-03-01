@@ -7,9 +7,7 @@ import android.os.Bundle
 import androidx.core.app.ActivityCompat.requestPermissions
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
-import gameboy.GameBoyCGB
-import gameboy.GameBoyDMG
-import gameboy.memory.cartridge.Cartridge
+import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
 import java.io.File
 
 class AndroidLauncher : AndroidApplication() {

@@ -1,4 +1,4 @@
-import gameboy.utils.*
+import nl.stanroelofs.gameboy.utils.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

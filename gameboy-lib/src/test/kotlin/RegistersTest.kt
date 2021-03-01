@@ -1,4 +1,4 @@
-import gameboy.cpu.RegistersDMG
+import nl.stanroelofs.gameboy.cpu.RegistersDMG
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

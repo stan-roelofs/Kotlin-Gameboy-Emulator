@@ -1,4 +1,4 @@
-import gameboy.memory.cartridge.MBC1
+import nl.stanroelofs.gameboy.memory.cartridge.MBC1
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
@@ -35,7 +35,7 @@ internal class CartridgeTest {
         cart.saveRam(file)
 
         cart.reset()
-        for (i in 0 until cart.ram!!.size) {
+        for (i in cart.ram!!.indices) {
             for (j in i until cart.ram!![i].size) {
                 assertEquals(cart.ram!![i][j], 0)
             }

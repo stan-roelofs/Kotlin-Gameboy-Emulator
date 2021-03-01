@@ -7,8 +7,7 @@ import android.app.Activity
 import android.os.Process.THREAD_PRIORITY_URGENT_DISPLAY
 import android.os.Process.setThreadPriority
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
-import gameboy.GameBoy
-import gameboy.memory.io.sound.SoundOutput
+import nl.stanroelofs.gameboy.memory.io.sound.SoundOutput
 
 class GameboyAndroid(private val context: Activity) : GameboyLibgdx() {
 

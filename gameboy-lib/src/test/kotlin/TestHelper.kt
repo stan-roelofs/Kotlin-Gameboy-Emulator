@@ -1,4 +1,4 @@
-import gameboy.GameBoy
+import nl.stanroelofs.gameboy.GameBoy
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
