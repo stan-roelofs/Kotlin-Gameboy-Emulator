@@ -30,8 +30,8 @@ See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.
 
 ## Preview
-![alt text](preview.gif)
+![alt text](res/preview.gif)
 
-![alt text](preview2.gif)
+![alt text](res/preview2.gif)
 
-![alt text](preview3.gif)
+![alt text](res/preview3.gif)
