@@ -20,8 +20,6 @@ plugins {
 }
 
 subprojects {
-    version = '1.0'
-
     ext {
         appName = "Kotlin Gameboy Emulator"
         gdxVersion = '1.9.10'
@@ -36,6 +34,8 @@ subprojects {
             google()
             maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
             maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+            maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+            maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
         }
 
         dependencies {

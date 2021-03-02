@@ -1,19 +1,80 @@
 plugins {
     id 'java-library'
     id 'org.jetbrains.dokka' version '1.4.10.2'
+    id 'maven-publish'
+    id 'signing'
 }
+
+group = "nl.stanroelofs"
+archivesBaseName = "gameboy-lib"
+version = "1.0.0-SNAPSHOT"
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 dependencies {
     // junit for testing
     testImplementation 'junit:junit:4.11'
     api files('libs/klog-1.0.jar')
-
 }
 
-repositories {
-    jcenter()
-}
-
+// Jar files
 dokkaJavadoc {
-    outputDirectory.set(file("docs"))
+    outputDirectory = javadoc.destinationDir
+    inputs.dir 'src/main/kotlin'
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+// Publishing
+publishing {
+    repositories {
+        maven {
+            def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releaseRepo : snapshotRepo
+            credentials {
+                username = project.hasProperty('nexusUsername') ? nexusUsername : "Unknown user"
+                password = project.hasProperty('nexusPassword') ? nexusPassword : "Unknown password"
+            }
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Gameboy library'
+                description = 'A gameboy library'
+                url = 'https://github.com/stan-roelofs/Kotlin-Gameboy-Emulator/'
+                from components.java
+                licenses {
+                    license {
+                        name = 'GPL-v3.0'
+                        url = 'http://www.gnu.org/licenses/gpl-3.0.txt'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com/stan-roelofs/Kotlin-Gameboy-Emulator.git'
+                    developerConnection = 'scm:git:git@github.com/stan-roelofs/Kotlin-Gameboy-Emulator.git'
+                    url = 'https://github.com/stan-roelofs/Kotlin-Gameboy-Emulator/'
+                }
+                developers {
+                    developer {
+                        id = 'stan-roelofs'
+                        name ='Stan Roelofs'
+                        email = 'stan@stanroelofs.nl'
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Signing artifacts
+signing {
+    sign publishing.publications.mavenJava
+}
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
 }
