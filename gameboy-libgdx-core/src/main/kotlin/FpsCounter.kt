@@ -1,3 +1,5 @@
+import nl.stanroelofs.Logging
+
 class FpsCounter {
     private var startTime = 0L
     var FPS = 0.0

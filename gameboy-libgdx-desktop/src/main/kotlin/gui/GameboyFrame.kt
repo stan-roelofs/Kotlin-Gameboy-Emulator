@@ -1,9 +1,9 @@
 package gui
 
 import GameboyDesktop
-import Logging
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
+import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG

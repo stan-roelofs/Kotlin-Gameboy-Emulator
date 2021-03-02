@@ -1,6 +1,6 @@
 package nl.stanroelofs.gameboy.memory.cartridge
 
-import Logging
+import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.memory.Memory
 import java.io.File
 import java.nio.file.Files

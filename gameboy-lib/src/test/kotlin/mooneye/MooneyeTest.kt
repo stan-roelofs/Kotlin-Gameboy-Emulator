@@ -1,8 +1,8 @@
 package mooneye
 
-import Logging
 import getScreenHash
 import makeScreenshot
+import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
@@ -14,7 +14,7 @@ import java.io.File
 abstract class MooneyeTest : VSyncListener {
 
     companion object {
-        val DEBUG_INSTRUCTION = 0x40
+        const val DEBUG_INSTRUCTION = 0x40
     }
 
     enum class Type {

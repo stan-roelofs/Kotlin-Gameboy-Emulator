@@ -1,6 +1,6 @@
 package nl.stanroelofs.gameboy.memory.io.graphics
 
-import Logging
+import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.memory.Oam
 import nl.stanroelofs.gameboy.memory.Register
 import nl.stanroelofs.gameboy.utils.getBit

@@ -1,10 +1,10 @@
 package blargg
 
-import Logging
 import MAX_ITERATIONS
 import getScreenHash
 import makeScreenshot
 import mooneye.MooneyeTest
+import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyDMG
 import nl.stanroelofs.gameboy.memory.cartridge.Cartridge

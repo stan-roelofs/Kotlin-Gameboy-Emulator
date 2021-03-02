@@ -7,19 +7,22 @@ plugins {
 
 group = "nl.stanroelofs"
 archivesBaseName = "gameboy-lib"
-version = "1.0.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 dependencies {
     // junit for testing
-    testImplementation 'junit:junit:4.11'
-    api files('libs/klog-1.0.jar')
+    testImplementation 'junit:junit:4.12'
+    api "nl.stanroelofs:minilog:1.0.1-SNAPSHOT"
 }
 
 // Jar files
 dokkaJavadoc {
     outputDirectory = javadoc.destinationDir
     inputs.dir 'src/main/kotlin'
+    doFirst {
+        file(outputDirectory).deleteRecursively()
+    }
 }
 
 java {
