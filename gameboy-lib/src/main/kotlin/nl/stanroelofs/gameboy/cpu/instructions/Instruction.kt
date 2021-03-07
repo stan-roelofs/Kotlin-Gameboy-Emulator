@@ -30,7 +30,7 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
 
     protected fun getWordImmediate(): Int {
         var value = getImmediate()
-        value = setSecondByte(value, getImmediate())
+        value = value.setSecondByte(getImmediate())
 
         return value
     }
@@ -53,7 +53,7 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
 
     protected fun popWordFromStack(): Int {
         var value = popFromStack()
-        value = setSecondByte(value, popFromStack())
+        value = value.setSecondByte(popFromStack())
         return value
     }
 

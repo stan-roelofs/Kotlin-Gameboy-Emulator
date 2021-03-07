@@ -8,12 +8,12 @@ fun Int.getSecondByte(): Int {
     return (this shr 8)
 }
 
-fun setSecondByte(num: Int, value: Int): Int {
-    return ((value and 0xff) shl 8) or (num and 0xff)
+fun Int.setSecondByte(value: Int): Int {
+    return ((value and 0xff) shl 8) or (this and 0xff)
 }
 
-fun setFirstByte(num: Int, value: Int): Int {
-    return (num and 0xff00) or (value and 0xff)
+fun Int.setFirstByte(value: Int): Int {
+    return (this and 0xff00) or (value and 0xff)
 }
 
 fun Int.getBit(pos: Int): Boolean {

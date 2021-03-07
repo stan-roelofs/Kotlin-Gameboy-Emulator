@@ -25,7 +25,7 @@ class POP_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instru
                 value = popFromStack()
             }
             8 -> {
-                value = setSecondByte(value, popFromStack())
+                value = value.setSecondByte(popFromStack())
 
                 when (register) {
                     RegisterID.AF.ordinal -> registers.setAF(value)

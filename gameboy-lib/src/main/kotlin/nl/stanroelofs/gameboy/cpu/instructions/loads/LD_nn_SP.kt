@@ -26,7 +26,7 @@ class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 address = getImmediate()
             }
             8 -> {
-                address = setSecondByte(address, getImmediate())
+                address = address.setSecondByte(getImmediate())
             }
             12 -> {
                 mmu.writeByte(address, registers.SP.getFirstByte())

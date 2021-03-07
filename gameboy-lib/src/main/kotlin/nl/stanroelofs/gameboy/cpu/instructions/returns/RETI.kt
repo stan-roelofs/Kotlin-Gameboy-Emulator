@@ -24,7 +24,7 @@ class RETI(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 value = popFromStack()
             }
             8 -> {
-                value = setSecondByte(value, popFromStack())
+                value = value.setSecondByte(popFromStack())
             }
             12 -> {
                 registers.PC = value

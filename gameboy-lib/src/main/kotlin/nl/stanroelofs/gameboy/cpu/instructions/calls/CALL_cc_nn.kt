@@ -29,7 +29,7 @@ class CALL_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private 
                 address = getImmediate()
             }
             8 -> {
-                address = setSecondByte(address, getImmediate())
+                address = address.setSecondByte(getImmediate())
 
                 if (!(flag == registers.ZFlag && state && registers.getZFlag()) &&
                         !(flag == registers.ZFlag && !state && !registers.getZFlag()) &&

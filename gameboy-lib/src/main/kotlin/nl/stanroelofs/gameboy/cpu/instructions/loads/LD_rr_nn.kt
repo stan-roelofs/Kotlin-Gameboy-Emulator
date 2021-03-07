@@ -25,7 +25,7 @@ class LD_rr_nn(registers: Registers, mmu: Mmu, private val register: Int) : Inst
                 value = getImmediate()
             }
             8 -> {
-                value = setSecondByte(value, getImmediate())
+                value = value.setSecondByte(getImmediate())
                 when(register) {
                     RegisterID.BC.ordinal -> registers.setBC(value)
                     RegisterID.DE.ordinal -> registers.setDE(value)

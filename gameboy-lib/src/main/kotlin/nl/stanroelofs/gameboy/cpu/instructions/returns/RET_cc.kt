@@ -37,7 +37,7 @@ class RET_cc(registers: Registers, mmu: Mmu, private val flag: Int, private val 
             }
             12 -> {
                 if (conditionHolds) {
-                    value = setSecondByte(value, popFromStack())
+                    value = value.setSecondByte(popFromStack())
                 }
             }
             16 -> {

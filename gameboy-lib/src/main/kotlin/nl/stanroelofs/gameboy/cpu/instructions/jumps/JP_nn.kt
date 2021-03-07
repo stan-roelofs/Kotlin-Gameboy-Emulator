@@ -24,7 +24,7 @@ class JP_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 value = getImmediate()
             }
             8 -> {
-                value = setSecondByte(value, getImmediate())
+                value = value.setSecondByte(getImmediate())
             }
             12 -> {
                 registers.PC = value

@@ -27,7 +27,7 @@ class JP_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private va
                 value = getImmediate()
             }
             8 -> {
-                value = setSecondByte(value, getImmediate())
+                value = value.setSecondByte(getImmediate())
 
                 if (!(flag == registers.ZFlag && state && registers.getZFlag()) &&
                         !(flag == registers.ZFlag && !state && !registers.getZFlag()) &&

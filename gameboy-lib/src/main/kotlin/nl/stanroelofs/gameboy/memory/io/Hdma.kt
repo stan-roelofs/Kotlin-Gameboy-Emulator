@@ -143,11 +143,11 @@ class Hdma(private val mmu: Mmu) : Memory {
 
         val sourceHigh = hdma1
         val sourceLow = hdma2 and 0b11110000 // The lower four bits are ignored
-        source = setSecondByte(sourceLow, sourceHigh)
+        source = sourceLow.setSecondByte(sourceHigh)
 
         val destinationHigh = hdma3 and 0b00011111 // Only bits 12-4 are respected
         val destinationLow = hdma4 and 0b11110000
-        destination = setSecondByte(destinationLow, destinationHigh)
+        destination = destinationLow.setSecondByte(destinationHigh)
         destination += 0x8000
 
         if (destination + length >= 0x10000) {
