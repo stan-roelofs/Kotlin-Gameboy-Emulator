@@ -7,7 +7,7 @@ plugins {
 
 group = "nl.stanroelofs"
 archivesBaseName = "gameboy-lib"
-version = "1.0.1-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 dependencies {

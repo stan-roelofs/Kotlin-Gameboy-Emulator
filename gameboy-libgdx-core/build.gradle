@@ -4,6 +4,6 @@ plugins {
 }
 
 dependencies {
-    api "nl.stanroelofs:gameboy-lib:1.0.1-SNAPSHOT"
+    api "nl.stanroelofs:gameboy-lib:1.0.1"
     api "com.badlogicgames.gdx:gdx:1.9.10"
 }
