@@ -43,6 +43,6 @@ class Mbc5Tests : MooneyeTest() {
 
     @Test
     fun rom512kb() {
-        runMooneyeTest("rom_512Kb.gb")
+        runMooneyeTest("rom_512kb.gb")
     }
 }
