@@ -1,4 +1,5 @@
 Kotlin-Gameboy-Emulator [![Build Status](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator.svg?branch=master)](https://travis-ci.org/stan-roelofs/Kotlin-Gameboy-Emulator) ![Maven Central](https://img.shields.io/maven-central/v/nl.stanroelofs/gameboy-lib)
+\
 A Gameboy / Gameboy color emulator written in Kotlin.
 
 ## Can I use this emulator to play?
