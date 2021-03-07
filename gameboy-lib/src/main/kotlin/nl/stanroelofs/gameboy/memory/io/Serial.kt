@@ -31,8 +31,8 @@ class Serial : Memory {
             Mmu.SB -> this.SB
             Mmu.SC -> {
                 var result = 0b01111110
-                result = setBit(result, 7, inProgress)
-                result = setBit(result, 0, shiftClock)
+                result = result.setBit(7, inProgress)
+                result = result.setBit(0, shiftClock)
                 result
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to Serial")

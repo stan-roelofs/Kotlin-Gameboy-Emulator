@@ -61,7 +61,7 @@ class VolumeEnvelope {
 
     fun getNr2(): Int {
         var result = this.startingVolume shl 4
-        result = setBit(result, 3, add)
+        result = result.setBit(3, add)
         result = result or period
         return result
     }

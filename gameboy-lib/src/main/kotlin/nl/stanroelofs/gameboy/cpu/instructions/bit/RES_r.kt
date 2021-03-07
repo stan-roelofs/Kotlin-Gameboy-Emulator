@@ -17,13 +17,13 @@ class RES_r(registers: Registers, mmu: Mmu, private val register: Int, private v
             }
             4 -> {
                 when(register) {
-                    RegisterID.A.ordinal -> registers.A = clearBit(registers.A, index)
-                    RegisterID.B.ordinal -> registers.B = clearBit(registers.B, index)
-                    RegisterID.C.ordinal -> registers.C = clearBit(registers.C, index)
-                    RegisterID.D.ordinal -> registers.D = clearBit(registers.D, index)
-                    RegisterID.E.ordinal -> registers.E = clearBit(registers.E, index)
-                    RegisterID.H.ordinal -> registers.H = clearBit(registers.H, index)
-                    RegisterID.L.ordinal -> registers.L = clearBit(registers.L, index)
+                    RegisterID.A.ordinal -> registers.A = registers.A.clearBit(index)
+                    RegisterID.B.ordinal -> registers.B = registers.B.clearBit(index)
+                    RegisterID.C.ordinal -> registers.C = registers.C.clearBit(index)
+                    RegisterID.D.ordinal -> registers.D = registers.D.clearBit(index)
+                    RegisterID.E.ordinal -> registers.E = registers.E.clearBit(index)
+                    RegisterID.H.ordinal -> registers.H = registers.H.clearBit(index)
+                    RegisterID.L.ordinal -> registers.L = registers.L.clearBit(index)
                     else -> throw Exception("Invalid register: $register")
                 }
             }

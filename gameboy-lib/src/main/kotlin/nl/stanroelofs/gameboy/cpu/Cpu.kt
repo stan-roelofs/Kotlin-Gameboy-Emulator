@@ -126,7 +126,7 @@ abstract class Cpu(protected val mmu : Mmu, val registers : Registers) {
             State.INTERRUPT_SET_PC -> {
                 var IF = mmu.readByte(Mmu.IF)
                 // Clear interrupt flag
-                IF = clearBit(IF, interruptBit)
+                IF = IF.clearBit(interruptBit)
                 mmu.writeByte(Mmu.IF, IF)
 
                 // Calculate interrupt handler address
@@ -228,7 +228,7 @@ class CpuCGB(mmu: MmuCGB, registers: RegistersCGB) : Cpu(mmu, registers) {
                 speedSwitchCounter += 4
                 if (speedSwitchCounter == speedSwitchCycles) {
                     doubleSpeed = !doubleSpeed
-                    key1.value = setBit(0, 7, doubleSpeed)
+                    key1.value = 0.setBit(7, doubleSpeed)
                     state = State.EXECUTE
                     registers.stop = false
                 }

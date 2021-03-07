@@ -114,43 +114,43 @@ class Sound : Memory {
             }
             Mmu.NR50 -> {
                 var result = 0
-                result = setBit(result, 7, this.vinLeft)
+                result = result.setBit(7, this.vinLeft)
                 result = result or (this.volumeLeft shl 4)
-                result = setBit(result, 3, this.vinRight)
+                result = result.setBit(3, this.vinRight)
                 result = result or (this.volumeRight)
                 result
             }
             Mmu.NR51 -> {
                 var result = 0
-                result = setBit(result, 7, leftEnables[3])
-                result = setBit(result, 6, leftEnables[2])
-                result = setBit(result, 5, leftEnables[1])
-                result = setBit(result, 4, leftEnables[0])
-                result = setBit(result, 3, rightEnables[3])
-                result = setBit(result, 2, rightEnables[2])
-                result = setBit(result, 1, rightEnables[1])
-                result = setBit(result, 0, rightEnables[0])
+                result = result.setBit(7, leftEnables[3])
+                result = result.setBit(6, leftEnables[2])
+                result = result.setBit(5, leftEnables[1])
+                result = result.setBit(4, leftEnables[0])
+                result = result.setBit(3, rightEnables[3])
+                result = result.setBit(2, rightEnables[2])
+                result = result.setBit(1, rightEnables[1])
+                result = result.setBit( 0, rightEnables[0])
                 result
             }
             Mmu.NR52 -> {
                 // Bits 0-3 are statuses of channels (1, 2, wave, noise)
                 var result = 0b01110000 // Bits 4-6 are unused
                 if (square1.enabled) {
-                    result = setBit(result, 0)
+                    result = result.setBit(0)
                 }
                 if (square2.enabled) {
-                    result = setBit(result, 1)
+                    result = result.setBit(1)
                 }
                 if (wave.enabled) {
-                    result = setBit(result, 2)
+                    result = result.setBit(2)
                 }
                 if (noise.enabled) {
-                    result = setBit(result, 3)
+                    result = result.setBit(3)
                 }
 
                 // Bit 7 is sound status
                 if (enabled) {
-                    result = setBit(result, 7)
+                    result = result.setBit(7)
                 }
                 result
             }

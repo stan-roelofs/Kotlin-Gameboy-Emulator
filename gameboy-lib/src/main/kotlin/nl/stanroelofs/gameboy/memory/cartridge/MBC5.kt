@@ -73,7 +73,7 @@ class MBC5(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
 
             // ROM Bank Number upper bit
             in 0x3000 until 0x4000 -> {
-                currentRomBank = setBit(currentRomBank, 8, value.getBit(0))
+                currentRomBank = currentRomBank.setBit(8, value.getBit(0))
             }
 
             // RAM Bank Number

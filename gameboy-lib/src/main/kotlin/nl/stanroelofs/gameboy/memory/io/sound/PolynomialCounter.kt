@@ -25,7 +25,7 @@ class PolynomialCounter {
 
     fun getNr43(): Int {
         var result = clockShift shl 4
-        result = setBit(result, 3, width7)
+        result = result.setBit(3, width7)
         result = result or divisorCode
         return result
     }

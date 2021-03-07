@@ -22,7 +22,7 @@ abstract class SRA(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
         val msb = value.getBit(7)
         var result = (value shr 1)
 
-        result = setBit(result, 7, msb)
+        result = result.setBit(7, msb)
 
         val zFlag = (result and 0xFF) == 0
         registers.setZFlag(zFlag)

@@ -27,7 +27,7 @@ class RES_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instructi
                 value = mmu.readByte(registers.getHL())
             }
             12 -> {
-                value = clearBit(value, index)
+                value = value.clearBit(index)
                 mmu.writeByte(registers.getHL(), value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

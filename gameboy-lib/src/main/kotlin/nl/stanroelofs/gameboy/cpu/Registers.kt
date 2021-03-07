@@ -106,19 +106,19 @@ abstract class Registers {
     abstract fun reset()
 
     internal fun setZFlag(state: Boolean) {
-        F = setBit(F, ZFlag, state)
+        F = F.setBit(ZFlag, state)
     }
 
     internal fun setNFlag(state: Boolean) {
-        F = setBit(F, NFlag, state)
+        F = F.setBit(NFlag, state)
     }
 
     internal fun setHFlag(state: Boolean) {
-        F = setBit(F, HFlag, state)
+        F = F.setBit(HFlag, state)
     }
 
     internal fun setCFlag(state: Boolean) {
-        F = setBit(F, CFlag, state)
+        F = F.setBit(CFlag, state)
     }
 
     /** Returns the state of the Z flag the flags registers */

@@ -157,7 +157,7 @@ abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
             lyc.address -> lyc.value
             stat.address -> {
                 if (lcdc.getLcdEnable()) {
-                    setBit(stat.value or 0b10000000 or getMode().mode, 2, ly.value == lyc.value) // Bit 7 is always 1
+                    (stat.value or 0b10000000 or getMode().mode).setBit(2, ly.value == lyc.value) // Bit 7 is always 1
                 } else {
                     (stat.value or 0b10000000) and 0b11111000 // Bits 0-2 return 0 when LCD is off
                 }
@@ -259,7 +259,7 @@ class PpuCGB(mmu: Mmu) : Ppu(mmu) {
                 bgPalettes[index / 8].setByte(index % 8, newVal)
                 if (bcps.getBit(7)) {
                     index = (index + 1) and 0b111111
-                    bcps = setBit(index, 7)
+                    bcps = index.setBit(7)
                 }
             }
             Mmu.OCPS -> ocps = newVal and 0b10111111

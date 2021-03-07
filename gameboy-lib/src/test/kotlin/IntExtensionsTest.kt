@@ -31,13 +31,13 @@ internal class IntExtensionsTest {
     fun setBit() {
         var a = 0b0
         assertEquals(0, a)
-        a = setBit(a, 0, true)
+        a = a.setBit(0, true)
         assertEquals(1, a)
-        a = setBit(a, 2, true)
+        a = a.setBit(2, true)
         assertEquals(5, a)
-        a = clearBit(a, 2)
+        a = a.clearBit(2)
         assertEquals(1, a)
-        a = clearBit(a, 0)
+        a = a.clearBit(0)
         assertEquals(0, a)
     }
 }

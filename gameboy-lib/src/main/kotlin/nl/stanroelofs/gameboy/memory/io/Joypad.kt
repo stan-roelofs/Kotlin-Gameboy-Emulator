@@ -41,7 +41,7 @@ class Joypad(private val mmu: Mmu) : Memory {
         var newVal = P1 and 0b00110000 or 0b11001111
         for (key in pressedKeys) {
             if (!newVal.getBit(key.selectBit)) {
-                newVal = clearBit(newVal, key.bit)
+                newVal = newVal.clearBit(key.bit)
             }
         }
         P1 = newVal

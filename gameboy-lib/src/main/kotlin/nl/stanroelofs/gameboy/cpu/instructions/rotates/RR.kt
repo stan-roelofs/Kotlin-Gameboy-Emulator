@@ -21,7 +21,7 @@ abstract class RR(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) 
 
         var result = (value shr 1)
         if (cFlag) {
-            result = setBit(result, 7, true)
+            result = result.setBit(7, true)
         }
 
         registers.setCFlag(carry)

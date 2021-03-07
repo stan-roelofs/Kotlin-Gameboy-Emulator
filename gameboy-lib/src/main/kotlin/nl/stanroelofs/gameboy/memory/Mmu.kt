@@ -113,7 +113,7 @@ abstract class Mmu(val cartridge: Cartridge) : Memory {
      */
     fun requestInterrupt(pos: Interrupt) {
         var interruptFlags = readByte(IF)
-        interruptFlags = setBit(interruptFlags, pos.ordinal)
+        interruptFlags = interruptFlags.setBit(pos.ordinal)
         writeByte(IF, interruptFlags)
     }
 

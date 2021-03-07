@@ -21,7 +21,7 @@ abstract class RRC(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
 
         var result = (value shr 1)
         if (carry) {
-            result = setBit(result, 7, true)
+            result = result.setBit(7, true)
         }
 
         val zFlag = (result and 0xFF) == 0

@@ -17,13 +17,13 @@ class SET_r(registers: Registers, mmu: Mmu, private val register: Int, private v
             }
             4 -> {
                 when(register) {
-                    RegisterID.A.ordinal -> registers.A = setBit(registers.A, index)
-                    RegisterID.B.ordinal -> registers.B = setBit(registers.B, index)
-                    RegisterID.C.ordinal -> registers.C = setBit(registers.C, index)
-                    RegisterID.D.ordinal -> registers.D = setBit(registers.D, index)
-                    RegisterID.E.ordinal -> registers.E = setBit(registers.E, index)
-                    RegisterID.H.ordinal -> registers.H = setBit(registers.H, index)
-                    RegisterID.L.ordinal -> registers.L = setBit(registers.L, index)
+                    RegisterID.A.ordinal -> registers.A = registers.A.setBit(index)
+                    RegisterID.B.ordinal -> registers.B = registers.B.setBit(index)
+                    RegisterID.C.ordinal -> registers.C = registers.C.setBit(index)
+                    RegisterID.D.ordinal -> registers.D = registers.D.setBit(index)
+                    RegisterID.E.ordinal -> registers.E = registers.E.setBit(index)
+                    RegisterID.H.ordinal -> registers.H = registers.H.setBit(index)
+                    RegisterID.L.ordinal -> registers.L = registers.L.setBit(index)
                     else -> throw Exception("Invalid register: $register")
                 }
             }

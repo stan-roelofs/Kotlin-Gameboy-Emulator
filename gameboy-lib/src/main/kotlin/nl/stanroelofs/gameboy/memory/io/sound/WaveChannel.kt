@@ -80,7 +80,7 @@ class WaveChannel : SoundChannel() {
         return when(address) {
             Mmu.NR30 -> {
                 var result = 0b01111111
-                result = setBit(result, 7, dac)
+                result = result.setBit(7, dac)
                 result
             }
             Mmu.NR31 -> 0b11111111
@@ -88,7 +88,7 @@ class WaveChannel : SoundChannel() {
             Mmu.NR33 -> 0b11111111
             Mmu.NR34 -> {
                 var result = 0b10111111
-                result = setBit(result, 6, lengthCounter.lengthEnabled)
+                result = result.setBit(6, lengthCounter.lengthEnabled)
                 result
             }
             in 0xFF30..0xFF3F -> this.patternRam[address - 0xFF30]

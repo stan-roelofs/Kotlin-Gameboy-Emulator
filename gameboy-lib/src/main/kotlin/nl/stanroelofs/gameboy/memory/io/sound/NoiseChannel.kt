@@ -58,7 +58,7 @@ class NoiseChannel : SoundChannel() {
             Mmu.NR43 -> polynomialCounter.getNr43()
             Mmu.NR44 -> {
                 var result = 0b10111111
-                result = setBit(result, 6, lengthCounter.lengthEnabled)
+                result = result.setBit(6, lengthCounter.lengthEnabled)
                 result
             }
             else -> throw IllegalArgumentException("Address ${address.toHexString()} does not belong to NoiseChannel")
