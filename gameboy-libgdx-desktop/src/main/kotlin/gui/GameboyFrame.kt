@@ -3,11 +3,11 @@ package gui
 import GameboyDesktop
 import com.badlogic.gdx.backends.lwjgl.LwjglAWTCanvas
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
 import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
+import nl.stanroelofs.minilog.Logging
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File

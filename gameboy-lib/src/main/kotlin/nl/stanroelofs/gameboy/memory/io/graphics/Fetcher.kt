@@ -1,9 +1,9 @@
 package nl.stanroelofs.gameboy.memory.io.graphics
 
-import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.memory.Oam
 import nl.stanroelofs.gameboy.memory.Register
 import nl.stanroelofs.gameboy.utils.getBit
+import nl.stanroelofs.minilog.Logging
 
 // TODO: ugly code, fix this class
 abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, protected val wy: Register, protected val scy: Register,
