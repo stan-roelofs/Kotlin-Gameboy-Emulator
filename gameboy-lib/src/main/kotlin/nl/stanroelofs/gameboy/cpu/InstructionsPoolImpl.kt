@@ -405,7 +405,7 @@ class InstructionsPoolImpl(private val registers: Registers, private val mmu: Mm
             0xC7 -> RST_n(registers, mmu, 0x00)
             0xCF -> RST_n(registers, mmu, 0x08)
             0xD7 -> RST_n(registers, mmu, 0x10)
-            0xDF -> RST_n(registers, mmu, 0x08)
+            0xDF -> RST_n(registers, mmu, 0x18)
             0xE7 -> RST_n(registers, mmu, 0x20)
             0xEF -> RST_n(registers, mmu, 0x28)
             0xF7 -> RST_n(registers, mmu, 0x30)
