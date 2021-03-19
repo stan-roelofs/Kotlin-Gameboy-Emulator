@@ -3,8 +3,8 @@ package nl.stanroelofs.gameboy.cpu.instructions.loads
 import nl.stanroelofs.gameboy.cpu.Registers
 import nl.stanroelofs.gameboy.cpu.instructions.Instruction
 import nl.stanroelofs.gameboy.memory.Mmu
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.firstByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.setSecondByte
 
 class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
@@ -29,10 +29,10 @@ class LD_nn_SP(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 address = address.setSecondByte(getImmediate())
             }
             12 -> {
-                mmu.writeByte(address, registers.SP.getFirstByte())
+                mmu.writeByte(address, registers.SP.firstByte)
             }
             16 -> {
-                mmu.writeByte(address + 1, registers.SP.getSecondByte())
+                mmu.writeByte(address + 1, registers.SP.secondByte)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }

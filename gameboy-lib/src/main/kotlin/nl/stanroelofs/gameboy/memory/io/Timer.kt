@@ -4,7 +4,7 @@ import nl.stanroelofs.gameboy.cpu.Interrupt
 import nl.stanroelofs.gameboy.memory.Memory
 import nl.stanroelofs.gameboy.memory.Mmu
 import nl.stanroelofs.gameboy.utils.getBit
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.toHexString
 
 class Timer(private val mmu: Mmu) : Memory {
@@ -70,7 +70,7 @@ class Timer(private val mmu: Mmu) : Memory {
 
     override fun readByte(address: Int): Int {
         return when(address) {
-            Mmu.DIV -> this.internalCounter.getSecondByte()
+            Mmu.DIV -> this.internalCounter.secondByte
             Mmu.TIMA -> this.TIMA
             Mmu.TMA -> this.TMA
             Mmu.TAC -> this.TAC or 0b11111000

@@ -3,8 +3,8 @@ package nl.stanroelofs.gameboy.cpu.instructions.calls
 import nl.stanroelofs.gameboy.cpu.Registers
 import nl.stanroelofs.gameboy.cpu.instructions.Instruction
 import nl.stanroelofs.gameboy.memory.Mmu
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.firstByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.setSecondByte
 
 class CALL_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private val state: Boolean) : Instruction(registers, mmu) {
@@ -43,12 +43,12 @@ class CALL_cc_nn(registers: Registers, mmu: Mmu, private val flag: Int, private 
             }
             16 -> {
                 if (conditionHolds) {
-                    pushToStack(registers.PC.getSecondByte())
+                    pushToStack(registers.PC.secondByte)
                 }
             }
             20 -> {
                 if (conditionHolds) {
-                    pushToStack(registers.PC.getFirstByte())
+                    pushToStack(registers.PC.firstByte)
                     registers.PC = address
                 }
             }

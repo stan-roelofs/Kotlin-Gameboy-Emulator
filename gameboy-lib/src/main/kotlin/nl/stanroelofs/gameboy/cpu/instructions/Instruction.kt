@@ -2,8 +2,8 @@ package nl.stanroelofs.gameboy.cpu.instructions
 
 import nl.stanroelofs.gameboy.cpu.Registers
 import nl.stanroelofs.gameboy.memory.Mmu
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.firstByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.setSecondByte
 
 abstract class Instruction(val registers: Registers, val mmu: Mmu) {
@@ -41,8 +41,8 @@ abstract class Instruction(val registers: Registers, val mmu: Mmu) {
     }
 
     protected fun pushWordToStack(value: Int) {
-        pushToStack(value.getSecondByte())
-        pushToStack(value.getFirstByte())
+        pushToStack(value.secondByte)
+        pushToStack(value.firstByte)
     }
 
     protected fun popFromStack(): Int {

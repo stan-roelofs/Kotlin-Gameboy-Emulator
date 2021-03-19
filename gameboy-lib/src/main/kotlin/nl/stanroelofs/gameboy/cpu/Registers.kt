@@ -1,8 +1,8 @@
 package nl.stanroelofs.gameboy.cpu
 
+import nl.stanroelofs.gameboy.utils.firstByte
 import nl.stanroelofs.gameboy.utils.getBit
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.setBit
 
 /**
@@ -147,23 +147,23 @@ abstract class Registers {
     }
 
     internal fun setAF(value: Int) {
-        A = value.getSecondByte()
-        F = value.getFirstByte()
+        A = value.secondByte
+        F = value.firstByte
     }
 
     internal fun setBC(value: Int) {
-        B = value.getSecondByte()
-        C = value.getFirstByte()
+        B = value.secondByte
+        C = value.firstByte
     }
 
     internal fun setDE(value: Int) {
-        D = value.getSecondByte()
-        E = value.getFirstByte()
+        D = value.secondByte
+        E = value.firstByte
     }
 
     internal fun setHL(value: Int) {
-        H = value.getSecondByte()
-        L = value.getFirstByte()
+        H = value.secondByte
+        L = value.firstByte
     }
 
     /** Returns the combined register BC (16 bit) */

@@ -97,7 +97,7 @@ abstract class Cpu(protected val mmu : Mmu, val registers : Registers) {
             State.INTERRUPT_PUSH_PC_HIGH -> {
                 // Push high byte of current PC onto stack
                 registers.decSP()
-                mmu.writeByte(registers.SP, registers.PC.getSecondByte())
+                mmu.writeByte(registers.SP, registers.PC.secondByte)
 
                 state = State.INTERRUPT_PUSH_PC_LOW
             }
@@ -116,7 +116,7 @@ abstract class Cpu(protected val mmu : Mmu, val registers : Registers) {
 
                 if (interruptBit >= 0) {
                     registers.decSP()
-                    mmu.writeByte(registers.SP, registers.PC.getFirstByte())
+                    mmu.writeByte(registers.SP, registers.PC.firstByte)
                     state = State.INTERRUPT_SET_PC
                 } else {
                     registers.PC = 0x0000

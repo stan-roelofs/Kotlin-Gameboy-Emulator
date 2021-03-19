@@ -7,13 +7,13 @@ internal class IntExtensionsTest {
     @Test
     fun getFirstByte() {
         val a = 0b1011111110101100
-        assertEquals(172, a.getFirstByte())
+        assertEquals(172, a.firstByte)
     }
 
     @Test
     fun getSecondByte() {
         val a = 0b1011111110101100
-        assertEquals(191, a.getSecondByte())
+        assertEquals(191, a.secondByte)
     }
 
     @Test

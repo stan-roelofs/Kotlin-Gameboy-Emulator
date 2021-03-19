@@ -3,8 +3,8 @@ package nl.stanroelofs.gameboy.cpu.instructions.calls
 import nl.stanroelofs.gameboy.cpu.Registers
 import nl.stanroelofs.gameboy.cpu.instructions.Instruction
 import nl.stanroelofs.gameboy.memory.Mmu
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.firstByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.setSecondByte
 
 class CALL_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
@@ -33,10 +33,10 @@ class CALL_nn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
             }
             16 -> {
-                pushToStack(registers.PC.getSecondByte())
+                pushToStack(registers.PC.secondByte)
             }
             20 -> {
-                pushToStack(registers.PC.getFirstByte())
+                pushToStack(registers.PC.firstByte)
                 registers.PC = address
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

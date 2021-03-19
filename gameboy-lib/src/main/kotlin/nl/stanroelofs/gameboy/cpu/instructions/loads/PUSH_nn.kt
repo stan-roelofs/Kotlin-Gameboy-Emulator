@@ -4,8 +4,8 @@ import nl.stanroelofs.gameboy.cpu.RegisterID
 import nl.stanroelofs.gameboy.cpu.Registers
 import nl.stanroelofs.gameboy.cpu.instructions.Instruction
 import nl.stanroelofs.gameboy.memory.Mmu
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.firstByte
+import nl.stanroelofs.gameboy.utils.secondByte
 
 class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instruction(registers, mmu) {
 
@@ -42,10 +42,10 @@ class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instr
                     }
                     else -> throw Exception("Invalid register: $register")
                 }
-                pushToStack(value.getSecondByte())
+                pushToStack(value.secondByte)
             }
             12 -> {
-                pushToStack(value.getFirstByte())
+                pushToStack(value.firstByte)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }

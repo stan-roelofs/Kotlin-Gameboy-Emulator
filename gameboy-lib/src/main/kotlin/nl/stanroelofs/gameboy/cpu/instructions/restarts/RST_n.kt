@@ -3,8 +3,8 @@ package nl.stanroelofs.gameboy.cpu.instructions.restarts
 import nl.stanroelofs.gameboy.cpu.Registers
 import nl.stanroelofs.gameboy.cpu.instructions.Instruction
 import nl.stanroelofs.gameboy.memory.Mmu
-import nl.stanroelofs.gameboy.utils.getFirstByte
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.firstByte
+import nl.stanroelofs.gameboy.utils.secondByte
 
 class RST_n(registers: Registers, mmu: Mmu, private val address: Int) : Instruction(registers, mmu) {
 
@@ -19,10 +19,10 @@ class RST_n(registers: Registers, mmu: Mmu, private val address: Int) : Instruct
 
             }
             8 -> {
-                pushToStack(registers.PC.getSecondByte())
+                pushToStack(registers.PC.secondByte)
             }
             12 -> {
-                pushToStack(registers.PC.getFirstByte())
+                pushToStack(registers.PC.firstByte)
                 registers.PC = address
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

@@ -1,12 +1,10 @@
 package nl.stanroelofs.gameboy.utils
 
-fun Int.getFirstByte(): Int {
-    return (this and 0xff)
-}
+val Int.firstByte: Int
+    get() = this and 0xff
 
-fun Int.getSecondByte(): Int {
-    return (this shr 8)
-}
+val Int.secondByte: Int
+    get() = (this shr 8) and 0xff
 
 fun Int.setSecondByte(value: Int): Int {
     return ((value and 0xff) shl 8) or (this and 0xff)

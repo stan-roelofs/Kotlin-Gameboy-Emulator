@@ -2,7 +2,7 @@ package nl.stanroelofs.gameboy.memory.cartridge
 
 import nl.stanroelofs.gameboy.memory.Memory
 import nl.stanroelofs.gameboy.utils.getBit
-import nl.stanroelofs.gameboy.utils.getSecondByte
+import nl.stanroelofs.gameboy.utils.secondByte
 import nl.stanroelofs.gameboy.utils.toHexString
 
 class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MBC {
@@ -55,7 +55,7 @@ class MBC2(romBanks: Int, override val hasBattery: Boolean = false) : Memory, MB
     override fun writeRom(address: Int, value: Int) {
         when(address) {
             in 0x0000 until 0x4000 -> {
-                if (!address.getSecondByte().getBit(0)) {
+                if (!address.secondByte.getBit(0)) {
                     ramEnabled = (value and 0x0F) == 0x0A
                 } else {
                     val newVal = value and 0x0f
