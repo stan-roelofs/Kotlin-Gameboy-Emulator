@@ -1,4 +1,4 @@
-import nl.stanroelofs.Logging
+import nl.stanroelofs.minilog.Logging
 
 class FpsCounter {
     private var startTime = 0L

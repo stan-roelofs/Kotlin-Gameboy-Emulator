@@ -4,11 +4,11 @@ import MAX_ITERATIONS
 import getScreenHash
 import makeScreenshot
 import mooneye.MooneyeTest
-import nl.stanroelofs.Logging
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyDMG
 import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
 import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
+import nl.stanroelofs.minilog.Logging
 import org.junit.Assert
 import java.io.File
 import java.net.URI
