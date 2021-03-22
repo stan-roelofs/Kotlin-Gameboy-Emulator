@@ -13,7 +13,7 @@ ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 dependencies {
     // junit for testing
     testImplementation 'junit:junit:4.12'
-    api "nl.stanroelofs:minilog:1.0.1"
+    api "nl.stanroelofs:minilog:1.0.1-SNAPSHOT"
 }
 
 // Jar files

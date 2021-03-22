@@ -59,10 +59,10 @@ abstract class MooneyeTest : VSyncListener {
         val gb = if (forceCgb) GameBoyCGB(Cartridge(romFile)) else GameBoyDMG(Cartridge(romFile))
         gb.mmu.io.ppu.lcd.addListener(this)
 
-        logger.i("")
-        logger.i("Running Mooneye Test: $fileName")
+        logger.i{""}
+        logger.i{"Running Mooneye Test: $fileName"}
         if (type == Type.SCREENHASH)
-            logger.i("Provided hash $inputHash")
+            logger.i{"Provided hash $inputHash"}
 
         for (i in 0..50000000) {
             if (gb.cpu.opcode == DEBUG_INSTRUCTION)
@@ -88,7 +88,7 @@ abstract class MooneyeTest : VSyncListener {
         }
 
         if (type == Type.SCREENHASH) {
-            logger.i("Hash: $hash")
+            logger.i{"Hash: $hash"}
             Assert.assertNotNull(inputHashURI)
             Assert.assertEquals(inputHash, hash)
         }

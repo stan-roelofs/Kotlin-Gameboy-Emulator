@@ -118,7 +118,7 @@ class GameboyFrame : JFrame() {
             gb!!.mmu.cartridge.saveRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
-                is IllegalStateException -> logger.e("Failed to save RAM: $e")
+                is IllegalStateException -> logger.e{"Failed to save RAM: $e"}
                 else -> throw e
             }
         }
@@ -137,7 +137,7 @@ class GameboyFrame : JFrame() {
             gb!!.mmu.cartridge.loadRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
-                is IllegalStateException, is IllegalArgumentException -> logger.e("Failed to load RAM: $e")
+                is IllegalStateException, is IllegalArgumentException -> logger.e{"Failed to load RAM: $e"}
                 else -> throw e
             }
         }

@@ -17,7 +17,7 @@ class FpsCounter {
             startTime = newTime
             FPS = frameCount / (delta / 1e9)
             frameCount = 0
-            logger.d("$FPS")
+            logger.d{"$FPS"}
         }
     }
 }
