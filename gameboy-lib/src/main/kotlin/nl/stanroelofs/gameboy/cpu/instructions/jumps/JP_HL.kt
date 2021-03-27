@@ -11,7 +11,7 @@ class JP_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
     override fun tick() {
         when(currentCycle) {
             0 -> {
-                val value = registers.getHL()
+                val value = registers.HL
                 registers.PC = value
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

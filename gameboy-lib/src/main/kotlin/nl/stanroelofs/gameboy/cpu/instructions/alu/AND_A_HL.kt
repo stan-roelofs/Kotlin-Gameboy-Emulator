@@ -13,7 +13,7 @@ class AND_A_HL(registers: Registers, mmu: Mmu) : AND(registers, mmu) {
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
                 and(value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

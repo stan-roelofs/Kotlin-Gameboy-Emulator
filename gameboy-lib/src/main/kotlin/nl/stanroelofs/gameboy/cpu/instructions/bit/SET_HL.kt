@@ -24,11 +24,11 @@ class SET_HL(registers: Registers, mmu: Mmu, private val index: Int) : Instructi
             4 -> {
             }
             8 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
             }
             12 -> {
                 value = value.setBit(index)
-                mmu.writeByte(registers.getHL(), value)
+                mmu.writeByte(registers.HL, value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }

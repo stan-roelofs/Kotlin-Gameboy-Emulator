@@ -14,7 +14,7 @@ class LD_SP_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
             }
             4 -> {
-                val value = registers.getHL()
+                val value = registers.HL
                 registers.SP = value
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

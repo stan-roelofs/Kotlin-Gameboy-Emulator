@@ -12,7 +12,7 @@ class OR_A_HL(registers: Registers, mmu: Mmu) : OR(registers, mmu) {
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
                 or(value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

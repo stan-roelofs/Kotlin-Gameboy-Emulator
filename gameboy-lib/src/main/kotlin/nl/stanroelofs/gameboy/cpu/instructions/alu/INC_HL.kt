@@ -20,7 +20,7 @@ class INC_HL(registers: Registers, mmu: Mmu) : INC(registers, mmu) {
 
             }
             4 -> {
-                address = registers.getHL()
+                address = registers.HL
                 value = mmu.readByte(address)
             }
             8 -> {

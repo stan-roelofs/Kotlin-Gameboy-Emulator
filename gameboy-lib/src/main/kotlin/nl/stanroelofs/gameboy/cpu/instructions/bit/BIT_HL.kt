@@ -17,7 +17,7 @@ class BIT_HL(registers: Registers, mmu: Mmu, private val index: Int) : BIT(regis
 
             }
             8 -> {
-                val address = registers.getHL()
+                val address = registers.HL
                 state = mmu.readByte(address).getBit(index)
                 super.bit(state)
             }

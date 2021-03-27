@@ -16,9 +16,9 @@ class DEC_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instru
             }
             4 -> {
                 when(register) {
-                    RegisterID.BC.ordinal -> registers.setBC(registers.getBC() - 1)
-                    RegisterID.DE.ordinal -> registers.setDE(registers.getDE() - 1)
-                    RegisterID.HL.ordinal -> registers.setHL(registers.getHL() - 1)
+                    RegisterID.BC.ordinal -> registers.BC = (registers.BC - 1)
+                    RegisterID.DE.ordinal -> registers.DE = (registers.DE - 1)
+                    RegisterID.HL.ordinal -> registers.HL = (registers.HL - 1)
                     RegisterID.SP.ordinal -> registers.decSP()
                     else -> throw Exception("Invalid register: $register")
                 }

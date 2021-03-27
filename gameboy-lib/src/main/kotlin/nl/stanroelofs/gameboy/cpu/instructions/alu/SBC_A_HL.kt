@@ -12,7 +12,7 @@ class SBC_A_HL(registers: Registers, mmu: Mmu) : SBC(registers, mmu) {
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
                 sbc(value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

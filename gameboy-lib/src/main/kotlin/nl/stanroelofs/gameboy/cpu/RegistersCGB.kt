@@ -9,9 +9,9 @@ class RegistersCGB : Registers() {
     override fun reset() {
         A = 0x011
         F = 0x80
-        setBC(0x0000)
-        setDE(0xFF56)
-        setHL(0x000D)
+        BC = 0x0000
+        DE = 0xFF56
+        HL = 0x000D
         SP = 0xFFFE
         PC = 0x100
         stop = false

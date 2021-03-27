@@ -20,7 +20,7 @@ class DEC_HL(registers: Registers, mmu: Mmu) : DEC(registers, mmu) {
 
             }
             4 -> {
-                address = registers.getHL()
+                address = registers.HL
                 value = mmu.readByte(address)
             }
             8 -> {

@@ -12,7 +12,7 @@ class ADD_A_HL(registers: Registers, mmu: Mmu) : ADD(registers, mmu) {
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
                 super.add8(value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

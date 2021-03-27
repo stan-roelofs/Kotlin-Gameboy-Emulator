@@ -27,9 +27,9 @@ class LD_rr_nn(registers: Registers, mmu: Mmu, private val register: Int) : Inst
             8 -> {
                 value = value.setSecondByte(getImmediate())
                 when(register) {
-                    RegisterID.BC.ordinal -> registers.setBC(value)
-                    RegisterID.DE.ordinal -> registers.setDE(value)
-                    RegisterID.HL.ordinal -> registers.setHL(value)
+                    RegisterID.BC.ordinal -> registers.BC = (value)
+                    RegisterID.DE.ordinal -> registers.DE = (value)
+                    RegisterID.HL.ordinal -> registers.HL = (value)
                     RegisterID.SP.ordinal -> registers.SP = value
                     else -> throw Exception("Invalid register: $register")
                 }

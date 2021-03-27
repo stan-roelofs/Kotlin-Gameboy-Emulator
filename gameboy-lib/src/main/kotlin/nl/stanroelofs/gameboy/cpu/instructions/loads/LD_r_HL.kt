@@ -20,7 +20,7 @@ class LD_r_HL(registers: Registers, mmu: Mmu, private val register: Int) : Instr
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
 
                 when(register) {
                     RegisterID.A.ordinal -> registers.A = value

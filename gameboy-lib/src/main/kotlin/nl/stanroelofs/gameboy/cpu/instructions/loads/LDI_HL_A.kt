@@ -14,9 +14,9 @@ class LDI_HL_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
             }
             4 -> {
-                val HL = registers.getHL()
+                val HL = registers.HL
                 mmu.writeByte(HL, registers.A)
-                registers.setHL(HL + 1)
+                registers.HL = (HL + 1)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }

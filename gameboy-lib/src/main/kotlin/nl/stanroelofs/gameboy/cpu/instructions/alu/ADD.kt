@@ -44,16 +44,16 @@ abstract class ADD(registers: Registers, mmu: Mmu) : Instruction(registers, mmu)
     }
 
     protected fun add16HL(value: Int) {
-        val temp = registers.getHL() + value
+        val temp = registers.HL + value
 
         registers.setNFlag(false)
 
         val cFlag = (temp > 0xFFFF)
         registers.setCFlag(cFlag)
 
-        val hFlag = (((registers.getHL() and 0xFFF) + (value and 0xFFF)) > 0xFFF)
+        val hFlag = (((registers.HL and 0xFFF) + (value and 0xFFF)) > 0xFFF)
         registers.setHFlag(hFlag)
 
-        registers.setHL(temp)
+        registers.HL= temp
     }
 }

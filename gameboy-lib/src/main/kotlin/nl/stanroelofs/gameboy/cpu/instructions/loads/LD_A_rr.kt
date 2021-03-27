@@ -16,9 +16,9 @@ class LD_A_rr(registers: Registers, mmu: Mmu, private val register: Int) : Instr
             }
             4 -> {
                 val address = when(register) {
-                    RegisterID.BC.ordinal -> registers.getBC()
-                    RegisterID.DE.ordinal -> registers.getDE()
-                    RegisterID.HL.ordinal -> registers.getHL()
+                    RegisterID.BC.ordinal -> registers.BC
+                    RegisterID.DE.ordinal -> registers.DE
+                    RegisterID.HL.ordinal -> registers.HL
                     else -> throw Exception("Invalid register: $register")
                 }
 

@@ -28,10 +28,10 @@ class POP_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instru
                 value = value.setSecondByte(popFromStack())
 
                 when (register) {
-                    RegisterID.AF.ordinal -> registers.setAF(value)
-                    RegisterID.BC.ordinal -> registers.setBC(value)
-                    RegisterID.DE.ordinal -> registers.setDE(value)
-                    RegisterID.HL.ordinal -> registers.setHL(value)
+                    RegisterID.AF.ordinal -> registers.AF =(value)
+                    RegisterID.BC.ordinal -> registers.BC = (value)
+                    RegisterID.DE.ordinal -> registers.DE = (value)
+                    RegisterID.HL.ordinal -> registers.HL = (value)
                     else -> throw Exception("Invalid register: $register")
                 }
             }

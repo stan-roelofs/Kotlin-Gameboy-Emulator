@@ -22,7 +22,7 @@ class SLA_HL(registers: Registers, mmu: Mmu) : SLA(registers, mmu) {
 
             }
             8 -> {
-                address = registers.getHL()
+                address = registers.HL
                 value = mmu.readByte(address)
             }
             12 -> {

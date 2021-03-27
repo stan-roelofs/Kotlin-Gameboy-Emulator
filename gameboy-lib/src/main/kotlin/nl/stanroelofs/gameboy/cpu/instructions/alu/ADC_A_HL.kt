@@ -12,7 +12,7 @@ class ADC_A_HL(registers: Registers, mmu: Mmu) : ADC(registers, mmu) {
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
                 super.adc(value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

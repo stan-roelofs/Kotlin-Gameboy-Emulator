@@ -12,7 +12,7 @@ class XOR_A_HL(registers: Registers, mmu: Mmu) : XOR(registers, mmu) {
             0 -> {
             }
             4 -> {
-                value = mmu.readByte(registers.getHL())
+                value = mmu.readByte(registers.HL)
                 xor(value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")

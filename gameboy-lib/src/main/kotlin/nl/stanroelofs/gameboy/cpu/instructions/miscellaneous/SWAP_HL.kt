@@ -24,7 +24,7 @@ class SWAP_HL(registers: Registers, mmu: Mmu) : SWAP(registers, mmu) {
 
             }
             8 -> {
-                address = registers.getHL()
+                address = registers.HL
                 val value = mmu.readByte(address)
                 new = swap(value)
             }

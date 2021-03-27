@@ -22,7 +22,7 @@ class RR_HL(registers: Registers, mmu: Mmu) : RR(registers, mmu) {
 
             }
             8 -> {
-                address = registers.getHL()
+                address = registers.HL
                 value = mmu.readByte(address)
             }
             12 -> {

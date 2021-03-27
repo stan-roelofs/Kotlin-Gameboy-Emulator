@@ -14,8 +14,8 @@ class LDD_HL_A(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
             }
             4 -> {
-                val HL = registers.getHL()
-                registers.setHL(HL - 1)
+                val HL = registers.HL
+                registers.HL = (HL - 1)
 
                 mmu.writeByte(HL, registers.A)
             }

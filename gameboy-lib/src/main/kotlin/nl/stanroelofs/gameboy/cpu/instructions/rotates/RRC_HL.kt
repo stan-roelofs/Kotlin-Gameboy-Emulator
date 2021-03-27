@@ -21,7 +21,7 @@ class RRC_HL(registers: Registers, mmu: Mmu) : RRC(registers, mmu) {
 
             }
             8 -> {
-                address = registers.getHL()
+                address = registers.HL
                 value = mmu.readByte(address)
             }
             12 -> {

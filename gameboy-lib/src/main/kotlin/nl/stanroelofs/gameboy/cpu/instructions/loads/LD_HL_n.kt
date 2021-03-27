@@ -23,7 +23,7 @@ class LD_HL_n(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 value = getImmediate()
             }
             8 -> {
-                mmu.writeByte(registers.getHL(), value)
+                mmu.writeByte(registers.HL, value)
             }
             else -> throw IllegalStateException("Invalid cycle count: $currentCycle")
         }

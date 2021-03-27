@@ -23,7 +23,7 @@ class LD_HL_SPn(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
                 value = getSignedImmediate()
             }
             8 -> {
-                registers.setHL(registers.SP + value)
+                registers.HL = (registers.SP + value)
 
                 registers.setZFlag(false)
                 registers.setNFlag(false)

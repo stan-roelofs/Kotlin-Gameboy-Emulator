@@ -28,9 +28,9 @@ class LD_rr_r(registers: Registers, mmu: Mmu, private val register1: Int, privat
                 }
 
                 when(register1) {
-                    RegisterID.BC.ordinal -> mmu.writeByte(registers.getBC(), value)
-                    RegisterID.DE.ordinal -> mmu.writeByte(registers.getDE(), value)
-                    RegisterID.HL.ordinal -> mmu.writeByte(registers.getHL(), value)
+                    RegisterID.BC.ordinal -> mmu.writeByte(registers.BC, value)
+                    RegisterID.DE.ordinal -> mmu.writeByte(registers.DE, value)
+                    RegisterID.HL.ordinal -> mmu.writeByte(registers.HL, value)
                     else -> throw Exception("Invalid register: $register1")
                 }
             }

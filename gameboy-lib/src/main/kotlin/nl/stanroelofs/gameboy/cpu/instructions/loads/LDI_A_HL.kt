@@ -14,9 +14,9 @@ class LDI_A_HL(registers: Registers, mmu: Mmu) : Instruction(registers, mmu) {
 
             }
             4 -> {
-                val HL = registers.getHL()
+                val HL = registers.HL
                 val value = mmu.readByte(HL)
-                registers.setHL(HL + 1)
+                registers.HL = (HL + 1)
 
                 registers.A = value
             }

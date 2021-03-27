@@ -29,16 +29,16 @@ class PUSH_nn(registers: Registers, mmu: Mmu, private val register: Int) : Instr
             8 -> {
                 value = when (register) {
                     RegisterID.AF.ordinal -> {
-                        registers.getAF()
+                        registers.AF
                     }
                     RegisterID.BC.ordinal -> {
-                        registers.getBC()
+                        registers.BC
                     }
                     RegisterID.DE.ordinal -> {
-                        registers.getDE()
+                        registers.DE
                     }
                     RegisterID.HL.ordinal -> {
-                        registers.getHL()
+                        registers.HL
                     }
                     else -> throw Exception("Invalid register: $register")
                 }
