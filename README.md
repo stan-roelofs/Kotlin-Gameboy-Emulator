@@ -21,16 +21,11 @@ To build:
 To run:
 `./gradlew gameboy-libgdx-desktop:run`
 
-## Tests status
+## Tests
 See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 
-## Features
-- Runs on Windows, Linux and Mac.
-- Video RAM viewer which can be used to view tiles that are currently in the video RAM.
-- OAM viewer which can be used to view the sprites and their properties.
-
-## Notes
-This emulator is for the original Game Boy (DMG) and the versions A,B,C of the CPU.
+## Status
+Most games seem to run fine. Some code is pretty bad and should be rewritten. 
 
 ## Preview
 ![alt text](res/preview.gif)
