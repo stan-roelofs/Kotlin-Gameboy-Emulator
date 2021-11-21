@@ -16,4 +16,14 @@ interface SoundOutput {
      * @param right right channel value
      */
     fun play(left: Byte, right: Byte)
+
+    /**
+     * Enables output
+     */
+    fun enable()
+
+    /**
+     * Disables output
+     */
+    fun disable()
 }

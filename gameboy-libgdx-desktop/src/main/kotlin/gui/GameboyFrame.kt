@@ -13,14 +13,20 @@ import java.awt.Dimension
 import java.io.File
 import javax.swing.*
 
-class GameboyFrame : JFrame() {
+class GameboyFrame() : JFrame() {
 
     private var gb: GameBoy? = null
     private val gbapp = GameboyDesktop()
     private val romChooser: RomChooser
-    private val optionsDialog = OptionsDialog()
     private val vramViewer = VramViewer()
     private val logger = Logging.getLogger(GameboyFrame::class.java.name)
+
+    private val enablesound = JCheckBoxMenuItem("Enable sound", true)
+    private val sound1 = JCheckBoxMenuItem("Sound channel 1 - Tone & Sweep", true)
+    private val sound2 = JCheckBoxMenuItem("Sound channel 2 - Tone", true)
+    private val sound3 = JCheckBoxMenuItem("Sound channel 3 - Wave Output", true)
+    private val sound4 = JCheckBoxMenuItem("Sound channel 4 - Noise", true)
+    private val lockFPS = JCheckBoxMenuItem("Lock FPS", true)
 
     init {
         defaultCloseOperation = EXIT_ON_CLOSE
@@ -42,32 +48,46 @@ class GameboyFrame : JFrame() {
         val loadRom = JMenuItem("Load rom")
         loadRom.addActionListener { loadRom() }
         fileMenu.add(loadRom)
-        val options = JMenuItem("Options")
-        options.addActionListener { showOptions() }
-        fileMenu.add(options)
-        val viewer = JMenuItem("Vram Viewer")
-        viewer.addActionListener { showVramViewer() }
-        fileMenu.add(viewer)
         menuBar.add(fileMenu)
 
         val gameMenu = JMenu("Game")
-        val lockFps = JCheckBoxMenuItem("Lock FPS")
-        lockFps.state = true
-        lockFps.addActionListener { setLockFps(lockFps.state) }
-        gameMenu.add(lockFps)
+        lockFPS.addActionListener { updateLockFps() }
+        gameMenu.add(lockFPS)
         val reset = JMenuItem("Reset")
         reset.addActionListener { reset() }
         gameMenu.add(reset)
         val pause = JCheckBoxMenuItem("Pause")
         pause.addActionListener { setPause(pause.state) }
         gameMenu.add(pause)
-        val save = JMenuItem("Save")
+        gameMenu.addSeparator()
+        val save = JMenuItem("Save game")
         save.addActionListener { save() }
         gameMenu.add(save)
-        val load = JMenuItem("Load")
+        val load = JMenuItem("Load save")
         load.addActionListener { load() }
         gameMenu.add(load)
         menuBar.add(gameMenu)
+
+        val debugMenu = JMenu("Debug")
+
+        sound1.addActionListener { updateSoundChannels() }
+        sound2.addActionListener { updateSoundChannels() }
+        sound3.addActionListener { updateSoundChannels() }
+        sound4.addActionListener { updateSoundChannels() }
+        enablesound.addActionListener { updateSoundChannels() }
+
+        debugMenu.add(enablesound)
+        debugMenu.add(sound1)
+        debugMenu.add(sound2)
+        debugMenu.add(sound3)
+        debugMenu.add(sound4)
+
+        debugMenu.addSeparator()
+
+        val viewer = JMenuItem("VRAM Viewer")
+        viewer.addActionListener { showVramViewer() }
+        debugMenu.add(viewer)
+        menuBar.add(debugMenu)
 
         jMenuBar = menuBar
 
@@ -84,17 +104,14 @@ class GameboyFrame : JFrame() {
             return
 
         gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
-        optionsDialog.gb = gb
         vramViewer.gb = gb
 
         if (cartridge.type!!.hasBattery())
             load()
 
         gbapp.startgb(gb!!)
-    }
-
-    private fun showOptions() {
-        optionsDialog.isVisible = true
+        updateLockFps()
+        updateSoundChannels()
     }
 
     private fun showVramViewer() {
@@ -143,7 +160,16 @@ class GameboyFrame : JFrame() {
         }
     }
 
-    private fun setLockFps(state: Boolean) {
-        gbapp.lockFps(state)
+    private fun updateLockFps() = gbapp.lockFps(lockFPS.state)
+
+    private fun updateSoundChannels() {
+        if (gb == null)
+            return
+
+        if (enablesound.state) gb!!.mmu.io.sound.output?.enable() else gb!!.mmu.io.sound.output?.disable()
+        gb!!.mmu.io.sound.optionChannelEnables[0] = sound1.state
+        gb!!.mmu.io.sound.optionChannelEnables[1] = sound2.state
+        gb!!.mmu.io.sound.optionChannelEnables[2] = sound3.state
+        gb!!.mmu.io.sound.optionChannelEnables[3] = sound4.state
     }
 }

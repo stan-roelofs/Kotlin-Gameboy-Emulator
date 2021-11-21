@@ -7,7 +7,7 @@ class RegistersCGB : Registers() {
     }
 
     override fun reset() {
-        A = 0x011
+        A = 0x11
         F = 0x80
         BC = 0x0000
         DE = 0xFF56

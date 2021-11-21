@@ -15,6 +15,7 @@ class SoundOutputGdx : SoundOutput {
     private var bufferIndex = 0
     private val buffer = ShortArray(BUFFER_SIZE)
     private var audioThread : AudioThread? = null
+    private var enabled = false
 
     override fun initialize() {
         device = try {
@@ -45,11 +46,21 @@ class SoundOutputGdx : SoundOutput {
         buffer[bufferIndex++] = (right * 255).toShort()
 
         if (bufferIndex >= BUFFER_SIZE) {
-            audioThread?.buffer = buffer
-            audioThread?.play = true
+            if (enabled) {
+                audioThread?.buffer = buffer
+                audioThread?.play = true
+            }
 
             bufferIndex = 0
         }
+    }
+
+    override fun enable() {
+        enabled = true
+    }
+
+    override fun disable() {
+        enabled = false
     }
 
     override fun dispose() {
