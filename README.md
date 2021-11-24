@@ -25,7 +25,8 @@ To run:
 See [blargg_tests.md](blargg_tests.md) and [mooneye_tests.md](mooneye_tests.md).
 
 ## Status
-Most games seem to run fine. Some code is pretty bad and should be rewritten. 
+Most games run fine with some minor graphical glitches such as wrong sprite priorities. 
+Accuracy of the APU and GPU is decent, although 
 
 ## Preview
 ![alt text](res/preview.gif)
