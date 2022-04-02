@@ -3,7 +3,6 @@ package nl.stanroelofs.gameboy.memory.io.graphics
 import nl.stanroelofs.gameboy.memory.Oam
 import nl.stanroelofs.gameboy.memory.Register
 import nl.stanroelofs.gameboy.utils.getBit
-import nl.stanroelofs.minilog.Logging
 
 // TODO: ugly code, fix this class
 abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, protected val wy: Register, protected val scy: Register,
@@ -43,8 +42,6 @@ abstract class Fetcher(protected val lcdc: Lcdc, protected val wx: Register, pro
             SpriteState.SLEEP,
             SpriteState.READ_SPRITE_DATA_1
     )
-
-    protected val logger = Logging.getLogger(Fetcher::class.java.name)
 
     val bgFifo = Fifo<Pixel>(16)
     val oamFifo = Fifo<Pixel>(16)

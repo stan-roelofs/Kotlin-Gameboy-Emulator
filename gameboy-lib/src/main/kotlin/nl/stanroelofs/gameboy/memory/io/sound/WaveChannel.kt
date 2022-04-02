@@ -63,7 +63,7 @@ class WaveChannel : SoundChannel() {
             positionCounter = (positionCounter + 1) % 32
         }
 
-        return lastOutput
+        return if (muted) 0 else lastOutput
     }
 
     override fun trigger() {

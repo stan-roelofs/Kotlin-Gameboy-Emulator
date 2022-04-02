@@ -4,6 +4,8 @@ import nl.stanroelofs.gameboy.memory.Memory
 
 abstract class SoundChannel : Memory {
 
+    var muted = false
+
     var enabled = false
     protected abstract val lengthCounter: LengthCounter
     protected val volumeEnvelope = VolumeEnvelope()

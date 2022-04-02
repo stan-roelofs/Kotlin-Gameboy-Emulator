@@ -15,7 +15,7 @@ import java.net.URI
 
 abstract class BlarggTestSerial : BlarggTest {
 
-    private val logger = Logging.getLogger(BlarggTestSerial::class.java.name)
+    private val logger = Logging.get(BlarggTestSerial::class.java.name)
 
     override fun runBlarggTest(fileName: String) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
@@ -45,7 +45,7 @@ abstract class BlarggTestSerial : BlarggTest {
 
 abstract class BlarggTestMemory : BlarggTest {
 
-    private val logger = Logging.getLogger(BlarggTestMemory::class.java.name)
+    private val logger = Logging.get(BlarggTestMemory::class.java.name)
 
     override fun runBlarggTest(fileName: String) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
@@ -101,7 +101,7 @@ abstract class BlarggTestMemory : BlarggTest {
 
 abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
 
-    private val logger = Logging.getLogger(BlarggTestScreenhash::class.java.name)
+    private val logger = Logging.get(BlarggTestScreenhash::class.java.name)
     private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
 
     override fun runBlarggTest(fileName: String) {

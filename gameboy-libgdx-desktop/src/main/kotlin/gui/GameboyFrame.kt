@@ -7,6 +7,7 @@ import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
 import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
+import nl.stanroelofs.gameboy.memory.io.sound.Sound
 import nl.stanroelofs.minilog.Logging
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -19,7 +20,7 @@ class GameboyFrame() : JFrame() {
     private val gbapp = GameboyDesktop()
     private val romChooser: RomChooser
     private val vramViewer = VramViewer()
-    private val logger = Logging.getLogger(GameboyFrame::class.java.name)
+    private val logger = Logging.get(GameboyFrame::class.java.name)
 
     private val enablesound = JCheckBoxMenuItem("Enable sound", true)
     private val sound1 = JCheckBoxMenuItem("Sound channel 1 - Tone & Sweep", true)
@@ -167,9 +168,9 @@ class GameboyFrame() : JFrame() {
             return
 
         if (enablesound.state) gb!!.mmu.io.sound.output?.enable() else gb!!.mmu.io.sound.output?.disable()
-        gb!!.mmu.io.sound.optionChannelEnables[0] = sound1.state
-        gb!!.mmu.io.sound.optionChannelEnables[1] = sound2.state
-        gb!!.mmu.io.sound.optionChannelEnables[2] = sound3.state
-        gb!!.mmu.io.sound.optionChannelEnables[3] = sound4.state
+        gb!!.mmu.io.sound.channels[Sound.Channels.SQUARE1.ordinal].muted = !sound1.state
+        gb!!.mmu.io.sound.channels[Sound.Channels.SQUARE2.ordinal].muted = !sound2.state
+        gb!!.mmu.io.sound.channels[Sound.Channels.WAVE.ordinal].muted = !sound3.state
+        gb!!.mmu.io.sound.channels[Sound.Channels.NOISE.ordinal].muted = !sound4.state
     }
 }

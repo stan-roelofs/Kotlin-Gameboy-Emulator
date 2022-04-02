@@ -8,14 +8,19 @@ import nl.stanroelofs.gameboy.utils.toHexString
 
 class Sound : Memory {
 
-    private val square1 = SquareWave1()
-    private val square2 = SquareWave2()
-    private val wave = WaveChannel()
-    private val noise = NoiseChannel()
+    enum class Channels {
+        SQUARE1,
+        SQUARE2,
+        WAVE,
+        NOISE
+    }
 
-    var optionChannelEnables = Array(4) {true}
-
-    private val allChannels: Array<SoundChannel> = arrayOf(square1, square2, wave, noise)
+    val channels = arrayOf(
+        SquareWave1(),
+        SquareWave2(),
+        WaveChannel(),
+        NoiseChannel()
+    )
 
     private var enabled = true
 
@@ -45,7 +50,7 @@ class Sound : Memory {
         rightEnables[2] = false
         rightEnables[3] = false
 
-        for (channel in allChannels) {
+        for (channel in channels) {
             channel.reset()
         }
 
@@ -57,9 +62,7 @@ class Sound : Memory {
 
     fun tick() {
         for (i in 0 until 4) {
-            samples[i] = allChannels[i].tick()
-            if (!optionChannelEnables[i])
-                samples[i] = 0
+            samples[i] = channels[i].tick()
         }
 
         var left = 0
@@ -90,13 +93,13 @@ class Sound : Memory {
             Mmu.NR12,
             Mmu.NR13,
             Mmu.NR14 -> {
-                square1.readByte(address)
+                channels[Channels.SQUARE1.ordinal].readByte(address)
             }
             Mmu.NR21,
             Mmu.NR22,
             Mmu.NR23,
             Mmu.NR24 -> {
-                square2.readByte(address)
+                channels[Channels.SQUARE2.ordinal].readByte(address)
             }
             Mmu.NR30,
             Mmu.NR31,
@@ -104,13 +107,13 @@ class Sound : Memory {
             Mmu.NR33,
             Mmu.NR34,
             in 0xFF30..0xFF3F -> {
-                wave.readByte(address)
+                channels[Channels.WAVE.ordinal].readByte(address)
             }
             Mmu.NR41,
             Mmu.NR42,
             Mmu.NR43,
             Mmu.NR44 -> {
-                noise.readByte(address)
+                channels[Channels.NOISE.ordinal].readByte(address)
             }
             Mmu.NR50 -> {
                 var result = 0
@@ -135,17 +138,10 @@ class Sound : Memory {
             Mmu.NR52 -> {
                 // Bits 0-3 are statuses of channels (1, 2, wave, noise)
                 var result = 0b01110000 // Bits 4-6 are unused
-                if (square1.enabled) {
-                    result = result.setBit(0)
-                }
-                if (square2.enabled) {
-                    result = result.setBit(1)
-                }
-                if (wave.enabled) {
-                    result = result.setBit(2)
-                }
-                if (noise.enabled) {
-                    result = result.setBit(3)
+                for (i in channels.indices)
+                {
+                    if (channels[i].enabled)
+                        result = result.setBit(i)
                 }
 
                 // Bit 7 is sound status
@@ -177,13 +173,13 @@ class Sound : Memory {
             Mmu.NR12,
             Mmu.NR13,
             Mmu.NR14 -> {
-                square1.writeByte(address,  value)
+                channels[Channels.SQUARE1.ordinal].writeByte(address,  value)
             }
             Mmu.NR21,
             Mmu.NR22,
             Mmu.NR23,
             Mmu.NR24 -> {
-                square2.writeByte(address,  value)
+                channels[Channels.SQUARE2.ordinal].writeByte(address,  value)
             }
             Mmu.NR30,
             Mmu.NR31,
@@ -191,13 +187,13 @@ class Sound : Memory {
             Mmu.NR33,
             Mmu.NR34,
             in 0xFF30..0xFF3F -> {
-                wave.writeByte(address,  value)
+                channels[Channels.WAVE.ordinal].writeByte(address,  value)
             }
             Mmu.NR41,
             Mmu.NR42,
             Mmu.NR43,
             Mmu.NR44 -> {
-                noise.writeByte(address,  value)
+                channels[Channels.NOISE.ordinal].writeByte(address,  value)
             }
             Mmu.NR50 -> {
                 this.vinLeft = newVal.getBit(7)
@@ -220,7 +216,7 @@ class Sound : Memory {
                 enabled = value.getBit(7)
 
                 if (wasEnabled && !enabled) {
-                    for (channel in allChannels) {
+                    for (channel in channels) {
                         channel.powerOff()
                     }
 
@@ -236,7 +232,7 @@ class Sound : Memory {
                 }
 
                 if (!wasEnabled && enabled) {
-                    for (channel in allChannels) {
+                    for (channel in channels) {
                         channel.powerOn()
                     }
                 }

@@ -42,7 +42,7 @@ class NoiseChannel : SoundChannel() {
         }
 
         val volume = volumeEnvelope.volume
-        return lastOutput * volume
+        return if (muted) 0 else lastOutput * volume
     }
 
     override fun trigger() {

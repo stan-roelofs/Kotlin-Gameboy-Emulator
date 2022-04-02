@@ -123,11 +123,9 @@ class Hdma(private val mmu: Mmu) : Memory {
                 if (state != State.FINISHED && hblankTransfer) {
                     if (hblankMode) {
                         // Restart
-                      //  Log.d("HDMA restarted, remaining length: $length")
                         startTransfer(newVal)
                     } else {
                         // stop
-                      //  Log.d("HDMA cancelled, remaining length: $length")
                         state = State.FINISHED
                         hdma5 = newVal or 0x80
                     }
@@ -158,8 +156,6 @@ class Hdma(private val mmu: Mmu) : Memory {
             State.TRANSFER
         else
             State.TRANSFER
-
-        //Log.d("${if (hblankTransfer) "H" else "G"}DMA: Copying $length bytes from ${source.toHexString(4)} to ${destination.toHexString(4)}")
     }
 
     fun inProgress() : Boolean {

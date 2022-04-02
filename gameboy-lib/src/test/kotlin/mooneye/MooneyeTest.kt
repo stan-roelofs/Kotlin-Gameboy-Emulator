@@ -22,7 +22,7 @@ abstract class MooneyeTest : VSyncListener {
         SCREENHASH
     }
 
-    private val logger = Logging.getLogger(MooneyeTest::class.java.name)
+    private val logger = Logging.get(MooneyeTest::class.java.name)
 
     abstract val path: String
     private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
