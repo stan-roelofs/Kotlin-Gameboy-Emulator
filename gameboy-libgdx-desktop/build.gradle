@@ -11,5 +11,6 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.10"
     implementation "com.badlogicgames.gdx:gdx-platform:1.9.10:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-controllers:1.9.10"
-
 }
+
+mainClassName = 'MainKt'

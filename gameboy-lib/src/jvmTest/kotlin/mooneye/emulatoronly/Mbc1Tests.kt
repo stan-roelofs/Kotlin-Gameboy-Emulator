@@ -1,7 +1,7 @@
 package mooneye.emulatoronly
 
 import mooneye.MooneyeTest
-import org.junit.Test
+import kotlin.test.Test
 
 class Mbc1Tests : MooneyeTest() {
     override val path = "emulator-only/mbc1"

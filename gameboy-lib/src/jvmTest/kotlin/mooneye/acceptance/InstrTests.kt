@@ -1,7 +1,7 @@
 package mooneye.acceptance
 
 import mooneye.MooneyeTest
-import org.junit.Test
+import kotlin.test.Test
 
 class InstrTests : MooneyeTest() {
     override val path = "acceptance/instr"

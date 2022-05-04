@@ -1,8 +1,8 @@
 package mooneye.acceptance
 
 import mooneye.MooneyeTest
-import org.junit.Ignore
-import org.junit.Test
+import kotlin.test.Ignore
+import kotlin.test.Test
 
 class SerialTests : MooneyeTest() {
     override val path = "acceptance/serial"

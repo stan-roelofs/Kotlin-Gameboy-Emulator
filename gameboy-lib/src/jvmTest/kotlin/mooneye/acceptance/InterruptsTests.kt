@@ -1,7 +1,7 @@
 package mooneye.acceptance
 
 import mooneye.MooneyeTest
-import org.junit.Test
+import kotlin.test.Test
 
 class InterruptsTests : MooneyeTest() {
     override val path = "acceptance/interrupts"

@@ -1,10 +1,9 @@
 package nl.stanroelofs.gameboy.memory.cartridge
 
 import nl.stanroelofs.gameboy.memory.Memory
+import nl.stanroelofs.gameboy.utils.Buffer
 import nl.stanroelofs.gameboy.utils.toHexString
-import java.io.InputStream
-import java.io.OutputStream
-import kotlin.math.roundToInt
+import kotlin.random.Random
 
 interface CartridgeType : Memory {
 
@@ -20,7 +19,7 @@ interface CartridgeType : Memory {
     override fun reset() {
         if (ram != null) {
             for (bank in ram!!) {
-                bank.fill((Math.random() * Byte.MAX_VALUE).roundToInt() and 0xFF)
+                bank.fill(Random.nextInt(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt()))
             }
         }
     }
@@ -41,12 +40,12 @@ interface CartridgeType : Memory {
     fun writeRam(address: Int, value: Int)
 
     /** Write current state of RAM to [destination] */
-    fun saveRam(destination: OutputStream) {
+    fun saveRam(destination: Buffer<Byte>) {
         throw IllegalStateException("This cartridge type cannot load/save")
     }
 
     /** Loads RAM state from [source] */
-    fun loadRam(source: InputStream) {
+    fun loadRam(source: Buffer<Byte>) {
         throw IllegalStateException("This cartridge type cannot load/save")
     }
 

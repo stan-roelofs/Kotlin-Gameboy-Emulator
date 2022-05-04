@@ -1,8 +1,8 @@
 package mooneye.misc
 
 import mooneye.MooneyeTest
-import org.junit.Ignore
-import org.junit.Test
+import kotlin.test.Ignore
+import kotlin.test.Test
 
 class MiscTests : MooneyeTest() {
     override val path = "misc"

@@ -1,9 +1,8 @@
 import nl.stanroelofs.gameboy.memory.cartridge.MBC1
 import nl.stanroelofs.gameboy.utils.Buffer
-import org.junit.jupiter.api.Test
-import java.io.File
-import java.nio.file.Files
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 internal class CartridgeTest {
 
@@ -15,7 +14,7 @@ internal class CartridgeTest {
             val buffer = Buffer<Byte>()
             cart.saveRam(buffer)
         } catch (e : Exception) {
-            assert(e is IllegalStateException)
+            assertTrue(e is IllegalStateException)
         }
     }
 
@@ -43,7 +42,6 @@ internal class CartridgeTest {
 
         cart.reset()
 
-        buffer.reset()
         cart.loadRam(buffer)
 
         assertEquals(totalSize, buffer.length())

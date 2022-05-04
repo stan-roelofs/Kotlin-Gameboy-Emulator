@@ -1,8 +1,7 @@
 package nl.stanroelofs.gameboy.memory.cartridge
 
 import nl.stanroelofs.gameboy.memory.Memory
-import java.io.InputStream
-import java.io.OutputStream
+import nl.stanroelofs.gameboy.utils.Buffer
 
 class Cartridge : Memory {
 
@@ -62,8 +61,8 @@ class Cartridge : Memory {
         if (data[0x143] == 0xC0.toByte())
             isGbc = true
 
-        title = String(data.copyOfRange(0x134, 0x143), Charsets.US_ASCII)
-        licensee = String(data.copyOfRange(0x144, 0x146), Charsets.US_ASCII)
+        //title = String(data.copyOfRange(0x134, 0x143), Charsets.US_ASCII)
+        //licensee = String(data.copyOfRange(0x144, 0x146), Charsets.US_ASCII) // TODO
         isSgb = data[0x146] == 0x03.toByte()
 
         val romBanks = when(data[0x148].toUByte().toInt()) {
@@ -145,11 +144,11 @@ class Cartridge : Memory {
         return type!!.writeByte(address, value and 0xFF)
     }
 
-    fun saveRam(destination: OutputStream) {
+    fun saveRam(destination: Buffer<Byte>) {
         type!!.saveRam(destination)
     }
 
-    fun loadRam(source: InputStream) {
+    fun loadRam(source: Buffer<Byte>) {
         type!!.loadRam(source)
     }
 }

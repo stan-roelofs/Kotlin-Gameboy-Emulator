@@ -5,11 +5,12 @@ import makeScreenshot
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
-import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
 import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
 import nl.stanroelofs.minilog.Logging
-import org.junit.Assert
 import java.io.File
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 abstract class MooneyeTest : VSyncListener {
 
@@ -36,14 +37,14 @@ abstract class MooneyeTest : VSyncListener {
 
         if (inputHashURI != null) {
             val inputFile = File(inputHashURI)
-            Assert.assertTrue(inputFile.exists())
+            assertTrue(inputFile.exists())
             inputHash = inputFile.readText().toInt()
         }
 
         val romURI = MooneyeTest::class.java.classLoader.getResource("mooneye/$path/$fileName")?.toURI()
-        Assert.assertNotNull(romURI)
-        val romFile = File(romURI!!)
-        Assert.assertTrue(romFile.exists())
+        assertNotNull(romURI)
+        val romFile = File(romURI)
+        assertTrue(romFile.exists())
 
         val testOutputScreenshots = File("testoutput/screenshots/mooneye/$path")
         val testOutputHashes = File("testoutput/hashes/mooneye/$path")
@@ -54,9 +55,10 @@ abstract class MooneyeTest : VSyncListener {
         testOutputHashes.mkdirs()
         testOutputHash.createNewFile()
 
-        Assert.assertTrue(testOutputHash.exists())
+        assertTrue(testOutputHash.exists())
 
-        val gb = if (forceCgb) GameBoyCGB(Cartridge(romFile)) else GameBoyDMG(Cartridge(romFile))
+        val gb = if (forceCgb) GameBoyCGB() else GameBoyDMG()
+        gb.cartridge.load(romFile.readBytes())
         gb.mmu.io.ppu.lcd.addListener(this)
 
         logger.i{""}
@@ -78,19 +80,19 @@ abstract class MooneyeTest : VSyncListener {
         testOutputHash.writeText("$hash")
 
         if (type == Type.REGISTERS) {
-            Assert.assertEquals(0, gb.cpu.registers.A)
-            Assert.assertEquals(3, gb.cpu.registers.B)
-            Assert.assertEquals(5, gb.cpu.registers.C)
-            Assert.assertEquals(8, gb.cpu.registers.D)
-            Assert.assertEquals(13, gb.cpu.registers.E)
-            Assert.assertEquals(21, gb.cpu.registers.H)
-            Assert.assertEquals(34, gb.cpu.registers.L)
+            assertEquals(0, gb.cpu.registers.A)
+            assertEquals(3, gb.cpu.registers.B)
+            assertEquals(5, gb.cpu.registers.C)
+            assertEquals(8, gb.cpu.registers.D)
+            assertEquals(13, gb.cpu.registers.E)
+            assertEquals(21, gb.cpu.registers.H)
+            assertEquals(34, gb.cpu.registers.L)
         }
 
         if (type == Type.SCREENHASH) {
             logger.i{"Hash: $hash"}
-            Assert.assertNotNull(inputHashURI)
-            Assert.assertEquals(inputHash, hash)
+            assertNotNull(inputHashURI)
+            assertEquals(inputHash, hash)
         }
     }
 

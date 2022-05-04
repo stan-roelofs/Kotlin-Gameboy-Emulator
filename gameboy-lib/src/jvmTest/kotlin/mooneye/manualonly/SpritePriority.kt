@@ -1,7 +1,7 @@
 package mooneye.manualonly
 
 import mooneye.MooneyeTest
-import org.junit.Test
+import kotlin.test.Test
 
 class SpritePriority : MooneyeTest() {
     override val path = "manual-only"

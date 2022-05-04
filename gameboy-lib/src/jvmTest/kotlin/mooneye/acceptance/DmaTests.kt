@@ -1,7 +1,7 @@
 package mooneye.acceptance
 
 import mooneye.MooneyeTest
-import org.junit.Test
+import kotlin.test.Test
 
 class DmaTests : MooneyeTest() {
     override val path = "acceptance/oam_dma"

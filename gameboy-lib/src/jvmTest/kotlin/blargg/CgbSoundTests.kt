@@ -1,6 +1,6 @@
 package blargg
 
-import org.junit.Test
+import kotlin.test.Test
 
 class CgbSoundTests : BlarggTestMemory() {
 
@@ -41,7 +41,7 @@ class CgbSoundTests : BlarggTestMemory() {
         runBlarggTest("10-wave trigger while on.gb")
     }
 
-//    @Test
+    @Test
     fun testRegsAfterPower() {
         runBlarggTest("11-regs after power.gb")
     }

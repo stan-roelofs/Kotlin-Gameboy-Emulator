@@ -6,12 +6,13 @@ import makeScreenshot
 import mooneye.MooneyeTest
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyDMG
-import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
 import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
 import nl.stanroelofs.minilog.Logging
-import org.junit.Assert
 import java.io.File
 import java.net.URI
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 abstract class BlarggTestSerial : BlarggTest {
 
@@ -20,7 +21,8 @@ abstract class BlarggTestSerial : BlarggTest {
     override fun runBlarggTest(fileName: String) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
         val romFile = File(url)
-        val gb = GameBoyDMG(Cartridge(romFile))
+        val gb = GameBoyDMG()
+        gb.cartridge.load(romFile.readBytes())
 
         logger.i{""}
         logger.i{"Running Blargg Test: $fileName"}
@@ -37,8 +39,8 @@ abstract class BlarggTestSerial : BlarggTest {
         }
         logger.i{"Finished test with output: $output"}
 
-        val result = output.toLowerCase().contains("passed")
-        Assert.assertEquals(true, result)
+        val result = output.lowercase().contains("passed")
+        assertEquals(true, result)
         return
     }
 }
@@ -50,7 +52,8 @@ abstract class BlarggTestMemory : BlarggTest {
     override fun runBlarggTest(fileName: String) {
         val url: URI = BlarggTest::class.java.classLoader.getResource("blargg/$path/$fileName")!!.toURI()
         val romFile = File(url)
-        val gb = GameBoyDMG(Cartridge(romFile))
+        val gb = GameBoyDMG()
+        gb.cartridge.load(romFile.readBytes())
 
         logger.i{""}
         logger.i{"Running Blargg Test: $fileName"}
@@ -79,9 +82,9 @@ abstract class BlarggTestMemory : BlarggTest {
 
         logger.i{"Test finished after $i iterations"}
 
-        Assert.assertEquals(0xDE, gb.mmu.readByte(0xA001))
-        Assert.assertEquals(0xB0, gb.mmu.readByte(0xA002))
-        Assert.assertEquals(0x61, gb.mmu.readByte(0xA003))
+        assertEquals(0xDE, gb.mmu.readByte(0xA001))
+        assertEquals(0xB0, gb.mmu.readByte(0xA002))
+        assertEquals(0x61, gb.mmu.readByte(0xA003))
 
         val statusCode = gb.mmu.readByte(0xA000)
 
@@ -95,7 +98,7 @@ abstract class BlarggTestMemory : BlarggTest {
 
         logger.i{"Finished test with status code: $statusCode and output: $output"}
 
-        Assert.assertEquals(0, statusCode)
+        assertEquals(0, statusCode)
     }
 }
 
@@ -116,15 +119,15 @@ abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
             logger.e{"No input hash, test will fail regardless of output"}
         else {
             val inputFile = File(inputHashURI)
-            Assert.assertTrue(inputFile.exists())
+            assertTrue(inputFile.exists())
             inputHash = inputFile.readText().toInt()
             logger.i{"Provided hash: $inputHash"}
         }
 
         val romURI = MooneyeTest::class.java.classLoader.getResource("blargg/$path/$fileName")?.toURI()
-        Assert.assertNotNull(romURI)
-        val romFile = File(romURI!!)
-        Assert.assertTrue(romFile.exists())
+        assertNotNull(romURI)
+        val romFile = File(romURI)
+        assertTrue(romFile.exists())
 
         val testOutputScreenshots = File("testoutput/screenshots/blargg/$path")
         val testOutputHashes = File("testoutput/hashes/blargg/$path")
@@ -135,9 +138,10 @@ abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
         testOutputHashes.mkdirs()
         testOutputHash.createNewFile()
 
-        Assert.assertTrue(testOutputHash.exists())
+        assertTrue(testOutputHash.exists())
 
-        val gb = GameBoyDMG(Cartridge(romFile))
+        val gb = GameBoyDMG()
+        gb.cartridge.load(romFile.readBytes())
         gb.mmu.io.ppu.lcd.addListener(this)
 
         for (i in 0..MAX_ITERATIONS) {
@@ -149,8 +153,8 @@ abstract class BlarggTestScreenhash : BlarggTest, VSyncListener {
         testOutputHash.writeText("$hash")
 
         logger.i{"Hash: $hash"}
-        Assert.assertNotNull(inputHashURI)
-        Assert.assertEquals(inputHash, hash)
+        assertNotNull(inputHashURI)
+        assertEquals(inputHash, hash)
     }
 
     override fun vsync(screenBuffer: ByteArray) {

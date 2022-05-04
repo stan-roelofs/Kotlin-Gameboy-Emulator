@@ -1,6 +1,6 @@
 package blargg
 
-import org.junit.Test
+import kotlin.test.Test
 
 internal class MemTiming2Tests : BlarggTestMemory() {
 

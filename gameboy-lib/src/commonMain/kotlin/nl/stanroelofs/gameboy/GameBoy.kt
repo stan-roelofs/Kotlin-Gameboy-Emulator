@@ -1,3 +1,5 @@
+package nl.stanroelofs.gameboy
+
 import nl.stanroelofs.gameboy.cpu.*
 import nl.stanroelofs.gameboy.memory.Mmu
 import nl.stanroelofs.gameboy.memory.MmuCGB

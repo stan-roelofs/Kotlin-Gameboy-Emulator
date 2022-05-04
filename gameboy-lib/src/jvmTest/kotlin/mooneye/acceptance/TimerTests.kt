@@ -1,7 +1,7 @@
 package mooneye.acceptance
 
 import mooneye.MooneyeTest
-import org.junit.Test
+import kotlin.test.Test
 
 class TimerTests : MooneyeTest() {
     override val path = "acceptance/timer"
