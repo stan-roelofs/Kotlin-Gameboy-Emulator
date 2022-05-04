@@ -1,8 +1,9 @@
 import nl.stanroelofs.gameboy.memory.cartridge.MBC1
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import nl.stanroelofs.gameboy.utils.Buffer
+import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.file.Files
+import kotlin.test.assertEquals
 
 internal class CartridgeTest {
 
@@ -10,10 +11,9 @@ internal class CartridgeTest {
     fun ramSize0() {
         val cart = MBC1(2, 0, true)
 
-        val file = File("test")
-
         try {
-            cart.saveRam(file)
+            val buffer = Buffer<Byte>()
+            cart.saveRam(buffer)
         } catch (e : Exception) {
             assert(e is IllegalStateException)
         }
@@ -31,27 +31,27 @@ internal class CartridgeTest {
             cart.ram!![currentBank][currentIndex] = currentIndex
         }
 
-        val file = File("test")
-        cart.saveRam(file)
+        val buffer = Buffer<Byte>()
+        cart.saveRam(buffer)
 
-        cart.reset()
-        for (i in cart.ram!!.indices) {
-            for (j in i until cart.ram!![i].size) {
-                assertEquals(cart.ram!![i][j], 0)
-            }
-        }
-
-        cart.loadRam(file)
-
-        val bytes = Files.readAllBytes(file.toPath())
-
+        assertEquals(totalSize, buffer.length())
         for (i in 0 until totalSize) {
             val currentBank = i / size
             val currentIndex = i % size
-            assertEquals(bytes[i], cart.ram!![currentBank][currentIndex].toByte())
+            assertEquals(buffer.get(i), cart.ram!![currentBank][currentIndex].toByte())
         }
 
-        file.delete()
+        cart.reset()
+
+        buffer.reset()
+        cart.loadRam(buffer)
+
+        assertEquals(totalSize, buffer.length())
+        for (i in 0 until totalSize) {
+            val currentBank = i / size
+            val currentIndex = i % size
+            assertEquals(buffer.get(i), cart.ram!![currentBank][currentIndex].toByte())
+        }
     }
 
     @Test
