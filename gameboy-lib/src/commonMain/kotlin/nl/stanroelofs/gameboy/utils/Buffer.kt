@@ -24,12 +24,16 @@ class Buffer<T> : Iterable<T> {
         buffer.add(value)
     }
 
-    fun get(index: Int) : T {
+    operator fun get(index: Int) : T {
         return buffer[index]
     }
 
     fun length() : Int {
         return buffer.size
+    }
+
+    fun toList() : List<T> {
+        return buffer
     }
 
     override fun iterator(): Iterator<T> {

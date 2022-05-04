@@ -25,7 +25,7 @@ interface CartridgeType : Memory {
     }
 
     /** Loads cartridge ROM*/
-    fun loadRom(value: ByteArray)
+    fun loadRom(source: Buffer<Byte>)
 
     /** Read ROM at location [address] */
     fun readRom(address: Int): Int

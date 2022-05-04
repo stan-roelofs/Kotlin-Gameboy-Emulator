@@ -7,6 +7,7 @@ import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
 import nl.stanroelofs.gameboy.memory.io.sound.Sound
+import nl.stanroelofs.gameboy.utils.Buffer
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
@@ -102,7 +103,7 @@ class GameboyFrame() : JFrame() {
         file = romChooser.chooseRom(this) ?: return
 
         gb = if (file!!.name.endsWith("gbc")) GameBoyCGB() else GameBoyDMG()
-        gb!!.cartridge.load(file!!.readBytes())
+        gb!!.cartridge.load(Buffer(file!!.readBytes().toTypedArray()))
         vramViewer.gb = gb
 
         if (gb!!.cartridge.type!!.hasBattery)
@@ -131,10 +132,12 @@ class GameboyFrame() : JFrame() {
 
         val fileName = file!!.nameWithoutExtension
         try {
-            // gb!!.cartridge.saveRam(File("$fileName.sav"))
+            val buffer = Buffer<Byte>()
+            gb!!.cartridge.saveRam(buffer)
+            File("$fileName.sav").writeBytes(buffer.toList().toByteArray())
         } catch (e: Exception) {
             when (e) {
-                //is IllegalStateException -> logger.e{"Failed to save RAM: $e"}
+                is IllegalStateException -> 0 //logger.e{"Failed to save RAM: $e"}
                 else -> throw e
             }
         }
@@ -150,7 +153,8 @@ class GameboyFrame() : JFrame() {
             return
 
         try {
-            //gb!!.mmu.cartridge.loadRam(File("$fileName.sav"))
+            val buffer = Buffer(File("$fileName.sav").readBytes().toTypedArray())
+            gb!!.mmu.cartridge.loadRam(buffer)
         } catch (e: Exception) {
             when (e) {
                 // is IllegalStateException, is IllegalArgumentException -> logger.e{"Failed to load RAM: $e"}

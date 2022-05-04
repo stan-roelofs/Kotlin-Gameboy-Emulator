@@ -12,6 +12,15 @@ interface MBC : CartridgeType {
     /** Enables or disables RAM */
     var ramEnabled: Boolean
 
+    override fun loadRom(source: Buffer<Byte>) {
+        for (i in 0 until source.length()) {
+            val bank: Int = i / 0x4000
+            val index: Int = i - (bank * 0x4000)
+
+            rom[bank][index] = (source[i].toInt()) and 0xFF
+        }
+    }
+
     override fun saveRam(destination: Buffer<Byte>) {
         if (ram == null) {
             throw IllegalStateException("Cannot load save on a cartridge that does not have RAM")

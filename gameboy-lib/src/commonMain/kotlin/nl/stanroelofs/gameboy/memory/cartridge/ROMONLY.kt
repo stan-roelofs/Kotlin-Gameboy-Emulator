@@ -1,6 +1,7 @@
 package nl.stanroelofs.gameboy.memory.cartridge
 
 import nl.stanroelofs.gameboy.memory.Memory
+import nl.stanroelofs.gameboy.utils.Buffer
 import nl.stanroelofs.gameboy.utils.toHexString
 
 class ROMONLY : Memory, CartridgeType {
@@ -8,9 +9,9 @@ class ROMONLY : Memory, CartridgeType {
     override val rom: Array<IntArray> = arrayOf(IntArray(0x8000))
     override val hasBattery = false
 
-    override fun loadRom(value: ByteArray) {
-        for (i in value.indices) {
-            rom[0][i] = (value[i].toInt()) and 0xFF
+    override fun loadRom(source: Buffer<Byte>) {
+        for (i in 0 until source.length()) {
+            rom[0][i] = (source[i].toInt()) and 0xFF
         }
     }
 
