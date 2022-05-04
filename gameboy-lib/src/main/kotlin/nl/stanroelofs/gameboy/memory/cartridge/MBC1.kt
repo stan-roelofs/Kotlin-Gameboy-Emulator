@@ -12,7 +12,13 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     override var currentRamBank = 0
     override var ramEnabled = false
 
-    var mode = 0
+    enum class BankingMode
+    {
+        ROM,
+        RAM
+    }
+
+    var mode = BankingMode.ROM
 
     init {
         reset()
@@ -35,7 +41,7 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
         super.reset()
         currentRamBank = 0
         currentRomBank = 1
-        mode = 0
+        mode = BankingMode.ROM
         ramEnabled = false
     }
 
@@ -51,7 +57,7 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
     override fun readRom(address: Int): Int {
         when(address) {
             in 0x0000 until 0x4000 -> {
-                if (mode == 1) {
+                if (mode == BankingMode.RAM) {
                     val bank = (currentRamBank shl 5) % rom.size
                     return this.rom[bank][address]
                 }
@@ -87,23 +93,12 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
             // RAM Bank Number or Upper Bits of ROM Bank Number
             in 0x4000 until 0x6000 -> {
                 val newVal = value and 0b00000011
-                /*
-                if (mode == 0) {
-                    val newRomBank = currentRomBank or (newVal shl 5)
-                    currentRomBank = newRomBank % rom.size
-
-                } else {
-                    // Check whether we actually have RAM and whether the selected bank actually exists
-                    if (ram != null && newVal < ram.size) {
-                        currentRamBank = newVal
-                    }
-                }*/
                 currentRamBank = newVal
             }
 
             // ROM/RAM Mode Select
             in 0x6000 until 0x8000 -> {
-                mode = value and 0b00000001
+                mode = if (value and 0b1 == 0) BankingMode.ROM else BankingMode.RAM
             }
         }
     }
@@ -118,7 +113,8 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
         }
 
         val newAddress = address - 0xA000
-        return if (mode == 0) {
+        // TODO warning ??
+        return if (mode == BankingMode.ROM) {
             this.ram[0][newAddress]
         } else {
             if (currentRamBank >= ram.size) {
@@ -140,7 +136,7 @@ class MBC1(romBanks: Int, ramSize: Int, override val hasBattery: Boolean = false
 
         val newAddress = address - 0xA000
         val newVal = value and 0xFF
-        if (mode == 0) {
+        if (mode == BankingMode.ROM) {
             this.ram[0][newAddress] = newVal
         } else {
             if (currentRamBank >= ram.size) {

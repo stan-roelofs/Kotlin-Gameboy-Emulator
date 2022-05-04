@@ -6,9 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
-import nl.stanroelofs.gameboy.memory.cartridge.Cartridge
 import nl.stanroelofs.gameboy.memory.io.sound.Sound
-import nl.stanroelofs.minilog.Logging
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.io.File
@@ -16,11 +14,13 @@ import javax.swing.*
 
 class GameboyFrame() : JFrame() {
 
+    private var file: File? = null
+
     private var gb: GameBoy? = null
     private val gbapp = GameboyDesktop()
     private val romChooser: RomChooser
     private val vramViewer = VramViewer()
-    private val logger = Logging.get(GameboyFrame::class.java.name)
+    //private val logger = Logging.getLogger(GameboyFrame::class.java.name)
 
     private val enablesound = JCheckBoxMenuItem("Enable sound", true)
     private val sound1 = JCheckBoxMenuItem("Sound channel 1 - Tone & Sweep", true)
@@ -99,15 +99,13 @@ class GameboyFrame() : JFrame() {
     }
 
     private fun loadRom() {
-        val romFile = romChooser.chooseRom(this) ?: return
-        val cartridge = Cartridge(romFile)
-        if (cartridge.type == null)
-            return
+        file = romChooser.chooseRom(this) ?: return
 
-        gb = if (cartridge.isGbc) GameBoyCGB(cartridge) else GameBoyDMG(cartridge)
+        gb = if (file!!.name.endsWith("gbc")) GameBoyCGB() else GameBoyDMG()
+        gb!!.cartridge.load(file!!.readBytes())
         vramViewer.gb = gb
 
-        if (cartridge.type!!.hasBattery())
+        if (gb!!.cartridge.type!!.hasBattery)
             load()
 
         gbapp.startgb(gb!!)
@@ -131,12 +129,12 @@ class GameboyFrame() : JFrame() {
         if (gb == null)
             return
 
-        val fileName = gb!!.mmu.cartridge.cartridgeFile.nameWithoutExtension
+        val fileName = file!!.nameWithoutExtension
         try {
-            gb!!.mmu.cartridge.saveRam(File("$fileName.sav"))
+            // gb!!.cartridge.saveRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
-                is IllegalStateException -> logger.e{"Failed to save RAM: $e"}
+                //is IllegalStateException -> logger.e{"Failed to save RAM: $e"}
                 else -> throw e
             }
         }
@@ -146,16 +144,16 @@ class GameboyFrame() : JFrame() {
         if (gb == null)
             return
 
-        val fileName = gb!!.mmu.cartridge.cartridgeFile.nameWithoutExtension
+        val fileName = file!!.nameWithoutExtension
         val file = File("$fileName.sav")
         if (!file.exists())
             return
 
         try {
-            gb!!.mmu.cartridge.loadRam(File("$fileName.sav"))
+            //gb!!.mmu.cartridge.loadRam(File("$fileName.sav"))
         } catch (e: Exception) {
             when (e) {
-                is IllegalStateException, is IllegalArgumentException -> logger.e{"Failed to load RAM: $e"}
+                // is IllegalStateException, is IllegalArgumentException -> logger.e{"Failed to load RAM: $e"}
                 else -> throw e
             }
         }

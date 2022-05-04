@@ -1,15 +1,15 @@
 plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.1'
 }
 
 dependencies {
-    implementation project(':gameboy-libgdx-core')
+    api project(':gameboy-lib')
+
+    api "com.badlogicgames.gdx:gdx:1.9.10"
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.10"
     implementation "com.badlogicgames.gdx:gdx-platform:1.9.10:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-controllers:1.9.10"
 
-    api "nl.stanroelofs:minilog:1.0.1-SNAPSHOT"
 }
-
-mainClassName = 'MainKt'

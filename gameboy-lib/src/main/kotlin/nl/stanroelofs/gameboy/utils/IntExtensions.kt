@@ -1,10 +1,10 @@
 package nl.stanroelofs.gameboy.utils
 
-val Int.firstByte: Int
-    get() = this and 0xff
+val Number.firstByte: Int
+    get() = this.toInt() and 0xff
 
-val Int.secondByte: Int
-    get() = (this shr 8) and 0xff
+val Number.secondByte: Int
+    get() = (this.toInt() shr 8) and 0xff
 
 fun Int.setSecondByte(value: Int): Int {
     return ((value and 0xff) shl 8) or (this and 0xff)
@@ -34,10 +34,10 @@ fun Int.clearBit(pos: Int): Int {
     return this and ((1 shl pos).inv() and 0xff)
 }
 
-fun Int.toHexString(): String {
+fun Number.toHexString(): String {
     return this.toHexString(4)
 }
 
-fun Int.toHexString(num: Int): String {
-    return String.format("0x%0${num}X", this)
+fun Number.toHexString(num: Int): String {
+    return "0x%0${num}X$this"
 }

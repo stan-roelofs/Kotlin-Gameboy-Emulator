@@ -8,9 +8,8 @@ import nl.stanroelofs.gameboy.memory.io.graphics.mode.*
 import nl.stanroelofs.gameboy.utils.getBit
 import nl.stanroelofs.gameboy.utils.setBit
 import nl.stanroelofs.gameboy.utils.toHexString
-import java.util.*
 
-abstract class Ppu(private val mmu: Mmu) : Memory, Observable() {
+abstract class Ppu(private val mmu: Mmu) : Memory {
 
     enum class ModeEnum(val mode: Int) {
         HBLANK(0),

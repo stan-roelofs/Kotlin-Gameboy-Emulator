@@ -1,27 +1,25 @@
 package nl.stanroelofs.gameboy.memory.cartridge
 
 import nl.stanroelofs.gameboy.memory.Memory
-import java.io.File
-import java.nio.file.Files
+import java.io.InputStream
+import java.io.OutputStream
 
-class Cartridge(file: File) : Memory {
+class Cartridge : Memory {
 
     var type: CartridgeType? = null
     var isSgb = false
     var isGbc = false
-    lateinit var title: String
-    lateinit var cartridgeFile: File
+    var title = ""
     var graphicBytesMatch = false
     var licensee = ""
     var destination = ""
-    var destinationCode = 0
-    var versionNumber = 0
-    var oldLicenseeCode = 0
+    var destinationCode : Byte = 0
+    var versionNumber : Byte = 0
+    var oldLicenseeCode : Byte = 0
     var headerChecksum = false
 
     init {
         reset()
-        loadRom(file)
     }
 
     override fun reset() {
@@ -37,13 +35,11 @@ class Cartridge(file: File) : Memory {
         type?.reset()
     }
 
-    private fun loadRom(file: File) {
+    fun load(data: ByteArray) {
         try {
-            val data = Files.readAllBytes(file.toPath())
             loadHeader(data)
 
             type!!.loadRom(data)
-            cartridgeFile = file
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -125,10 +121,10 @@ class Cartridge(file: File) : Memory {
            // 0xFF -> logger.i{"Hudson HuC-1"}
         }
 
-        destinationCode = data[0x14A].toUByte().toInt()
-        destination = if (destinationCode == 0x00) "Japanese" else "Non-Japanese"
-        oldLicenseeCode = data[0x14B].toUByte().toInt()
-        versionNumber = data[0x14C].toUByte().toInt()
+        destinationCode = data[0x14A]
+        destination = if (destinationCode.toInt() == 0x00) "Japanese" else "Non-Japanese"
+        oldLicenseeCode = data[0x14B]
+        versionNumber = data[0x14C]
         var sum = 0
         for (i in 0x134..0x14C) {
             sum = sum - data[i] - 1
@@ -149,11 +145,11 @@ class Cartridge(file: File) : Memory {
         return type!!.writeByte(address, value and 0xFF)
     }
 
-    fun saveRam(file: File) {
-        type!!.saveRam(file)
+    fun saveRam(destination: OutputStream) {
+        type!!.saveRam(destination)
     }
 
-    fun loadRam(file: File) {
-        type!!.loadRam(file)
+    fun loadRam(source: InputStream) {
+        type!!.loadRam(source)
     }
 }

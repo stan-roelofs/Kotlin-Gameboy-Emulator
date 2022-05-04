@@ -30,6 +30,8 @@ abstract class GameBoy {
         const val SCREENBUFFER_HEIGHT = 256
     }
 
+    val cartridge = Cartridge()
+
     /** The Gameboy's MMU instance */
     abstract val mmu: Mmu
 
@@ -52,7 +54,7 @@ abstract class GameBoy {
     }
 }
 
-class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
+class GameBoyCGB : GameBoy() {
     override val mmu = MmuCGB(cartridge)
     override val cpu = CpuCGB(mmu, RegistersCGB())
     override val isGbc = true
@@ -69,7 +71,7 @@ class GameBoyCGB(cartridge: Cartridge) : GameBoy() {
     }
 }
 
-class GameBoyDMG(cartridge: Cartridge) : GameBoy() {
+class GameBoyDMG : GameBoy() {
     override val mmu = MmuDMG(cartridge)
     override val cpu = CpuDMG(mmu, RegistersDMG())
     override val isGbc = false

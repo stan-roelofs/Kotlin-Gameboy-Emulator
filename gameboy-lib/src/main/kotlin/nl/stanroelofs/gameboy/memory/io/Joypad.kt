@@ -6,12 +6,11 @@ import nl.stanroelofs.gameboy.memory.Mmu
 import nl.stanroelofs.gameboy.utils.clearBit
 import nl.stanroelofs.gameboy.utils.getBit
 import nl.stanroelofs.gameboy.utils.toHexString
-import java.util.*
 
 class Joypad(private val mmu: Mmu) : Memory {
 
     private var P1 = 0
-    private val pressedKeys = EnumSet.noneOf(JoypadKey::class.java)!!
+    private val pressedKeys = HashSet<JoypadKey>()
 
     init {
         reset()

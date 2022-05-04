@@ -8,7 +8,7 @@ class Lcd {
     private val bufferSize = GameBoy.SCREEN_WIDTH * GameBoy.SCREEN_HEIGHT * 3
     private var currentIndex = 0
     private val buffer = ByteArray(bufferSize)
-    private val listeners = LinkedList<VSyncListener>()
+    private val listeners : MutableCollection<VSyncListener> = LinkedList()
 
     fun reset() {
         currentIndex = 0

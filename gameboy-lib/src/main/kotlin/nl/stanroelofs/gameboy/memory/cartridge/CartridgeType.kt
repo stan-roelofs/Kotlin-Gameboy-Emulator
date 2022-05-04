@@ -2,7 +2,9 @@ package nl.stanroelofs.gameboy.memory.cartridge
 
 import nl.stanroelofs.gameboy.memory.Memory
 import nl.stanroelofs.gameboy.utils.toHexString
-import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
+import kotlin.math.roundToInt
 
 interface CartridgeType : Memory {
 
@@ -12,15 +14,18 @@ interface CartridgeType : Memory {
     /** An array of ROM banks */
     val rom: Array<IntArray>
 
+    /** Whether the cartridge has a battery */
+    val hasBattery: Boolean
+
     override fun reset() {
         if (ram != null) {
             for (bank in ram!!) {
-                bank.fill(0) // TODO; this should be random
+                bank.fill((Math.random() * Byte.MAX_VALUE).roundToInt() and 0xFF)
             }
         }
     }
 
-    /** Loads cartridge ROM into this.rom */
+    /** Loads cartridge ROM*/
     fun loadRom(value: ByteArray)
 
     /** Read ROM at location [address] */
@@ -35,14 +40,13 @@ interface CartridgeType : Memory {
     /** Write [value] to RAM at location [address] */
     fun writeRam(address: Int, value: Int)
 
-    /** Returns true when the cartridge has a battery, false otherwise */
-    fun hasBattery(): Boolean
-
-    fun saveRam(file: File) {
+    /** Write current state of RAM to [destination] */
+    fun saveRam(destination: OutputStream) {
         throw IllegalStateException("This cartridge type cannot load/save")
     }
 
-    fun loadRam(file: File) {
+    /** Loads RAM state from [source] */
+    fun loadRam(source: InputStream) {
         throw IllegalStateException("This cartridge type cannot load/save")
     }
 
