@@ -7,5 +7,4 @@ pluginManagement {
 
 rootProject.name = 'gameboy'
 include 'gameboy-lib'
-include 'gameboy-libgdx-core'
 include 'gameboy-libgdx-desktop'

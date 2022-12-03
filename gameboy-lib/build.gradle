@@ -54,11 +54,6 @@ kotlin {
                 implementation kotlin("test")
             }
         }
-        jvmTest {
-            dependencies {
-                implementation "nl.stanroelofs:minilog:1.0.1-SNAPSHOT"
-            }
-        }
     }
 }
 

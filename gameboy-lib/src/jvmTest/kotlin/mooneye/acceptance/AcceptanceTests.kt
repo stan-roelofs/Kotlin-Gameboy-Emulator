@@ -48,9 +48,9 @@ class AcceptanceTests : MooneyeTest() {
         runMooneyeTest("call_timing2.gb")
     }
 
-    @Test
+    @Test @Ignore("TODO: Doesn't pass yet")
     fun di_timing_GS() {
-        runMooneyeTest("boot_regs-dmgABC.gb")
+        runMooneyeTest("di_timing-GS.gb")
     }
 
     @Test

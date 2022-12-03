@@ -6,7 +6,7 @@ import nl.stanroelofs.gameboy.GameBoy
 import nl.stanroelofs.gameboy.GameBoyCGB
 import nl.stanroelofs.gameboy.GameBoyDMG
 import nl.stanroelofs.gameboy.memory.io.graphics.VSyncListener
-import nl.stanroelofs.minilog.Logging
+import nl.stanroelofs.gameboy.utils.Buffer
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -22,8 +22,6 @@ abstract class MooneyeTest : VSyncListener {
         REGISTERS,
         SCREENHASH
     }
-
-    private val logger = Logging.get(MooneyeTest::class.java.name)
 
     abstract val path: String
     private val lastBuffer = ByteArray(GameBoy.SCREEN_HEIGHT * GameBoy.SCREEN_WIDTH * 3)
@@ -58,13 +56,13 @@ abstract class MooneyeTest : VSyncListener {
         assertTrue(testOutputHash.exists())
 
         val gb = if (forceCgb) GameBoyCGB() else GameBoyDMG()
-        gb.cartridge.load(romFile.readBytes())
+        gb.cartridge.load(Buffer(romFile.readBytes().toTypedArray()))
         gb.mmu.io.ppu.lcd.addListener(this)
 
-        logger.i{""}
-        logger.i{"Running Mooneye Test: $fileName"}
+        println("")
+        println("Running Mooneye Test: $fileName")
         if (type == Type.SCREENHASH)
-            logger.i{"Provided hash $inputHash"}
+            println("Provided hash $inputHash")
 
         for (i in 0..50000000) {
             if (gb.cpu.opcode == DEBUG_INSTRUCTION)
@@ -90,7 +88,7 @@ abstract class MooneyeTest : VSyncListener {
         }
 
         if (type == Type.SCREENHASH) {
-            logger.i{"Hash: $hash"}
+            println("Hash: $hash")
             assertNotNull(inputHashURI)
             assertEquals(inputHash, hash)
         }
